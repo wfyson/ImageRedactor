@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>test</title>
+        <script type="text/javascript" src="js/libs/zip.js"></script>
+        <script type="text/javascript" src="js/libs/exif.js"></script>
+        <script type="text/javascript" src="js/libs/binaryajax.js"></script>
+        
+        <script type="text/javascript" src="js/libs/jquery-1.9.0/jquery.min.js"></script>
+        <script type="text/javascript" src="js/libs/jqueryui-1.10.0/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery.exif.js"></script>
+        
+        <script type="text/javascript" src="js/PowerPointReader.js"></script>
+        <script type="text/javascript" src="js/PowerPointImage.js"></script>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <script type="text/javascript">
+            //check for the various File API support
+            if (window.File && window.FileReader && window.FileList && window.Blob) {
+                //all file APIs are supported
+            } else {
+                alert('The File APIs are not fully supported in this browser.');
+            }
+        </script>
+
+        <input type="file" id="files" name="files[]" multiple />
+        <output id="list"></output>
+
+        <div id="imageList">
+        </div>
+
+        <script>
+            function handleFileSelect(evt) {
+                var files = evt.target.files; // FileList object
+                var pptReader;
+                for (var i = 0, f; f = files[i]; i++) {
+                    //create a PowerPointReader for the file
+                    pptReader = new PowerPointReader(f);
+                }
+            }
+            document.getElementById('files').addEventListener('change', handleFileSelect, false);
+        </script>
+
+
+
+
+    </body>
+</html>
+
+
