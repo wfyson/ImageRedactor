@@ -17,7 +17,6 @@ function PowerPointReader(pptFile) {
                         //get the name for that media
                         name = filename.substring(10, filename.lastIndexOf("."));
                         format = filename.substr(filename.lastIndexOf("."));
-                        console.log(name);
                         //get the data for that media
                         entries[i].getData(new zip.BlobWriter(), function(data) {
                             reader.close();
