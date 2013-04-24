@@ -28,8 +28,10 @@ function getImageLicence(url, data) {
         var string = oFREvent.target.result;
         var binaryFile = new BinaryFile(string);
         var exif = EXIF.readFromBinaryFile(binaryFile);
-        console.log(exif);
-        console.log(exif.Artist);
+        //console.log(exif);
+        //console.log(exif.Artist);
+        //console.log(self.name + "..." + self.format + "..." + exif.Artist);
+        
     }; 
     reader.readAsBinaryString(data);
 }
