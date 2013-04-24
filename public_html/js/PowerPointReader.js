@@ -30,7 +30,6 @@ function PowerPointReader(pptFile) {
                     if (filename.indexOf("ppt/slides/_rels") !== -1){
                         slideNo = filename.substring(filename.lastIndexOf("/")+1, filename.indexOf("."));
                         entries[i].getData(new zip.TextWriter(), function(text){
-                            console.log(text);
                             reader.close();
                         }, function(current, total){
                             //onprogress callback
