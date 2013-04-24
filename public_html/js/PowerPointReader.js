@@ -11,17 +11,15 @@ function PowerPointReader(pptFile) {
         reader.getEntries(function(entries) {
             if (entries.length) {
                 var pptImageArray = new Array();
-                var filename;
                 for (var i = 0; i < entries.length; i++) {
-                    filename = entries[i].filename;
                     //if media file then create a PowerPointImage
-                    if (filename.indexOf("ppt/media/") !== -1) {
-                        var pptImage, name, format; 
-                        //get the name for that media
-                        name = filename.substring(filename.lastIndexOf("/") + 1, filename.lastIndexOf("."));
-                        format = filename.substr(filename.lastIndexOf("."));
+                    if ((entries[i].filename).indexOf("ppt/media/") !== -1) {                         
                         //get the data for that media
-                        entries[i].getData(new zip.BlobWriter(), function(data) {                         
+                        entries[i].getData(new zip.BlobWriter(), function(data, entry) {                         
+                            var filename, pptImage, name, format;
+                            filename = entry.filename;
+                            name = filename.substring(filename.lastIndexOf("/") + 1, filename.lastIndexOf("."));
+                            format = filename.substr(filename.lastIndexOf("."));
                             pptImage = new PowerPointImage(name, format, data);
                             pptImageArray.push(pptImage);
                             reader.close();
@@ -30,11 +28,11 @@ function PowerPointReader(pptFile) {
                         });
                     }
                     //if a slides rel file
-                    if (filename.indexOf("ppt/slides/_rels") !== -1) {
-                        //console.log(filename);
-                        var slideNo, xmlDoc, rels, target, imageName;
-                        slideNo = filename.substring(filename.lastIndexOf("/") + 1, filename.indexOf("."));
-                        entries[i].getData(new zip.TextWriter(), function(text) {
+                    if ((entries[i].filename).indexOf("ppt/slides/_rels") !== -1) {                        
+                        entries[i].getData(new zip.TextWriter(), function(text, entry) {
+                            var filename, slideNo, xmlDoc, rels, target, imageName;
+                            filename = entry.filename;
+                            slideNo = filename.substring(filename.lastIndexOf("/") + 1, filename.indexOf("."));                            
                             xmlDoc = $.parseXML(text);
                             rels = $(xmlDoc).find("Relationship");
                             if (rels.length) {
@@ -42,7 +40,7 @@ function PowerPointReader(pptFile) {
                                     if($(rels[j]).attr("Type") === IMAGE_REL_TYPE){
                                         target = $(rels[j]).attr("Target");
                                         imageName = target.substring(target.lastIndexOf("/") + 1, target.lastIndexOf("."));
-                                        //console.log(slideNo + "..." + imageName);
+                                        console.log(slideNo + "..." + imageName);
                                     }
                                 }
                             }

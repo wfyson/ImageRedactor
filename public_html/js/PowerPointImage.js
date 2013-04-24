@@ -6,7 +6,7 @@ function PowerPointImage(name, format, data) {
     self.data = data;
     self.url = getImageURL(data);
     self.licence = getImageLicence(self.url, data);
-}
+
 
 function getImageURL(file) {
     if (window.webkitURL) {
@@ -30,14 +30,14 @@ function getImageLicence(url, data) {
         var exif = EXIF.readFromBinaryFile(binaryFile);
         //console.log(exif);
         //console.log(exif.Artist);
-        //console.log(self.name + "..." + self.format + "..." + exif.Artist);
+        console.log(self.name + "..." + self.format + "..." + exif.Artist);
         
     }; 
     reader.readAsBinaryString(data);
 }
     
 
-
+}
 
 
 

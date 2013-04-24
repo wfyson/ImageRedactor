@@ -524,12 +524,12 @@
 		Entry.prototype.getData = function(writer, onend, onprogress, checkCrc32) {
 			var that = this, worker;
 
-			function terminate(callback, param) {
+			function terminate(callback, param, param2) {
 				if (worker)
 					worker.terminate();
 				worker = null;
 				if (callback)
-					callback(param);
+					callback(param, param2);
 			}
 
 			function testCrc32(crc32) {
@@ -543,16 +543,16 @@
 					onreaderror();
 				else
 					writer.getData(function(data) {
-						terminate(onend, data);
+						terminate(onend, data, that);
 					});
 			}
 
 			function onreaderror() {
-				terminate(onerror, ERR_READ_DATA);
+				terminate(onerror, ERR_READ_DATA, that);
 			}
 
 			function onwriteerror() {
-				terminate(onerror, ERR_WRITE_DATA);
+				terminate(onerror, ERR_WRITE_DATA, that);
 			}
 
 			reader.readUint8Array(that.offset, 30, function(bytes) {
