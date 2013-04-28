@@ -10,7 +10,7 @@
 
 /* 
  * example search
- * http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=4cb26b7f09f917e2f9154d48087de93d&tags=northern+lights&per_page=10&page=1&format=json&nojsoncallback=1&auth_token=72157633370337990-07d618a50f8017a0&api_sig=c2211ce15821c974a9733691b418feaa
+ * http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=4810df9779c8f27f9c850c7c86115fe4&tags=northern+lights&license=0&sort=date-posted-asc&format=json&nojsoncallback=1&auth_token=72157633357072263-d14651d613bef358&api_sig=a1f16b19a7621d065b19ffdb11420a9a
  */
 
 /*
@@ -34,7 +34,7 @@ function FlickrReader(tags, sort, licence) {
     
     var API_KEY = "7493f1b9adc9c0e8e55d5be46f60ddb7";
     
-    self.buildQuery = function(){
+    self.buildQuery = function() {
         //initialise URL
         var url;
         url = "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=";
@@ -42,11 +42,52 @@ function FlickrReader(tags, sort, licence) {
         
         //get search tags
         var tagArray = self.tags.split(" ");
-        url = url + "&tags="
-        for (var i = 0; i < tagArray.length-1; i++){
+        url = url + "&tags=";
+        for (var i = 0; i < tagArray.length - 1; i++) {
             url = url + tagArray[i] + "+";
         }
-        url = url + tagArray[tagArray.length-1];
+        url = url + tagArray[tagArray.length - 1];
+        
+        //add the licence
+        //some sort of case statement
+        var licenceID;
+        switch (self.licence) {
+            case "Attribution":
+                licenceID = 4;
+                break;
+            case "NoDerivs":
+                licenceID = 6;
+                break;
+            case "NonCommercial, NoDerivs":
+                licenceID = 3;
+                break;
+            case "NonCommercial":
+                licenceID = 2;
+                break;
+            case "NonCommercial, ShareAlike":
+                licenceID = 1;
+                break;
+            case "ShareAlike":
+                licenceID = 5;
+                break;
+        }        
+        url = url + "&license=" + licenceID;
+        
+        //add the sort parameter        
+        //some sort of case statement
+        var sortFormat;
+        switch (self.sort) {
+            case "Relevant":
+                sortFormat = "relevance";
+                break;
+            case "Recent":
+                sortFormat = "date-posted-asc";
+                break;
+            case "Interesting":
+                sortFormat = "interestingness-asc";
+                break;
+        }        
+        url = url + "&sort=" + sortFormat;
         
         //add the per page
         url = url + "&per_page=" + self.perPage;
@@ -58,14 +99,21 @@ function FlickrReader(tags, sort, licence) {
         url = url + "&format=json&nojsoncallback=1";
         
         console.log(url);
-        //$.getJSON("http://www.example.com/yourjsonfeed.json", callback);
-        
-    }
-
-
-    function callback(data){
-        
-    } 
-}
+        $.getJSON(url, getPhotos);
+    };
     
+    //from the list of photos return by the search, get the photos
+    //may want to read and store max page count from this too!
+    self.getPhotos = function(data) {
+
+    };
+    
+    self.decrementPage = function(){
+        if (self.page > 1){
+            self.page--;
+        }
+    };
+    
+}
+
 
