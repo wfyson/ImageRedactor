@@ -2,16 +2,26 @@
 <html>
     <head>
         <title>test</title>
+
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
+
         <script type="text/javascript" src="js/libs/zip.js"></script>
         <script type="text/javascript" src="js/libs/exif.js"></script>
         <script type="text/javascript" src="js/libs/binaryajax.js"></script>
-        
+
         <script type="text/javascript" src="js/libs/jquery-1.9.0/jquery.min.js"></script>
         <script type="text/javascript" src="js/libs/jqueryui-1.10.0/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/libs/jquery.exif.js"></script>
-        
+
+        <script type="text/javascript" src="js/libs/bootstrap.js"></script>
+
         <script type="text/javascript" src="js/PowerPointReader.js"></script>
         <script type="text/javascript" src="js/PowerPointImage.js"></script>
+        
+        <script type="text/javascript" src="js/FlickrReader.js"></script>
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
@@ -24,6 +34,28 @@
                 alert('The File APIs are not fully supported in this browser.');
             }
         </script>
+
+        <form id="flickr" class="form-inline">
+            <div id="searchControl" class="control-group">
+                <input type="text" class="input-small" placeholder="Search" name="tags" id="tags">
+            </div>
+            <label class="multiple" for="sort">Sort:</label>
+            <select id="sort" name="sort">
+                <option>Relevant</option>
+                <option>Recent</option>
+                <option>Interesting</option>
+            </select>
+            <label class="multiple" for="licence">Licence:</label>
+            <select id="licence" name="licence">
+                <option>Attribution</option>
+                <option>NoDerivs</option>
+                <option>NonCommercial, NoDerivs</option>
+                <option>NonCommercial</option>
+                <option>NonCommercial, ShareAlike</option>
+                <option>ShareAlike</option>
+            </select>
+            <button type="submit" class="btn">Search</button>
+        </form>
 
         <input type="file" id="files" name="files[]" multiple />
         <output id="list"></output>
@@ -40,7 +72,24 @@
                     pptReader = new PowerPointReader(f);
                 }
             }
+    
             document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+            $('#flickr').submit(function() {
+                if ($('#tags').val() == ""){
+                    //prompt user for search terms
+                    $('#searchControl').addClass("error");                    
+                }else{
+                    $('#searchControl').removeClass("error");
+                    //do a search
+                    var tags = $('#tags').val();
+                    var sort = $('#sort').val();
+                    var licence = $('#licence').val();
+                    var flickrReader = new FlickrReader(tags, sort, licence);
+                    flickrReader.buildQuery();
+                }
+                return false;
+            });
         </script>
 
 
