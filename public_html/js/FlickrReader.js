@@ -31,6 +31,8 @@ function FlickrReader(tags, sort, licence) {
     self.licence = licence;
     self.page = 1;
     self.perPage = 10;
+    self.totalPages = 0;
+    self.totalResults = 0;
     
     var API_KEY = "7493f1b9adc9c0e8e55d5be46f60ddb7";
     
@@ -97,15 +99,24 @@ function FlickrReader(tags, sort, licence) {
         
         //set the format
         url = url + "&format=json&nojsoncallback=1";
-        
-        console.log(url);
-        $.getJSON(url, getPhotos);
+                
+        $.getJSON(url, self.getPhotos);
     };
     
     //from the list of photos return by the search, get the photos
     //may want to read and store max page count from this too!
     self.getPhotos = function(data) {
-
+        self.totalPages = data.photos.pages;
+        self.totalResults = data.photos.total;
+        self.page = data.photos.page;
+        var photos = data.photos.photo;
+        var getPhotoInfoUrl;
+        for (var i = 0; i < photos.length; i++){
+            getPhotoInfoUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=";
+            getPhotoInfoUrl = getPhotoInfoUrl + API_KEY;
+            
+            //http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=4cb26b7f09f917e2f9154d48087de93d&photo_id=8688199672&format=json&nojsoncallback=1&auth_token=72157633370337990-07d618a50f8017a0&api_sig=4b100aec61865ab07e46030837e59ed8
+        }
     };
     
     self.decrementPage = function(){
