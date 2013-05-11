@@ -19,10 +19,6 @@ function PowerPointImage(name, format, data) {
     }
 
     function getImageLicence(url, data) {
-        var img = document.createElement('img');
-        $(img).attr("src", url);
-        $('#imageList').append(img);
-
         var reader = new FileReader();
         reader.onload = function(oFREvent) {
             var string = oFREvent.target.result;
@@ -30,7 +26,7 @@ function PowerPointImage(name, format, data) {
             var exif = EXIF.readFromBinaryFile(binaryFile);
             //console.log(exif);
             //console.log(exif.Artist);
-            console.log(self.name + "..." + self.format + "..." + exif.Artist);
+            //console.log(self.name + "..." + self.format + "..." + exif.Artist);
 
         };
         reader.readAsBinaryString(data);

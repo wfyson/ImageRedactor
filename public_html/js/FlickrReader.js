@@ -110,14 +110,30 @@ function FlickrReader(tags, sort, licence) {
         self.totalResults = data.photos.total;
         self.page = data.photos.page;
         var photos = data.photos.photo;
-        var getPhotoInfoUrl;
+        var photoID;
         for (var i = 0; i < photos.length; i++){
-            getPhotoInfoUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=";
-            getPhotoInfoUrl = getPhotoInfoUrl + API_KEY;
-            
-            //http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=4cb26b7f09f917e2f9154d48087de93d&photo_id=8688199672&format=json&nojsoncallback=1&auth_token=72157633370337990-07d618a50f8017a0&api_sig=4b100aec61865ab07e46030837e59ed8
+            photoID = photos[i];
+            self.getPhotoInfo(photoID);
+            self.getPhotoSizes(photoID);
         }
     };
+    
+    self.getPhotoInfo = function(photoID){
+        var photoInfoUrl;
+        photoInfoUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=";
+        photoInfoUrl = photoInfoUrl + API_KEY;            
+        photoInfoUrl = photoInfoUrl + "&photo_id=" + photoID;
+        photoInfoUrl = photoInfoUrl + "&format=json&nojsoncallback=1";
+        //return info somehow
+    };
+    
+    self.getPhotoSizes = function(photoID){
+        var photoSizesUrl;
+        photoSizesUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=";
+        photoSizesUrl = photoSizesUrl + "&photo_id=" + photoID;
+        photoSizesUrl = photoSizesUrl + "&format=json&nojsoncallback=1";   
+        //return sizes somehow
+    }
     
     self.decrementPage = function(){
         if (self.page > 1){

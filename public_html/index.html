@@ -20,6 +20,10 @@
 
         <script type="text/javascript" src="js/PowerPointReader.js"></script>
         <script type="text/javascript" src="js/PowerPointImage.js"></script>
+        <script type="text/javascript" src="js/PowerPoint.js"></script>
+        <script type="text/javascript" src="js/SlideImageRel.js"></script>
+        
+        <script type="text/javascript" src="js/PowerPointViewer.js"></script>
         
         <script type="text/javascript" src="js/FlickrReader.js"></script>
 
@@ -66,10 +70,11 @@
         <script>
             function handleFileSelect(evt) {
                 var files = evt.target.files; // FileList object
-                var pptReader;
+                
                 for (var i = 0, f; f = files[i]; i++) {
                     //create a PowerPointReader for the file
-                    pptReader = new PowerPointReader(f);
+                    var pptReader = new PowerPointReader(f);
+                    var powerpoint = pptReader.readPowerPoint();                  
                 }
             }
     
