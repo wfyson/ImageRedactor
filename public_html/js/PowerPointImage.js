@@ -5,7 +5,8 @@ function PowerPointImage(name, format, data) {
     self.format = format;
     self.data = data;
     self.url = getImageURL(data);
-    self.licence = getImageLicence(self.url, data);
+    self.licence = null;
+    getImageLicence(data);
 
 
     function getImageURL(file) {
@@ -18,21 +19,21 @@ function PowerPointImage(name, format, data) {
         }
     }
 
-    function getImageLicence(url, data) {
+    function getImageLicence(data) {
         var reader = new FileReader();
-        reader.onload = function(oFREvent) {
-            var string = oFREvent.target.result;
+        reader.onload = function(e) {
+            var string = e.target.result;
             var binaryFile = new BinaryFile(string);
             var exif = EXIF.readFromBinaryFile(binaryFile);
-            //console.log(exif);
             //console.log(exif.Artist);
+            //console.log(exif.Copyright);
+            self.licence = exif.Artist;
             //console.log(self.name + "..." + self.format + "..." + exif.Artist);
 
         };
         reader.readAsBinaryString(data);
     }
-
-
+    
 }
 
 

@@ -3,10 +3,13 @@
     <head>
         <title>test</title>
 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
 
         <script type="text/javascript" src="js/libs/zip.js"></script>
         <script type="text/javascript" src="js/libs/exif.js"></script>
@@ -28,8 +31,10 @@
         <script type="text/javascript" src="js/FlickrReader.js"></script>
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
     </head>
     <body>
+        
         <script type="text/javascript">
             //check for the various File API support
             if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -39,6 +44,8 @@
             }
         </script>
 
+        <div class="container-fluid">
+        
         <form id="flickr" class="form-inline">
             <div id="searchControl" class="control-group">
                 <input type="text" class="input-small" placeholder="Search" name="tags" id="tags">
@@ -64,7 +71,7 @@
         <input type="file" id="files" name="files[]" multiple />
         <output id="list"></output>
 
-        <div id="imageList">
+        <div id="imageList" class="row-fluid">
         </div>
 
         <script>
@@ -99,7 +106,7 @@
 
 
 
-
+</div>
     </body>
 </html>
 

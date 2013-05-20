@@ -27,7 +27,7 @@ function PowerPointReader(pptFile) {
                                 pptImage = new PowerPointImage(name, format, data);
                                 self.powerpoint.addImage(pptImage);
                                 self.increment();                                
-                                console.log("image");
+                                //console.log("image");
                             }, function(current, total) {
                                 // onprogress callback
                             });
@@ -51,7 +51,7 @@ function PowerPointReader(pptFile) {
                                         }
                                     }
                                     self.increment();
-                                    console.log("rel");
+                                    //console.log("rel");
                                 }, function(current, total) {
                                     //onprogress callback
                                 });

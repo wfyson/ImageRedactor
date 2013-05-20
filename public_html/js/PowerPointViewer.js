@@ -14,15 +14,11 @@ function PowerPointViewer(powerpoint){
             var imageName = rel.image;
             if ($('#' + slide + "-accordion").length > 0){
                 //a collapsible component exists for this slide
-                //add the image
-                var img = document.createElement('img');
-                var pptImage = self.powerpoint.getPptImage(imageName);
-                $(img).attr("src", pptImage.url);
-                $('#' + slide + "-accordion-inner").append(img);               
+                $('#' + slide + "-accordion-inner").append(self.imageViewer(self.powerpoint.getPptImage(imageName)));               
             }else{
                 //a collapsible component does not yet exist
                 var accordion = document.createElement("div");
-                $(accordion).attr("class", "accordion");
+                $(accordion).addClass("accordion");
                 $(accordion).attr("id", slide + "-accordion");
                 
                 var accordionGroup = document.createElement("div");
@@ -39,21 +35,15 @@ function PowerPointViewer(powerpoint){
                                 
                 var collapse = document.createElement("div");
                 $(collapse).attr("id", slide + "-collapse");
-                $(collapse).attr("class", "accordion-body collapse in");
+                $(collapse).addClass("accordion-body collapse in");
                 
                 var accordionInner = document.createElement("div");
-                $(accordionInner).attr("class", "accordion-inner");
+                $(accordionInner).addClass("accordion-inner");
                 $(accordionInner).attr("id", slide + "-accordion-inner");
-                
-                //get image
-                var img = document.createElement('img');
-                var pptImage = self.powerpoint.getPptImage(imageName);
-                $(img).attr("src", pptImage.url);
-                
 
                 //add them all together                
                 $(accordionToggle).append(slide);
-                $(accordionInner).append($(img));
+                $(accordionInner).append(self.imageViewer(self.powerpoint.getPptImage(imageName)));
                 
                 $(accordionHeading).append($(accordionToggle));
                 
@@ -68,4 +58,47 @@ function PowerPointViewer(powerpoint){
             }
         }
     };
+    
+    //creates a box for showing images
+    self.imageViewer = function(pptImage){
+        var container = document.createElement("div");
+        $(container).addClass("image-viewer");
+        
+        //image side
+        var imageContainer = document.createElement("div");
+        $(imageContainer).addClass("image-container");
+        
+        var img = document.createElement('img');
+        $(img).addClass("ppt-image");
+        $(img).attr("src", pptImage.url);
+        
+        var helper = document.createElement('span');
+        $(helper).addClass("helper");
+        
+        $(imageContainer).append($(helper));
+        $(imageContainer).append($(img));
+        $(container).append($(imageContainer));
+        
+        //button side
+        var buttonContainer = document.createElement("div");
+        
+        var replaceBtn = document.createElement("button");
+        $(replaceBtn).addClass("replace-button btn btn-primary");
+        $(replaceBtn).append("Flickr Image");
+        $(replaceBtn).click({param1: pptImage}, function(event){           
+            myHandler(event.data.param1);
+        });
+        
+        $(buttonContainer).append($(replaceBtn));
+        
+        $(container).append($(buttonContainer));
+        
+        return $(container);
+    };
+    
+    function myHandler(pptImage){
+        console.log(pptImage);
+        console.log(pptImage.licence);
+        console.log(pptImage.name);
+    }
 }
