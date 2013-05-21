@@ -4,7 +4,7 @@
         <title>test</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
@@ -25,16 +25,16 @@
         <script type="text/javascript" src="js/PowerPointImage.js"></script>
         <script type="text/javascript" src="js/PowerPoint.js"></script>
         <script type="text/javascript" src="js/SlideImageRel.js"></script>
-        
+
         <script type="text/javascript" src="js/PowerPointViewer.js"></script>
-        
+
         <script type="text/javascript" src="js/FlickrReader.js"></script>
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        
+
     </head>
     <body>
-        
+
         <script type="text/javascript">
             //check for the various File API support
             if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -45,68 +45,74 @@
         </script>
 
         <div class="container-fluid">
-        
-        <form id="flickr" class="form-inline">
-            <div id="searchControl" class="control-group">
-                <input type="text" class="input-small" placeholder="Search" name="tags" id="tags">
+
+            <input type="file" id="files" name="files[]" multiple />
+            <output id="list"></output>
+
+            <div id="imageList" class="row-fluid">
             </div>
-            <label class="multiple" for="sort">Sort:</label>
-            <select id="sort" name="sort">
-                <option>Relevant</option>
-                <option>Recent</option>
-                <option>Interesting</option>
-            </select>
-            <label class="multiple" for="licence">Licence:</label>
-            <select id="licence" name="licence">
-                <option>Attribution</option>
-                <option>NoDerivs</option>
-                <option>NonCommercial, NoDerivs</option>
-                <option>NonCommercial</option>
-                <option>NonCommercial, ShareAlike</option>
-                <option>ShareAlike</option>
-            </select>
-            <button type="submit" class="btn">Search</button>
-        </form>
+            
+            <div id="flickr-modal" class="modal hide fade">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 
-        <input type="file" id="files" name="files[]" multiple />
-        <output id="list"></output>
+                    <form id="flickr" class="form-inline">
+                            <input type="text" class="input-medium search-query" placeholder="Search" name="tags" id="tags">
+                      
+                        <label class="multiple" for="sort">Sort:</label>
+                        <select id="sort" name="sort" class="input-medium">
+                            <option>Relevant</option>
+                            <option>Recent</option>
+                            <option>Interesting</option>
+                        </select>
+                        <label class="multiple" for="licence">Licence:</label>
+                        <select id="licence" name="licence" class="input-medium">
+                            <option>Attribution</option>
+                            <option>NoDerivs</option>
+                            <option>NonCommercial, NoDerivs</option>
+                            <option>NonCommercial</option>
+                            <option>NonCommercial, ShareAlike</option>
+                            <option>ShareAlike</option>
+                        </select>
+                        <button type="submit" class="btn">Search</button>
+                    </form>
+                </div>
+                <div class="modal-body">
+                    <p>One fine body…</p>
+                </div>
+            </div>
 
-        <div id="imageList" class="row-fluid">
+            <script>
+                function handleFileSelect(evt) {
+                    var files = evt.target.files; // FileList object
+
+                    for (var i = 0, f; f = files[i]; i++) {
+                        //create a PowerPointReader for the file
+                        var pptReader = new PowerPointReader(f);
+                        var powerpoint = pptReader.readPowerPoint();
+                    }
+                }
+
+                document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+                $('#flickr').submit(function() {
+                    if ($('#tags').val() == "") {
+                        //prompt user for search terms
+                        $('#searchControl').addClass("error");
+                    } else {
+                        $('#searchControl').removeClass("error");
+                        //do a search
+                        var tags = $('#tags').val();
+                        var sort = $('#sort').val();
+                        var licence = $('#licence').val();
+                        var flickrReader = new FlickrReader(tags, sort, licence);
+                        flickrReader.buildQuery();
+                    }
+                    return false;
+                });
+            </script>
+
         </div>
-
-        <script>
-            function handleFileSelect(evt) {
-                var files = evt.target.files; // FileList object
-                
-                for (var i = 0, f; f = files[i]; i++) {
-                    //create a PowerPointReader for the file
-                    var pptReader = new PowerPointReader(f);
-                    var powerpoint = pptReader.readPowerPoint();                  
-                }
-            }
-    
-            document.getElementById('files').addEventListener('change', handleFileSelect, false);
-
-            $('#flickr').submit(function() {
-                if ($('#tags').val() == ""){
-                    //prompt user for search terms
-                    $('#searchControl').addClass("error");                    
-                }else{
-                    $('#searchControl').removeClass("error");
-                    //do a search
-                    var tags = $('#tags').val();
-                    var sort = $('#sort').val();
-                    var licence = $('#licence').val();
-                    var flickrReader = new FlickrReader(tags, sort, licence);
-                    flickrReader.buildQuery();
-                }
-                return false;
-            });
-        </script>
-
-
-
-</div>
     </body>
 </html>
 

@@ -7,6 +7,11 @@ function PowerPointViewer(powerpoint){
     
     self.displayImages = function(){
         var rels = self.powerpoint.slideImageRelArray;
+        
+        /*
+         * TODO Order slides in to numerical order first
+         */
+        
         //populate page with collapsible components to represent each slide
         for (var i = 0; i < rels.length; i++){
             var rel = rels[i];
@@ -97,6 +102,7 @@ function PowerPointViewer(powerpoint){
     };
     
     function myHandler(pptImage){
+        $('#flickr-modal').modal('toggle');
         console.log(pptImage);
         console.log(pptImage.licence);
         console.log(pptImage.name);
