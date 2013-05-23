@@ -57,3 +57,11 @@ body .modal {
     float: left;
 }
 
+.flickr-result{
+    background: ghostwhite;
+}
+
+.flickr-row{
+    margin-bottom: 10px;
+}
+

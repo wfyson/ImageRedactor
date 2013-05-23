@@ -30,9 +30,10 @@ function FlickrReader(tags, sort, licence) {
     self.sort = sort;
     self.licence = licence;
     self.page = 1;
-    self.perPage = 10;
+    self.perPage = 9;
     self.totalPages = 0;
     self.totalResults = 0;
+    self.results = new Array();
     
     var API_KEY = "7493f1b9adc9c0e8e55d5be46f60ddb7";
     
@@ -106,34 +107,43 @@ function FlickrReader(tags, sort, licence) {
     //from the list of photos return by the search, get the photos
     //may want to read and store max page count from this too!
     self.getPhotos = function(data) {
+        console.log(data);
         self.totalPages = data.photos.pages;
         self.totalResults = data.photos.total;
         self.page = data.photos.page;
         var photos = data.photos.photo;
-        var photoID;
+        var imageID, flickrImage;
         for (var i = 0; i < photos.length; i++){
-            photoID = photos[i];
-            self.getPhotoInfo(photoID);
-            self.getPhotoSizes(photoID);
+            imageID = photos[i].id;
+            flickrImage = new FlickrImage(imageID);
+            self.getPhotoInfo(flickrImage);
         }
     };
     
-    self.getPhotoInfo = function(photoID){
+    self.getPhotoInfo = function(flickrImage){
         var photoInfoUrl;
         photoInfoUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=";
         photoInfoUrl = photoInfoUrl + API_KEY;            
-        photoInfoUrl = photoInfoUrl + "&photo_id=" + photoID;
+        photoInfoUrl = photoInfoUrl + "&photo_id=" + flickrImage.imageID;
         photoInfoUrl = photoInfoUrl + "&format=json&nojsoncallback=1";
-        //return info somehow
+        $.getJSON(photoInfoUrl, function(data){
+            flickrImage.setAuthor(data.owner);
+            flickrImage.setTitle(data.title);
+            self.getPhotoSizes(flickrImage);
+        });       
     };
-    
-    self.getPhotoSizes = function(photoID){
+
+    self.getPhotoSizes = function(flickrImage){
         var photoSizesUrl;
         photoSizesUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=";
-        photoSizesUrl = photoSizesUrl + "&photo_id=" + photoID;
+        photoSizesUrl = photoSizesUrl + API_KEY;  
+        photoSizesUrl = photoSizesUrl + "&photo_id=" + flickrImage.imageID;
         photoSizesUrl = photoSizesUrl + "&format=json&nojsoncallback=1";   
-        //return sizes somehow
-    }
+        $.getJSON(photoSizesUrl, function(data){
+            flickrImage.addSizes(data.sizes.size);
+            //pass on to a FlickrImageViewer OR add to an array, and pass the complete array on to the viewer (ensures order maintained(?))
+        }) ;           
+    };
     
     self.decrementPage = function(){
         if (self.page > 1){
