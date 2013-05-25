@@ -34,15 +34,36 @@ function FlickrReader(tags, sort, licence) {
     self.totalPages = 0;
     self.totalResults = 0;
     self.results = new Array();
-    
+    self.noResults = 0;
+
     var API_KEY = "7493f1b9adc9c0e8e55d5be46f60ddb7";
+
+    //assign next and previous functionality
+    $("#flickrPrev").click(function() {
+        if (self.page > 1) {
+            self.page--;
+            self.buildQuery();
+        }
+    });
     
-    self.buildQuery = function() {
+    $("#flickrNext").click(function() {
+        console.log(self.page);
+        if (self.page < self.totalPages) {
+            self.page++;
+            self.buildQuery();
+        }
+    });
+
+    //ensure both buttons are disabled initially
+    $("#flickrPrev").addClass("disabled");
+    $("#flickrNext").addClass("disabled");
+
+    self.buildQuery = function() {        
         //initialise URL
         var url;
         url = "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=";
         url = url + API_KEY;
-        
+
         //get search tags
         var tagArray = self.tags.split(" ");
         url = url + "&tags=";
@@ -50,7 +71,7 @@ function FlickrReader(tags, sort, licence) {
             url = url + tagArray[i] + "+";
         }
         url = url + tagArray[tagArray.length - 1];
-        
+
         //add the licence
         //some sort of case statement
         var licenceID;
@@ -73,9 +94,9 @@ function FlickrReader(tags, sort, licence) {
             case "ShareAlike":
                 licenceID = 5;
                 break;
-        }        
+        }
         url = url + "&license=" + licenceID;
-        
+
         //add the sort parameter        
         //some sort of case statement
         var sortFormat;
@@ -89,68 +110,80 @@ function FlickrReader(tags, sort, licence) {
             case "Interesting":
                 sortFormat = "interestingness-asc";
                 break;
-        }        
+        }
         url = url + "&sort=" + sortFormat;
-        
+
         //add the per page
         url = url + "&per_page=" + self.perPage;
-        
+
         //add the page no
         url = url + "&page=" + self.page;
-        
+
         //set the format
         url = url + "&format=json&nojsoncallback=1";
-                
+
         $.getJSON(url, self.getPhotos);
     };
-    
+
     //from the list of photos return by the search, get the photos
     //may want to read and store max page count from this too!
     self.getPhotos = function(data) {
-        console.log(data);
         self.totalPages = data.photos.pages;
         self.totalResults = data.photos.total;
         self.page = data.photos.page;
+        self.results = new Array();
+
+        if (self.page < self.totalPages) {
+            $("#flickrNext").removeClass("disabled");
+        }
+        if (self.page === self.totalPages) {
+            $("#flickrNext").addClass("disabled");
+        }
+        if (self.page > 1) {
+            $("#flickrPrev").removeClass("disabled");
+        }
+        if (self.page === 1) {
+            $("#flickrPrev").addClass("disabled");
+        }
         var photos = data.photos.photo;
+        self.noResults = photos.length;
         var imageID, flickrImage;
-        for (var i = 0; i < photos.length; i++){
+        for (var i = 0; i < photos.length; i++) {
             imageID = photos[i].id;
             flickrImage = new FlickrImage(imageID);
             self.getPhotoInfo(flickrImage);
         }
     };
-    
-    self.getPhotoInfo = function(flickrImage){
+
+    self.getPhotoInfo = function(flickrImage) {
         var photoInfoUrl;
         photoInfoUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=";
-        photoInfoUrl = photoInfoUrl + API_KEY;            
+        photoInfoUrl = photoInfoUrl + API_KEY;
         photoInfoUrl = photoInfoUrl + "&photo_id=" + flickrImage.imageID;
         photoInfoUrl = photoInfoUrl + "&format=json&nojsoncallback=1";
-        $.getJSON(photoInfoUrl, function(data){
+        $.getJSON(photoInfoUrl, function(data) {
             flickrImage.setAuthor(data.owner);
             flickrImage.setTitle(data.title);
             self.getPhotoSizes(flickrImage);
-        });       
+        });
     };
 
-    self.getPhotoSizes = function(flickrImage){
+    self.getPhotoSizes = function(flickrImage) {
         var photoSizesUrl;
         photoSizesUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=";
-        photoSizesUrl = photoSizesUrl + API_KEY;  
+        photoSizesUrl = photoSizesUrl + API_KEY;
         photoSizesUrl = photoSizesUrl + "&photo_id=" + flickrImage.imageID;
-        photoSizesUrl = photoSizesUrl + "&format=json&nojsoncallback=1";   
-        $.getJSON(photoSizesUrl, function(data){
-            flickrImage.addSizes(data.sizes.size);
-            //pass on to a FlickrImageViewer OR add to an array, and pass the complete array on to the viewer (ensures order maintained(?))
-        }) ;           
+        photoSizesUrl = photoSizesUrl + "&format=json&nojsoncallback=1";
+        $.getJSON(photoSizesUrl, function(data) {
+            flickrImage.setSizes(data.sizes.size);
+            self.results.push(flickrImage);
+            if (self.results.length === self.noResults) {
+                //all results have been generated, send array to a results viewer
+                var flickrResultsViewer = new FlickrResultsViewer();
+                flickrResultsViewer.displayResults(self.results);
+            }
+        });
     };
-    
-    self.decrementPage = function(){
-        if (self.page > 1){
-            self.page--;
-        }
-    };
-    
 }
 
 

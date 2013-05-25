@@ -23,4 +23,12 @@ function FlickrImage(imageID) {
     self.setSizes = function(sizes){
         self.sizes = sizes;
     };
+    
+    self.getResultsUrl = function(){
+        for (var i = 0; i < self.sizes.length; i++){
+            var size = self.sizes[i];
+            if (size.label === "Small")
+                return size.source;
+        }
+    };
 }
