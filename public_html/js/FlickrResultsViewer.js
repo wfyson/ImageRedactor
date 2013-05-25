@@ -11,6 +11,9 @@ function FlickrResultsViewer(){
             //remve the old img and place the new one
             $("#flickr" + i).empty();
             $("#flickr" + i).append($(img));
+            
+            $('#flickr-loading').hide();
+            $('#flickr-results').show();
         }
     };
     

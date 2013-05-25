@@ -57,6 +57,16 @@ body .modal {
     float: left;
 }
 
+#flickr-loading{
+    display: none;
+    text-align: center;
+    height: 200px;
+}
+
+#flickr-results{
+    display: none;
+}
+
 .flickr-result{
     background: ghostwhite;
 }

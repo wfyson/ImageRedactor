@@ -38,7 +38,7 @@ function FlickrReader(tags, sort, licence) {
 
     var API_KEY = "7493f1b9adc9c0e8e55d5be46f60ddb7";
 
-    //assign next and previous functionality
+    //assign next and previous functionality    
     $("#flickrPrev").click(function() {
         if (self.page > 1) {
             self.page--;
@@ -47,7 +47,6 @@ function FlickrReader(tags, sort, licence) {
     });
     
     $("#flickrNext").click(function() {
-        console.log(self.page);
         if (self.page < self.totalPages) {
             self.page++;
             self.buildQuery();
@@ -123,6 +122,8 @@ function FlickrReader(tags, sort, licence) {
         url = url + "&format=json&nojsoncallback=1";
 
         $.getJSON(url, self.getPhotos);
+        $('#flickr-results').hide();
+        $('#flickr-loading').show();
     };
 
     //from the list of photos return by the search, get the photos
@@ -179,7 +180,7 @@ function FlickrReader(tags, sort, licence) {
             self.results.push(flickrImage);
             if (self.results.length === self.noResults) {
                 //all results have been generated, send array to a results viewer
-                var flickrResultsViewer = new FlickrResultsViewer();
+                var flickrResultsViewer = new FlickrResultsViewer();                
                 flickrResultsViewer.displayResults(self.results);
             }
         });
