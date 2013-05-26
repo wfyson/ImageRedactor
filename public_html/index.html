@@ -134,6 +134,23 @@
                 </div>
             </div>
 
+            <div id="placeholder-modal" class="modal hide fade">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>Placeholder Image</h3>
+                </div>
+                <div class="modal-body">
+                    <div id="placeholder-body">
+                        <span class="helper"></span>
+                        <img src="img/placeholder.jpg"/>
+                    </div>
+                </div>                
+                <div class="modal-footer">
+                    <button id="placeholder-cancel" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    <button id="placeholder-save" class="btn btn-success">Save</button>
+                </div>
+            </div>
+
             <script>
                 function handleFileSelect(evt) {
                     var files = evt.target.files; // FileList object
@@ -161,6 +178,10 @@
                         flickrReader.buildQuery();
                     }
                     return false;
+                });
+                
+                $('#placeholder-save').click(function(){
+                   console.log("hello"); 
                 });
             </script>
 

@@ -87,24 +87,38 @@ function PowerPointViewer(powerpoint){
         //button side
         var buttonContainer = document.createElement("div");
         
+        //button for flickr
         var replaceBtn = document.createElement("button");
         $(replaceBtn).addClass("replace-button btn btn-primary");
         $(replaceBtn).append("Flickr Image");
         $(replaceBtn).click({param1: pptImage}, function(event){           
-            myHandler(event.data.param1);
-        });
-        
+            flickr(event.data.param1);
+        });        
         $(buttonContainer).append($(replaceBtn));
+        
+        //button for placeholder images
+        var placeholderBtn = document.createElement("button");
+        $(placeholderBtn).addClass("placeholder-button btn btn-primary");
+        $(placeholderBtn).append("Placeholder");
+        $(placeholderBtn).click({param1: pptImage}, function(event){           
+            placeholder(event.data.param1);
+        });
+        $(buttonContainer).append($(placeholderBtn));
+        
         
         $(container).append($(buttonContainer));
         
         return $(container);
     };
     
-    function myHandler(pptImage){
+    function flickr(pptImage){
         $('#flickr-modal').modal('toggle');
         console.log(pptImage);
         console.log(pptImage.licence);
         console.log(pptImage.name);
+    }
+    
+    function placeholder(pptImage){
+        $('#placeholder-modal').modal('toggle');
     }
 }
