@@ -29,6 +29,8 @@
         <script type="text/javascript" src="js/SlideImageRel.js"></script>
 
         <script type="text/javascript" src="js/PowerPointViewer.js"></script>
+        
+        <script type="text/javascript" src="js/PowerPointWriter.js"></script>
 
         <script type="text/javascript" src="js/FlickrReader.js"></script>
         <script type="text/javascript" src="js/FlickrImage.js"></script>
@@ -141,13 +143,22 @@
                 </div>
                 <div class="modal-body">
                     <div id="placeholder-body">
-                        <span class="helper"></span>
-                        <img src="img/placeholder.jpg"/>
+                        <div id="placeholder-old" class="placeholder-image">
+                            <span class="helper"></span>                            
+                        </div>
+                        <div id="placeholder-arrow">
+                            <!--arrow image here -->
+                        </div>
+                        <div id="placeholder" class="placeholder-image">
+                            <span class="helper"></span>
+                            <img src="img/placeholder.jpg"/>
+                        </div>
                     </div>
                 </div>                
                 <div class="modal-footer">
                     <button id="placeholder-cancel" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                     <button id="placeholder-save" class="btn btn-success">Save</button>
+                    <a id="download" class="btn btn-primary">Download</a>
                 </div>
             </div>
 
@@ -180,9 +191,6 @@
                     return false;
                 });
                 
-                $('#placeholder-save').click(function(){
-                   console.log("hello"); 
-                });
             </script>
 
         </div>

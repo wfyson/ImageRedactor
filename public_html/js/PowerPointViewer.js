@@ -120,5 +120,16 @@ function PowerPointViewer(powerpoint){
     
     function placeholder(pptImage){
         $('#placeholder-modal').modal('toggle');
+        
+        var oldImage = document.createElement('img');
+        $(oldImage).addClass('placeholder-old');
+        $(oldImage).attr('src', pptImage.url);
+        $('#placeholder-old').append($(oldImage));
+        
+        $('#placeholder-save').click(function(){
+            //will in reality create some sort of change object, but here testing the ppt writer
+            var pptWriter = new PowerPointWriter();
+            pptWriter.writePowerPoint();
+        });
     }
 }

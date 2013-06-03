@@ -77,5 +77,18 @@ body .modal {
 
 #placeholder-body{
     text-align: center;
+    height: 300px;
+}
+
+.placeholder-image{
+    width: 40%;
+    float: left;
+    height: 100%;
+}
+
+.placeholder-old{
+    margin-left: auto;
+    margin-right: auto;
+    vertical-align: middle;    
 }
 
