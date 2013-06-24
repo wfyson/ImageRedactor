@@ -31,7 +31,7 @@ function PowerPointWriter(ppt) {
     self.writePowerPoint = function(contents) {
 
         function onProgress(a, b) {
-            console.log("current", a, "end", b);
+            //console.log("current", a, "end", b);
         }
 
         //zip.workerScriptsPath = "/js/zip/";
@@ -46,9 +46,37 @@ function PowerPointWriter(ppt) {
 
                     function add(fileIndex) {
                         if (fileIndex < files.length) {
-                            zipWriter.add(files[fileIndex].name, new zip.BlobReader(files[fileIndex].data), function() {
-                                add(fileIndex + 1); /* [1] add the next file */
-                            }, onProgress);
+                            //console.log(files[fileIndex].name);
+                            //console.log(files[fileIndex].name.indexOf("image1.jpeg"));
+                            if (files[fileIndex].name.indexOf("image1.jpeg") !== -1) {
+                                
+                                console.log("hello");
+
+                                var img = new Image();
+                                img.src = 'img/placeholder.jpg';
+                                img.onload = function() {
+                                    
+                                    //some of this may be deletable
+                                    
+                                    var canvas = document.createElement("canvas");
+                                    canvas.width = this.width;
+                                    canvas.height = this.height;
+
+                                    var ctx = canvas.getContext("2d");
+                                    ctx.drawImage(this, 0, 0);
+
+                                    var dataURL = canvas.toDataURL("image/jpeg");
+
+                                    zipWriter.add(files[fileIndex].name, new zip.Data64URIReader(dataURL), function() {
+                                        add(fileIndex + 1);
+                                    }, onProgress);
+                                }
+                            } else {
+                                console.log("world");
+                                zipWriter.add(files[fileIndex].name, new zip.BlobReader(files[fileIndex].data), function() {
+                                    add(fileIndex + 1); /* [1] add the next file */
+                                }, onProgress);
+                            }
                         } else {
                             callback() /* [2] no more files to add: callback is called */;
                         }
