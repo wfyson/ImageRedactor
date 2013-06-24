@@ -128,8 +128,8 @@ function PowerPointViewer(powerpoint){
         
         $('#placeholder-save').click(function(){
             //will in reality create some sort of change object, but here testing the ppt writer
-            var pptWriter = new PowerPointWriter();
-            pptWriter.writePowerPoint();
+            var pptWriter = new PowerPointWriter(self.powerpoint);
+            pptWriter.readPowerPoint();
         });
     }
 }

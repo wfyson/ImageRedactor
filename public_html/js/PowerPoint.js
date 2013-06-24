@@ -1,8 +1,9 @@
-function PowerPoint(){
+function PowerPoint(pptFile){
 
     var self = this;
     self.pptImageArray = new Array();
-    self.slideImageRelArray = new Array();    
+    self.slideImageRelArray = new Array();  
+    self.pptFile = pptFile;
 
     self.addImage = function(pptImage){
         self.pptImageArray.push(pptImage);

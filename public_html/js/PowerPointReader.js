@@ -4,7 +4,7 @@ function PowerPointReader(pptFile) {
     self.pptFile = pptFile;
     self.noEntries = 0;
     self.totalEntries;
-    self.powerpoint = new PowerPoint();
+    self.powerpoint = new PowerPoint(pptFile);
 
     var IMAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image";
 
