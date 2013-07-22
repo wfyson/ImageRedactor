@@ -30,7 +30,10 @@
 
         <script type="text/javascript" src="js/PowerPointViewer.js"></script>
         
+        <script type="text/javascript" src="js/Change.js"></script>
         <script type="text/javascript" src="js/PowerPointWriter.js"></script>
+        
+        <script type="text/javascript" src="js/PowerPointRedactor.js"></script>
 
         <script type="text/javascript" src="js/FlickrReader.js"></script>
         <script type="text/javascript" src="js/FlickrImage.js"></script>
@@ -57,6 +60,8 @@
                 <span class="fileupload-preview"></span>
                 <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
             </div>
+            
+            <button id="redactBtn" type="submit" class="btn">Redact!</button>
 
             <!--<input type="file" id="files" name="files[]" multiple/>
             <output id="list"></output>-->
@@ -64,6 +69,8 @@
             <div id="imageList" class="row-fluid">
             </div>
 
+            <!-- Flickr Modal -->
+            
             <div id="flickr-modal" class="modal hide fade">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -136,6 +143,8 @@
                 </div>
             </div>
 
+            <!-- PlaceHolder Modal -->
+            
             <div id="placeholder-modal" class="modal hide fade">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -157,24 +166,30 @@
                 </div>                
                 <div class="modal-footer">
                     <button id="placeholder-cancel" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                    <button id="placeholder-save" class="btn btn-success">Save</button>
-                    <a id="download" class="btn btn-primary">Download</a>
+                    <button id="placeholder-save" class="btn btn-success">Save</button>                    
                 </div>
             </div>
 
             <script>
+                //file loading functionality
+                
+                var powerpointRedactor = new PowerPointRedactor();
+                $('#redactBtn').data("redactor", powerpointRedactor);
+                
                 function handleFileSelect(evt) {
                     var files = evt.target.files; // FileList object
-
+                    
+                    var powerpoint;
                     for (var i = 0, f; f = files[i]; i++) {
                         //create a PowerPointReader for the file
                         var pptReader = new PowerPointReader(f);
-                        var powerpoint = pptReader.readPowerPoint();
-                    }
+                        powerpoint = pptReader.readPowerPoint();
+                    }                    
                 }
 
                 document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
+                //perform flickr search
                 $('#flickr').submit(function() {
                     if ($('#tags').val() == "") {
                         //prompt user for search terms

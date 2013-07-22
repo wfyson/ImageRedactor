@@ -5,6 +5,15 @@ function PowerPoint(pptFile){
     self.slideImageRelArray = new Array();  
     self.pptFile = pptFile;
 
+
+    self.setImageRelArray = function(slideImageRelArray){
+        self.slideImageRelArray = slideImageRelArray;
+    };
+    
+    self.getImageRelArray = function(){
+        return self.slideImageRelArray;
+    };
+
     self.addImage = function(pptImage){
         self.pptImageArray.push(pptImage);
     };
@@ -24,6 +33,18 @@ function PowerPoint(pptFile){
             }
         }
         return false;
+    };
+    
+    //gets all the rels that pertain to a particular image
+    self.getImageRels = function(pptImage){
+        var rels = self.slideImageRelArray;
+        var returnArray = new Array();
+        for (var i = 0; i < rels.length; i++){
+            if (rels[i].image === pptImage.name){
+                returnArray.push(rels[i]);
+            }
+        }
+        return returnArray;        
     };
 
 }

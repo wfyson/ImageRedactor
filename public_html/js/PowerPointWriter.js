@@ -49,9 +49,7 @@ function PowerPointWriter(ppt) {
                             //console.log(files[fileIndex].name);
                             //console.log(files[fileIndex].name.indexOf("image1.jpeg"));
                             if (files[fileIndex].name.indexOf("image1.jpeg") !== -1) {
-                                
-                                console.log("hello");
-
+                                                           
                                 var img = new Image();
                                 img.src = 'img/placeholder.jpg';
                                 img.onload = function() {
@@ -70,9 +68,8 @@ function PowerPointWriter(ppt) {
                                     zipWriter.add(files[fileIndex].name, new zip.Data64URIReader(dataURL), function() {
                                         add(fileIndex + 1);
                                     }, onProgress);
-                                }
+                                };
                             } else {
-                                console.log("world");
                                 zipWriter.add(files[fileIndex].name, new zip.BlobReader(files[fileIndex].data), function() {
                                     add(fileIndex + 1); /* [1] add the next file */
                                 }, onProgress);
@@ -109,7 +106,7 @@ function PowerPointWriter(ppt) {
                 console.log("done");
             });
         });
-    }
+    };
 }
 
 function EntryData(data, name) {

@@ -5,21 +5,25 @@ function PowerPointViewer(powerpoint){
     
     //a function which takes the rels array and gets appropriate images
     
-    self.displayImages = function(){
+    self.displayImages = function(powerpoint){
+        //update reference to powerpoint
+        self.powerpoint = powerpoint;
+        
+        //first remove everything
+        $('#imageList').empty();
+        
         var rels = self.powerpoint.slideImageRelArray;
-        
-        /*
-         * TODO Order slides in to numerical order first
-         */
-        
+        console.log("new display");
         //populate page with collapsible components to represent each slide
         for (var i = 0; i < rels.length; i++){
             var rel = rels[i];
             var slide = rel.slide;
             var imageName = rel.image;
+
             if ($('#' + slide + "-accordion").length > 0){
                 //a collapsible component exists for this slide
-                $('#' + slide + "-accordion-inner").append(self.imageViewer(self.powerpoint.getPptImage(imageName)));               
+                $('#' + slide + "-accordion-inner").append(self.pptImageViewer(self.powerpoint.getPptImage(imageName)));  
+                $('#' + slide + "-accordion-inner").append(self.changeImageViewer(rel.getChange()));                      
             }else{
                 //a collapsible component does not yet exist
                 var accordion = document.createElement("div");
@@ -48,7 +52,8 @@ function PowerPointViewer(powerpoint){
 
                 //add them all together                
                 $(accordionToggle).append(slide);
-                $(accordionInner).append(self.imageViewer(self.powerpoint.getPptImage(imageName)));
+                $(accordionInner).append(self.pptImageViewer(self.powerpoint.getPptImage(imageName)));
+                $(accordionInner).append(self.changeImageViewer(rel.getChange()));                    
                 
                 $(accordionHeading).append($(accordionToggle));
                 
@@ -65,7 +70,7 @@ function PowerPointViewer(powerpoint){
     };
     
     //creates a box for showing images
-    self.imageViewer = function(pptImage){
+    self.pptImageViewer = function(pptImage){
         var container = document.createElement("div");
         $(container).addClass("image-viewer");
         
@@ -111,6 +116,21 @@ function PowerPointViewer(powerpoint){
         return $(container);
     };
     
+    //creates a box for showing images
+    self.changeImageViewer = function(changeImage){
+        if (changeImage !== null){
+        var container = document.createElement("div");
+
+        var img = document.createElement('img');
+        $(img).attr("src", changeImage.newImageSrc);
+
+        $(container).append($(img));
+
+        return $(container);
+        }
+    };
+    
+    
     function flickr(pptImage){
         $('#flickr-modal').modal('toggle');
         console.log(pptImage);
@@ -127,9 +147,18 @@ function PowerPointViewer(powerpoint){
         $('#placeholder-old').append($(oldImage));
         
         $('#placeholder-save').click(function(){
-            //will in reality create some sort of change object, but here testing the ppt writer
-            var pptWriter = new PowerPointWriter(self.powerpoint);
-            pptWriter.readPowerPoint();
+            
+            console.log("hello");
+            
+            var newSrc = 'img/placeholder.jpg';
+            var placeHolderChange = new Change(pptImage, newSrc);
+
+            var redactor = $('#redactBtn').data("redactor");
+            redactor.addChange(placeHolderChange);
+            $('#redactBtn').data("redactor", redactor);
+                        
+            //var pptWriter = new PowerPointWriter(self.powerpoint);
+            //pptWriter.readPowerPoint();
         });
     }
 }
