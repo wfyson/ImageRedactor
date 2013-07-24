@@ -34,7 +34,11 @@ function PowerPointRedactor() {
     
     //creates and kicks of a PowerpointWriter
     self.commitChanges = function(){
-        //TODO
+        
+        console.log("Redacting...");
+        var pptWriter = new PowerPointWriter(self.ppt);
+        pptWriter.readPowerPoint(); //reads the powerpoint and then writes back, with additional changes
+        
     };
     
 }

@@ -4,11 +4,12 @@ function PowerPointWriter(ppt) {
     self.ppt = ppt;
     self.entries = new Array();
     self.entriesCount = 0;
+    self.rels = ppt.getImageRelArray();
 
 
 
     self.readPowerPoint = function() {
-
+        console.log("reading...");
         //read all powerpoint entries
         zip.createReader(new zip.BlobReader(self.ppt.pptFile), function(reader) {
             // get all entries from the zip
@@ -48,32 +49,65 @@ function PowerPointWriter(ppt) {
                         if (fileIndex < files.length) {
                             //console.log(files[fileIndex].name);
                             //console.log(files[fileIndex].name.indexOf("image1.jpeg"));
-                            if (files[fileIndex].name.indexOf("image1.jpeg") !== -1) {
-                                                           
-                                var img = new Image();
-                                img.src = 'img/placeholder.jpg';
-                                img.onload = function() {
-                                    
-                                    //some of this may be deletable
-                                    
-                                    var canvas = document.createElement("canvas");
-                                    canvas.width = this.width;
-                                    canvas.height = this.height;
 
-                                    var ctx = canvas.getContext("2d");
-                                    ctx.drawImage(this, 0, 0);
+                            var fileName = files[fileIndex].name;
+                            if (fileName.indexOf("ppt/media") !== -1){                                
+                                //in the media directory
+                                
+                                //record image as having yet to be changed
+                                var imageChanged = false;     
+                                
+                                //now get all the rels relating to this file
+                                var imageName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
+                                var imageRels = self.ppt.getImageRels(imageName);
+                                
+                                for (var i = 0; i < imageRels.length; i++){
+                                    var imageRel = imageRels[i];
+                                    if (imageRel.hasChange()){
+                                        //write the change to the powerpoint
+                                        var change = imageRel.getChange();                                     
+                                        
+                                        //image has yet to be changed, so write the change...
+                                        if (!imageChanged){
+                                            imageChanged = true;
+                                            var img = new Image();
+                                            img.src = change.newImageSrc;
+                                            img.onload = function() {                                    
+                                                //some of this may be deletable                                    
+                                                var canvas = document.createElement("canvas");
+                                                canvas.width = this.width;
+                                                canvas.height = this.height;
 
-                                    var dataURL = canvas.toDataURL("image/jpeg");
+                                                var ctx = canvas.getContext("2d");
+                                                ctx.drawImage(this, 0, 0);
 
-                                    zipWriter.add(files[fileIndex].name, new zip.Data64URIReader(dataURL), function() {
-                                        add(fileIndex + 1);
-                                    }, onProgress);
-                                };
-                            } else {
-                                zipWriter.add(files[fileIndex].name, new zip.BlobReader(files[fileIndex].data), function() {
+                                                var dataURL = canvas.toDataURL("image/jpeg");
+
+                                                zipWriter.add(fileName, new zip.Data64URIReader(dataURL), function() {
+                                                    add(fileIndex + 1);
+                                                }, onProgress);
+                                            };  
+                                        }
+                                        
+                                        //if the image format has changed then the powerpoint slide rels need to be updated
+                                        //TODO!!!!                                        
+                                    }else{
+                                        //there is no change to commit for this rel
+                                        //just write the original image
+                                        if (!imageChanged){
+                                            imageChanged = true;
+                                            zipWriter.add(fileName, new zip.BlobReader(files[fileIndex].data), function() {
+                                                add(fileIndex + 1); /* [1] add the next file */
+                                            }, onProgress);                                            
+                                        }
+                                    }
+                                } 
+                            }else{
+                                //not a media file, just write like normal
+                                zipWriter.add(fileName, new zip.BlobReader(files[fileIndex].data), function() {
                                     add(fileIndex + 1); /* [1] add the next file */
-                                }, onProgress);
-                            }
+                                }, onProgress);   
+                            }                            
                         } else {
                             callback() /* [2] no more files to add: callback is called */;
                         }
@@ -101,6 +135,7 @@ function PowerPointWriter(ppt) {
                     blobURL = null;
                 }
                 //in the real thing a download link will be made available
+                $('#download').removeClass('disabled');
                 $('#download').attr('href', blobURL);
                 $('#download').attr('download', "super.pptx");
                 console.log("done");
