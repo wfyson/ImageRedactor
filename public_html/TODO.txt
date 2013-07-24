@@ -1,0 +1,10 @@
+TODO on Redactor
+
+Change interface
+
+Close placeholder modal on save
+
+Change file format in rels where appropriate
+
+Get FlickrImages
+
