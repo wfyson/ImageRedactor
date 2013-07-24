@@ -39,14 +39,14 @@ function FlickrReader(tags, sort, licence) {
     var API_KEY = "7493f1b9adc9c0e8e55d5be46f60ddb7";
 
     //assign next and previous functionality    
-    $("#flickrPrev").click(function() {
+    $("#flickr-prev").click(function() {
         if (self.page > 1) {
             self.page--;
             self.buildQuery();
         }
     });
     
-    $("#flickrNext").click(function() {
+    $("#flickr-next").click(function() {
         if (self.page < self.totalPages) {
             self.page++;
             self.buildQuery();
@@ -54,8 +54,8 @@ function FlickrReader(tags, sort, licence) {
     });
 
     //ensure both buttons are disabled initially
-    $("#flickrPrev").addClass("disabled");
-    $("#flickrNext").addClass("disabled");
+    $("#flickr-prev").addClass("disabled");
+    $("#flickr-next").addClass("disabled");
 
     self.buildQuery = function() {        
         //initialise URL
@@ -135,16 +135,16 @@ function FlickrReader(tags, sort, licence) {
         self.results = new Array();
 
         if (self.page < self.totalPages) {
-            $("#flickrNext").removeClass("disabled");
+            $("#flickr-next").removeClass("disabled");
         }
         if (self.page === self.totalPages) {
-            $("#flickrNext").addClass("disabled");
+            $("#flickr-next").addClass("disabled");
         }
         if (self.page > 1) {
-            $("#flickrPrev").removeClass("disabled");
+            $("#flickr-prev").removeClass("disabled");
         }
         if (self.page === 1) {
-            $("#flickrPrev").addClass("disabled");
+            $("#flickr-prev").addClass("disabled");
         }
         var photos = data.photos.photo;
         self.noResults = photos.length;
@@ -175,6 +175,13 @@ function FlickrReader(tags, sort, licence) {
         photoSizesUrl = photoSizesUrl + API_KEY;
         photoSizesUrl = photoSizesUrl + "&photo_id=" + flickrImage.imageID;
         photoSizesUrl = photoSizesUrl + "&format=json&nojsoncallback=1";
+       //photoSizesUrl = photoSizesUrl + "&jsoncallback=myCallbackFunction";
+       //console.log(photoSizesUrl);
+       // $.ajax({url: photoSizesUrl,
+       //     dataType: 'jsonp'
+       // });
+        
+
         $.getJSON(photoSizesUrl, function(data) {
             flickrImage.setSizes(data.sizes.size);
             self.results.push(flickrImage);
@@ -186,5 +193,12 @@ function FlickrReader(tags, sort, licence) {
         });
     };
 }
+
+        //function myCallbackFunction(data){
+            
+    //console.log(data.sizes.size[0].source);
+    
+//}
+        
 
 

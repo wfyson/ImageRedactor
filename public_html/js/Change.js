@@ -4,8 +4,13 @@
  * yet to be written.
  */
 
-function Change(pptImage, newImageSrc) {
+function Change(type, pptImage, newImageSrc) {
     var self = this;
+    self.type = type;
     self.pptImage = pptImage;
     self.newImageSrc = newImageSrc;
+    
+    self.getType = function(){
+        return self.type;
+    };
 };

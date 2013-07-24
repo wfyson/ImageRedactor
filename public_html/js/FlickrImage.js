@@ -31,4 +31,8 @@ function FlickrImage(imageID) {
                 return size.source;
         }
     };
+    
+    self.getBiggestImage = function(){
+        return self.sizes[self.sizes.length-1];
+    };
 }

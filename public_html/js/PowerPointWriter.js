@@ -51,63 +51,75 @@ function PowerPointWriter(ppt) {
                             //console.log(files[fileIndex].name.indexOf("image1.jpeg"));
 
                             var fileName = files[fileIndex].name;
-                            if (fileName.indexOf("ppt/media") !== -1){                                
+                            $('#download').data("filename", fileName);
+                            $('#download').data("fileindex", fileIndex);
+                            if (fileName.indexOf("ppt/media") !== -1) {
                                 //in the media directory
-                                
+
                                 //record image as having yet to be changed
-                                var imageChanged = false;     
-                                
+                                var imageChanged = false;
+
                                 //now get all the rels relating to this file
                                 var imageName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
                                 var imageRels = self.ppt.getImageRels(imageName);
-                                
-                                for (var i = 0; i < imageRels.length; i++){
+
+                                for (var i = 0; i < imageRels.length; i++) {
                                     var imageRel = imageRels[i];
-                                    if (imageRel.hasChange()){
+                                    if (imageRel.hasChange()) {
                                         //write the change to the powerpoint
-                                        var change = imageRel.getChange();                                     
-                                        
+                                        var change = imageRel.getChange();
+
                                         //image has yet to be changed, so write the change...
-                                        if (!imageChanged){
+                                        if (!imageChanged) {
                                             imageChanged = true;
                                             var img = new Image();
                                             img.src = change.newImageSrc;
-                                            img.onload = function() {                                    
-                                                //some of this may be deletable                                    
-                                                var canvas = document.createElement("canvas");
-                                                canvas.width = this.width;
-                                                canvas.height = this.height;
+                                            img.onload = function() {
+                                                if (change.getType() === "placeholder") {
 
-                                                var ctx = canvas.getContext("2d");
-                                                ctx.drawImage(this, 0, 0);
+                                                    //some of this may be deletable                                    
+                                                    var canvas = document.createElement("canvas");
+                                                    canvas.width = this.width;
+                                                    canvas.height = this.height;
 
-                                                var dataURL = canvas.toDataURL("image/jpeg");
+                                                    var ctx = canvas.getContext("2d");
+                                                    ctx.drawImage(this, 0, 0);
 
-                                                zipWriter.add(fileName, new zip.Data64URIReader(dataURL), function() {
-                                                    add(fileIndex + 1);
-                                                }, onProgress);
-                                            };  
+                                                    var dataURL = canvas.toDataURL("image/jpg");
+
+                                                    zipWriter.add(fileName, new zip.Data64URIReader(dataURL), function() {
+                                                        add(fileIndex + 1);
+                                                    }, onProgress);
+                                                }
+                                                if (change.getType() === "flickr") {
+                                                    console.log("flickrChange");
+                                                }
+                                            };
                                         }
-                                        
+
                                         //if the image format has changed then the powerpoint slide rels need to be updated
-                                        //TODO!!!!                                        
-                                    }else{
+                                        //TODO!!!! (possibly)                                        
+                                    } else {
                                         //there is no change to commit for this rel
                                         //just write the original image
-                                        if (!imageChanged){
+                                        if (!imageChanged) {
                                             imageChanged = true;
                                             zipWriter.add(fileName, new zip.BlobReader(files[fileIndex].data), function() {
+                                                //update the global writer
+                                                $('#download').data("writer", zipWriter);
                                                 add(fileIndex + 1); /* [1] add the next file */
-                                            }, onProgress);                                            
+                                            }, onProgress);
                                         }
                                     }
-                                } 
-                            }else{
+                                }
+                            } else {
                                 //not a media file, just write like normal
                                 zipWriter.add(fileName, new zip.BlobReader(files[fileIndex].data), function() {
+                                    //update the global writer
+                                    $('#download').data("writer", zipWriter);
                                     add(fileIndex + 1); /* [1] add the next file */
-                                }, onProgress);   
-                            }                            
+                                }, onProgress);
+                            }
                         } else {
                             callback() /* [2] no more files to add: callback is called */;
                         }
@@ -115,6 +127,10 @@ function PowerPointWriter(ppt) {
 
                     zip.createWriter(new zip.BlobWriter(), function(writer) {
                         zipWriter = writer;
+
+                        //add the writer to the download button
+                        $('#download').data("writer", zipWriter);
+
                         add(0); /* [1] add the first file */
                     });
                 },
@@ -152,3 +168,35 @@ function EntryData(data, name) {
 }
 
 
+/*
+function myCallbackFunction(data) {
+    console.log("jsonp");
+
+    var img = new Image();
+    img.src = data.sizes.size[0].source;
+    img.onload = function() {
+
+        var zipWriter = $('#download').data("writer");
+        var fileName = $('#download').data("filename");
+        var fileIndex = $('#download').data("fileindex");
+        //some of this may be deletable                                    
+        var canvas = document.createElement("canvas");
+        canvas.width = this.width;
+        canvas.height = this.height;
+
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(this, 0, 0);
+
+        var dataURL = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        console.log(dataURL);
+
+        zipWriter.add(fileName, new zip.Data64URIReader(dataURL), function() {
+            //update the global writer
+            $('#download').data("writer", zipWriter);
+            add(fileIndex + 1);
+        }, function() {
+        });
+
+
+    }
+}*/

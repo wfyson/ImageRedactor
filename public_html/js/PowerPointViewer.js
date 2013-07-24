@@ -13,7 +13,7 @@ function PowerPointViewer(powerpoint){
         $('#imageList').empty();
         
         var rels = self.powerpoint.slideImageRelArray;
-        console.log("new display");
+
         //populate page with collapsible components to represent each slide
         for (var i = 0; i < rels.length; i++){
             var rel = rels[i];
@@ -133,9 +133,20 @@ function PowerPointViewer(powerpoint){
     
     function flickr(pptImage){
         $('#flickr-modal').modal('toggle');
-        console.log(pptImage);
-        console.log(pptImage.licence);
-        console.log(pptImage.name);
+        
+        $("#flickr-save").click(function(){
+            var flickrImage = $("#flickr-modal").data("selectedImage");
+            var flickrChange = new Change("flickr", pptImage, flickrImage.getBiggestImage().source);
+
+            var redactor = $('#redactBtn').data("redactor");
+            redactor.addChange(flickrChange);
+            $('#redactBtn').data("redactor", redactor);
+            
+        });
+        
+        
+       
+        
     }
     
     function placeholder(pptImage){
@@ -147,18 +158,13 @@ function PowerPointViewer(powerpoint){
         $('#placeholder-old').append($(oldImage));
         
         $('#placeholder-save').click(function(){
-            
-            console.log("hello");
-            
+                       
             var newSrc = 'img/placeholder.jpg';
-            var placeHolderChange = new Change(pptImage, newSrc);
+            var placeHolderChange = new Change("placeholder", pptImage, newSrc);
 
             var redactor = $('#redactBtn').data("redactor");
             redactor.addChange(placeHolderChange);
             $('#redactBtn').data("redactor", redactor);
-                        
-            //var pptWriter = new PowerPointWriter(self.powerpoint);
-            //pptWriter.readPowerPoint();
         });
     }
 }

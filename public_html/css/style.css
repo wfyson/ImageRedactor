@@ -75,6 +75,11 @@ body .modal {
     margin-bottom: 10px;
 }
 
+.flickr-selected{
+    border-style: solid;
+    border-color: red;
+}
+
 #placeholder-body{
     text-align: center;
     height: 300px;
