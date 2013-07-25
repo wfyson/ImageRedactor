@@ -91,6 +91,7 @@ function PowerPointWriter(ppt) {
                                                         add(fileIndex + 1);
                                                     }, onProgress);
                                                 }
+                                                
                                                 if (change.getType() === "flickr") {
                                                     var newSrc = change.newImageSrc;
                                                     var tempName = newSrc.substring(newSrc.lastIndexOf("/"));
@@ -98,20 +99,15 @@ function PowerPointWriter(ppt) {
                                                     var phpUrl = "php/imagegrabber.php?callback=?";
 
                                                     $.getJSON(phpUrl, {src: newSrc, temp: tempName},
-                                                            function(res){
-                                                                console.log("hello world");
-                                                                console.log(res.result);
-                                                            });
-                                                    //$.ajax({
-                                                    //    dataType: 'jsonp',
-                                                    //    url: phpUrl,
-                                                    //    jsonp: 'false',
-                                                    //    jsonpCallback: myCallbackFunction,
-                                                    //    data: {src: newSrc, temp: tempName}
-                                                        //success: function(result){
-                                                        //    console.log(result);
-                                                        //}
-                                                    //});                                                    
+                                                    function(res) {
+                                                        console.log(res.result);
+                                                        zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
+                                                            //update the global writer
+                                                            $('#download').data("writer", zipWriter);
+                                                            add(fileIndex + 1);
+                                                        }, function() {
+                                                        });
+                                                    });                                                 
                                                 }
                                             };
                                         }
@@ -184,40 +180,4 @@ function EntryData(data, name) {
     var self = this;
     self.data = data;
     self.name = name;
-}
-
-
-
-function myCallbackFunction(data) {
-    console.log("hello");
-    console.log(data);
-    /*console.log("jsonp");
-
-    var img = new Image();
-    img.src = data.sizes.size[0].source;
-    img.onload = function() {
-
-        var zipWriter = $('#download').data("writer");
-        var fileName = $('#download').data("filename");
-        var fileIndex = $('#download').data("fileindex");
-        //some of this may be deletable                                    
-        var canvas = document.createElement("canvas");
-        canvas.width = this.width;
-        canvas.height = this.height;
-
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(this, 0, 0);
-
-        var dataURL = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        console.log(dataURL);
-
-        zipWriter.add(fileName, new zip.Data64URIReader(dataURL), function() {
-            //update the global writer
-            $('#download').data("writer", zipWriter);
-            add(fileIndex + 1);
-        }, function() {
-        });
-
-
-    */
 }
