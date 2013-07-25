@@ -93,6 +93,15 @@ function PowerPointWriter(ppt) {
                                                 }
                                                 if (change.getType() === "flickr") {
                                                     console.log("flickrChange");
+                                                    var phpUrl = "php/imagegrabber.php";
+                                                    $.ajax({
+                                                        type: "POST",
+                                                        url: phpUrl,
+                                                        data: {fname: "testing"},
+                                                        success: function(result){
+                                                            console.log(result);
+                                                        }
+                                                    });                                                    
                                                 }
                                             };
                                         }
