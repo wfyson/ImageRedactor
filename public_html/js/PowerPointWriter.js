@@ -92,16 +92,26 @@ function PowerPointWriter(ppt) {
                                                     }, onProgress);
                                                 }
                                                 if (change.getType() === "flickr") {
-                                                    console.log("flickrChange");
-                                                    var phpUrl = "php/imagegrabber.php";
-                                                    $.ajax({
-                                                        type: "POST",
-                                                        url: phpUrl,
-                                                        data: {fname: "testing"},
-                                                        success: function(result){
-                                                            console.log(result);
-                                                        }
-                                                    });                                                    
+                                                    var newSrc = change.newImageSrc;
+                                                    var tempName = newSrc.substring(newSrc.lastIndexOf("/"));
+                                                    console.log("flickr");
+                                                    var phpUrl = "php/imagegrabber.php?callback=?";
+
+                                                    $.getJSON(phpUrl, {src: newSrc, temp: tempName},
+                                                            function(res){
+                                                                console.log("hello world");
+                                                                console.log(res.result);
+                                                            });
+                                                    //$.ajax({
+                                                    //    dataType: 'jsonp',
+                                                    //    url: phpUrl,
+                                                    //    jsonp: 'false',
+                                                    //    jsonpCallback: myCallbackFunction,
+                                                    //    data: {src: newSrc, temp: tempName}
+                                                        //success: function(result){
+                                                        //    console.log(result);
+                                                        //}
+                                                    //});                                                    
                                                 }
                                             };
                                         }
@@ -177,9 +187,11 @@ function EntryData(data, name) {
 }
 
 
-/*
+
 function myCallbackFunction(data) {
-    console.log("jsonp");
+    console.log("hello");
+    console.log(data);
+    /*console.log("jsonp");
 
     var img = new Image();
     img.src = data.sizes.size[0].source;
@@ -207,5 +219,5 @@ function myCallbackFunction(data) {
         });
 
 
-    }
-}*/
+    */
+}
