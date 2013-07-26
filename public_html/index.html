@@ -59,23 +59,42 @@
         </script>
 
         <div class="container-fluid">
-
+            <div id="controlPanel" class="row-fluid">
             <div class="fileupload fileupload-new" data-provides="fileupload">
                 <span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input id="files" type="file" /></span>
                 <span class="fileupload-preview"></span>
                 <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
             </div>
 
-            <button id="redactBtn" type="submit" class="btn">Redact!</button>
+            <button id="redactBtn" type="submit" class="btn disabled">Redact...</button>
             <a id="download" href="#" class="btn disabled">Download...</a>
             <!--<input type="file" id="files" name="files[]" multiple/>
             <output id="list"></output>-->
-
-            <div id="imageList" class="row-fluid">
             </div>
-
-            <ul id="mycarousel" class="jcarousel-skin-tango">
-            </ul>
+            <!--<div id="imageList" class="row-fluid">
+            </div>-->
+            
+            <div id="imageOverview" class="row-fluid">
+                <div id="imageWindow" class="span9">
+                    
+                </div>
+                <div id="imagePanel" class="span3">
+                    <span>
+                        Slides:
+                    </span>                    
+                    <span>
+                        Licence:
+                    </span>    
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div id="imageCarousel" class="span12">
+                <ul id="mycarousel" class="jcarousel-skin-tango">
+                </ul>
+                </div>
+            </div>
+            </div>
+            
 
             <!-- Flickr Modal -->
 
@@ -222,14 +241,13 @@
                 
                 $(document).ready(function() {
                     $('#mycarousel').jcarousel({
-                        
+                        size: 0
                     });
                 });
 
 
             </script>
 
-        </div>
     </body>
 </html>
 

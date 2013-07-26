@@ -17,6 +17,32 @@ body .modal {
   margin: auto auto auto auto; /* place center */
 }
 
+#controlPanel{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#imageOverview{
+    height: 400px;
+    margin-bottom: 5px;
+}
+
+#imageWindow{
+    border-style: solid;
+    border-color: #ee5f5b;
+    height: 100%;
+}
+
+#imagePanel{
+    border-style: solid;
+    border-color: #ee5f5b;
+    height: 100%;
+}
+
+#imageCarousel{
+    height: 100px;
+}
+
 .image-viewer { 
     margin: 5px;
     padding: 5px;

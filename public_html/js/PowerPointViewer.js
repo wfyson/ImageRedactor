@@ -14,9 +14,13 @@ function PowerPointViewer(powerpoint){
         for (var i = 0; i < pptImages.length; i++){
             //generate html for the image
             var pptImage = pptImages[i];
-            var html = '<img src="' + pptImage.url + '" width="150" height="150" alt="' + pptImage.url + '" />';
+            var html = '<img id="image' + i + '" src="' + pptImage.url + '" width="90" height="90" alt="' + pptImage.url + '" />';
             
             carousel.add(i+1, html);
+            
+            $('#image' + i).click({param1: i, param2: pptImage}, function(event){
+                //display the image here
+                console.log(event.data.param1);});
         }
         carousel.size(pptImages.length);
         
