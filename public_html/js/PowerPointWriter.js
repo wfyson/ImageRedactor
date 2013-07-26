@@ -94,11 +94,8 @@ function PowerPointWriter(ppt) {
                                                 
                                                 if (change.getType() === "flickr") {
                                                     var newSrc = change.newImageSrc;
-                                                    var tempName = newSrc.substring(newSrc.lastIndexOf("/"));
-                                                    console.log("flickr");
                                                     var phpUrl = "php/imagegrabber.php?callback=?";
-
-                                                    $.getJSON(phpUrl, {src: newSrc, temp: tempName},
+                                                    $.getJSON(phpUrl, {src: newSrc},
                                                     function(res) {
                                                         console.log(res.result);
                                                         zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
@@ -113,7 +110,8 @@ function PowerPointWriter(ppt) {
                                         }
 
                                         //if the image format has changed then the powerpoint slide rels need to be updated
-                                        //TODO!!!! (possibly)                                        
+                                        //TODO!!!! (possibly)    
+                                        
                                     } else {
                                         //there is no change to commit for this rel
                                         //just write the original image

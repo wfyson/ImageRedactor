@@ -28,7 +28,7 @@ function PowerPointImage(name, format, data) {
             //console.log(exif.Artist);
             //console.log(exif.Copyright);
             self.licence = exif.Artist;
-            //console.log(self.name + "..." + self.format + "..." + exif.Artist);
+            console.log(self.name + "..." + self.format + "..." + exif.Artist + "..." + exif.ImageDescription + "..." + exif.Copyright);
 
         };
         reader.readAsBinaryString(data);
