@@ -25,10 +25,8 @@ function PowerPointImage(name, format, data) {
             var string = e.target.result;
             var binaryFile = new BinaryFile(string);
             var exif = EXIF.readFromBinaryFile(binaryFile);
-            //console.log(exif.Artist);
-            //console.log(exif.Copyright);
             self.licence = exif.Artist;
-            console.log(self.name + "..." + self.format + "..." + exif.Artist + "..." + exif.ImageDescription + "..." + exif.Copyright);
+            //console.log(self.name + "..." + self.format + "..." + exif.Artist + "..." + exif.ImageDescription + "..." + exif.Copyright);
 
         };
         reader.readAsBinaryString(data);

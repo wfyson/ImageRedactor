@@ -9,6 +9,19 @@ function PowerPointViewer(powerpoint){
         //update reference to powerpoint
         self.powerpoint = powerpoint;
         
+        var pptImages = powerpoint.getPptImageArray();
+        var carousel = $('#mycarousel').data('jcarousel');                
+        for (var i = 0; i < pptImages.length; i++){
+            //generate html for the image
+            var pptImage = pptImages[i];
+            var html = '<img src="' + pptImage.url + '" width="150" height="150" alt="' + pptImage.url + '" />';
+            
+            carousel.add(i+1, html);
+        }
+        carousel.size(pptImages.length);
+        
+        
+        /*
         //first remove everything
         $('#imageList').empty();
         
@@ -66,7 +79,7 @@ function PowerPointViewer(powerpoint){
                 
                 $("#imageList").append($(accordion));
             }
-        }
+        }*/
     };
     
     //creates a box for showing images
