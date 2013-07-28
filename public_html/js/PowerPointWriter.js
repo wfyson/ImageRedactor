@@ -64,18 +64,17 @@ function PowerPointWriter(ppt) {
                                 for (var i = 0; i < imageRels.length; i++) {
                                     var imageRel = imageRels[i];
                                     if (imageRel.hasChange()) {
-                                        
+
                                         //write the change to the powerpoint
                                         var change = imageRel.getChange();
 
                                         //image has yet to be changed, so write the change...
                                         if (!imageChanged) {
                                             imageChanged = true;
-                                            var img = new Image();
-                                            img.src = change.newImageSrc;
-                                            img.onload = function() {
-                                                if (change.getType() === "placeholder") {
-
+                                            if (change.getType() === "placeholder") {
+                                                var img = new Image();
+                                                img.src = change.newImageSrc;
+                                                img.onload = function() {
                                                     //some of this may be deletable                                    
                                                     var canvas = document.createElement("canvas");
                                                     canvas.width = this.width;
@@ -89,52 +88,43 @@ function PowerPointWriter(ppt) {
                                                     zipWriter.add(fileName, new zip.Data64URIReader(dataURL), function() {
                                                         add(fileIndex + 1);
                                                     }, onProgress);
-                                                }
-                                                
-                                                if (change.getType() === "cc") {
-                                                    //some of this may be deletable                                    
-                                                    var canvas = document.createElement("canvas");
-                                                    canvas.width = this.width;
-                                                    canvas.height = this.height;
+                                                };
+                                            }
 
-                                                    var ctx = canvas.getContext("2d");
-                                                    ctx.drawImage(this, 0, 0);
+                                            if (change.getType() === "cc") {                                  
+                                                var newSrc = change.newImageSrc;
+                                                var licence = change.licence;
+                                                var phpUrl = "php/imagegrabber.php?callback=?";
+                                                $.getJSON(phpUrl, {src: newSrc, licence: licence},
+                                                function(res) {
+                                                    console.log(res);
+                                                    zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
+                                                        //update the global writer
+                                                        $('#download').data("writer", zipWriter);
+                                                        add(fileIndex + 1);
+                                                    }, function() {
+                                                    });
+                                                });
+                                            }
 
-                                                    var dataURL = canvas.toDataURL("image/jpeg");
-                                                    var licence = change.licence;
-                                                    var phpUrl = "php/imagegrabber.php?callback=?";
-                                                    $.getJSON(phpUrl, {src: dataURL, licence: licence},
-                                                    function(res) {
-                                                        console.log("hello");
-                                                        console.log(res);
-                                                        zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
-                                                            //update the global writer
-                                                            $('#download').data("writer", zipWriter);
-                                                            add(fileIndex + 1);
-                                                        }, function() {
-                                                        });
-                                                    });                                                 
-                                                }
-                                                                                                                                              
-                                                if (change.getType() === "flickr") {
-                                                    var newSrc = change.newImageSrc;
-                                                    var phpUrl = "php/imagegrabber.php?callback=?";
-                                                    $.getJSON(phpUrl, {src: newSrc},
-                                                    function(res) {
-                                                        zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
-                                                            //update the global writer
-                                                            $('#download').data("writer", zipWriter);
-                                                            add(fileIndex + 1);
-                                                        }, function() {
-                                                        });
-                                                    });                                                 
-                                                }
-                                            };
+                                            if (change.getType() === "flickr") {
+                                                var newSrc = change.newImageSrc;
+                                                var phpUrl = "php/imagegrabber.php?callback=?";
+                                                $.getJSON(phpUrl, {src: newSrc},
+                                                function(res) {
+                                                    zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
+                                                        //update the global writer
+                                                        $('#download').data("writer", zipWriter);
+                                                        add(fileIndex + 1);
+                                                    }, function() {
+                                                    });
+                                                });
+                                            }
                                         }
 
                                         //if the image format has changed then the powerpoint slide rels need to be updated
                                         //TODO!!!! (possibly)    
-                                        
+
                                     } else {
                                         //there is no change to commit for this rel
                                         //just write the original image

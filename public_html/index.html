@@ -318,12 +318,15 @@
 
             //redact button
             $('#redactBtn').click(function() {
-                var redactor = $('#redactBtn').data("redactor");
-                redactor.commitChanges();
+                if (!$('#redactBtn').hasClass("disabled")){
+                    var redactor = $('#redactBtn').data("redactor");
+                    redactor.commitChanges();
+                }
             });
 
             //placeholder button
             $('#placeholderBtn').click(function() {
+                if (!$('#placeholderBtn').hasClass("disabled")){
                 var pptImage = $('#imageOverview').data("pptImage");
 
                 //show old image
@@ -339,6 +342,7 @@
                     $('#placeholderOverview').addClass('hasFocus');
                     $('#placeholderOverview').fadeIn(400);
                 });
+                }
             });
             
             //placeholder save
@@ -359,6 +363,7 @@
             
             //cc button
             $('#ccBtn').click(function() {
+                if (!$('#ccBtn').hasClass("disabled")){
                 var pptImage = $('#imageOverview').data("pptImage");
 
                 //show old image
@@ -379,12 +384,13 @@
                     $('#ccOverview').addClass('hasFocus');
                     $('#ccOverview').fadeIn(400);
                 });
+                }
             });
             
             //cc save
             $('#ccSave').click(function() {                
                 var pptImage = $('#imageOverview').data("pptImage");
-                var newSrc = pptImage.url;
+                var newSrc = pptImage.name + pptImage.format;
                 
                 var selector = document.getElementById("ccSelector");
                 var licence = selector.options[selector.selectedIndex].text;                

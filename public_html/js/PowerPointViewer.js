@@ -75,6 +75,16 @@ function PowerPointViewer(powerpoint){
                 if (typeof author === "undefined")
                     author = "Unknown";
                 $('#imageAuthor').append(author);
+                
+                //enable/disable buttons where appropriate
+                console.log(pptImage.format);
+                if (pptImage.format === ".png"){
+                    $('#verifyBtn').addClass("disabled");
+                    $('#ccBtn').addClass("disabled");
+                }else{
+                    $('#verifyBtn').removeClass("disabled");
+                    $('#ccBtn').removeClass("disabled");
+                }                
 
                 if ($('.hasFocus').length === 0){
                     //nothing in focus
