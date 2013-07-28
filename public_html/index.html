@@ -77,12 +77,14 @@
             </div>-->
 
             <div id="imageOverview" class="row-fluid">
+                
                 <div id="imageWindow" class="span9">
-                    <span id="pptImage">
-                    </span>       
                     
+                    <span id="pptImage">
+                        <span class="helper"></span>
+                    </span>    
                     <!-- placeholder -->
-                    <span id="placeholder">
+                    <span id="placeholderOverview">
                         <span id="placeholderOld">
                         </span>
                         <span id="placeholderArrow">
@@ -90,10 +92,39 @@
                         </span>
                         <span id="placeholderNew">
                             <img src="img/placeholder.jpg"/>
-                        </span>                  
+                        </span>  
+                        <button id="placeholderSave" class="btn btn-primary">Save</button>                    
                     </span>
+
+                    <!-- Flickr Search -->
+                    <span id="flickrSearch">
+
+                    </span>  
+
+                    <!-- Flickr Overview -->
+
+                    <!-- cc Overview -->
+                    <div id="ccOverview" class="row-fluid">
+                        <div id="ccOld" class="span6">
+                        </div>                        
+                        <div id="ccText" class="span6">
+                            
+                            <h2>Choose a CC Licence:</h2>
+                            <p>For more information see: <a href="http://creativecommons.org/" target="_blank">Creative Commons</a></p>
+                            <select id="ccSelector">
+                                <option>Attribution (CC BY)</option>
+                                <option>Attribution-Sharelike (CC BY-SA)</option>
+                                <option>Attribution-NoDerivs (CC BY-ND)</option>
+                                <option>Attribution-NonCommercial (CC BY-NC)</option>
+                                <option>Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)</option>
+                                <option>Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)</option>
+                            </select>
+                        </div>  
+                        <button id="ccSave" class="btn btn-primary">Save</button>                    
+                    </div>
+
                 </div>
-                
+
                 <!-- Image Info/Buttons Panel -->
                 <div id="imagePanel" class="span3">
                     <div id="imageInfo">
@@ -132,7 +163,7 @@
                     <div id="buttons">
                         <button id="verifyBtn" class="btn btn-primary btn-block imageButtons disabled">Verify</button>                        
                         <button id="flickrBtn" class="btn btn-success btn-block imageButtons disabled">Flickr</button>
-                        <button id="customBtn" class="btn btn-warning btn-block imageButtons disabled">Custom</button>
+                        <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
                         <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Placeholder</button>
                     </div>
                 </div>                
@@ -294,16 +325,79 @@
             //placeholder button
             $('#placeholderBtn').click(function() {
                 var pptImage = $('#imageOverview').data("pptImage");
-                
+
                 //show old image
+                $('#placeholderOld').empty();
                 var oldImg = document.createElement('img');
                 $(oldImg).addClass("ppt-image");
                 $(oldImg).attr("src", pptImage.url);
                 $('#placeholderOld').append($(oldImg));
-                
-                $('#pptImage').hide();
-                $('#placeholder').show();
+
+                $('.hasFocus').fadeOut(400, function() {
+                    //remove whatever did have focus
+                    $('.hasFocus').removeClass('hasFocus');
+                    $('#placeholderOverview').addClass('hasFocus');
+                    $('#placeholderOverview').fadeIn(400);
+                });
             });
+            
+            //placeholder save
+            $('#placeholderSave').click(function() {                
+                var pptImage = $('#imageOverview').data("pptImage");
+                var newSrc = 'img/placeholder.jpg';
+                               
+                var placeholderChange = new Change("placeholder", pptImage, newSrc, "CC0");
+                var redactor = $('#redactBtn').data("redactor");
+                redactor.addChange(placeholderChange);
+                $('#redactBtn').data("redactor", redactor);
+
+                $('#placeholderOverview').removeClass('hasFocus');
+                $('#placeholderOverview').fadeOut('slow');
+            });
+
+            
+            
+            //cc button
+            $('#ccBtn').click(function() {
+                var pptImage = $('#imageOverview').data("pptImage");
+
+                //show old image
+                $('#ccOld').empty();
+                var oldImg = document.createElement('img');
+                $(oldImg).addClass("ppt-image");
+                $(oldImg).attr("src", pptImage.url);
+                $('#ccOld').append($(oldImg));
+                
+                //add the span helper for centering images
+                var span = document.createElement('span');
+                $(span).addClass("helper");
+                $('#ccOld').append($(span)); 
+
+                $('.hasFocus').fadeOut(400, function() {
+                    //remove whatever did have focus
+                    $('.hasFocus').removeClass('hasFocus');
+                    $('#ccOverview').addClass('hasFocus');
+                    $('#ccOverview').fadeIn(400);
+                });
+            });
+            
+            //cc save
+            $('#ccSave').click(function() {                
+                var pptImage = $('#imageOverview').data("pptImage");
+                var newSrc = pptImage.url;
+                
+                var selector = document.getElementById("ccSelector");
+                var licence = selector.options[selector.selectedIndex].text;                
+                
+                var ccChange = new Change("cc", pptImage, newSrc, licence);
+                var redactor = $('#redactBtn').data("redactor");
+                redactor.addChange(ccChange);
+                $('#redactBtn').data("redactor", redactor);
+
+                $('#ccOverview').removeClass('hasFocus');
+                $('#ccOverview').fadeOut('slow');
+            });
+
 
             $(document).ready(function() {
                 $('#mycarousel').jcarousel({

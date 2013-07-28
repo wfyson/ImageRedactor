@@ -10,7 +10,11 @@ function PowerPointRedactor() {
     self.changeArray = new Array();
 
     //saves a change to the redactor that it can later carry out
-    self.addChange = function(change){        
+    self.addChange = function(change){    
+        
+        //ensure redact button is clickable now a change is available
+        $('#redactBtn').removeClass("disabled");
+        
         self.changeArray.push(change);
         //add this change to every rel that it relates to
         var rels = self.ppt.getImageRelArray();

@@ -35,6 +35,11 @@ function PowerPointViewer(powerpoint){
                 //make buttons work
                 $('.imageButtons').removeClass("disabled");
                 
+                //add the span helper for centering images
+                var span = document.createElement('span');
+                $(span).addClass("helper");
+                $('#pptImage').append($(span));                
+                
                 //display the image                
                 var img = document.createElement('img');
                 $(img).addClass("ppt-image");
@@ -71,8 +76,21 @@ function PowerPointViewer(powerpoint){
                     author = "Unknown";
                 $('#imageAuthor').append(author);
 
-                
-                
+                if ($('.hasFocus').length === 0){
+                    //nothing in focus
+                    $('#pptImage').addClass('hasFocus');
+                    $('#pptImage').fadeIn('slow'); 
+                }else{ //something has the focus
+                    if ($('#pptImage').hasClass('hasFocus')){ //already has focus
+                        $('#pptImage').fadeIn('slow');
+                    }else{
+                        $('.hasFocus').fadeOut('400', function(){
+                            $('.hasFocus').removeClass("hasFocus");
+                            $('#pptImage').addClass('hasFocus');
+                            $('#pptImage').fadeIn('slow');                        
+                        });
+                    }  
+                }
             });
         }
         carousel.size(pptImages.length);

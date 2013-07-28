@@ -55,17 +55,16 @@ function PowerPointWriter(ppt) {
                             $('#download').data("fileindex", fileIndex);
                             if (fileName.indexOf("ppt/media") !== -1) {
                                 //in the media directory
-
                                 //record image as having yet to be changed
                                 var imageChanged = false;
 
                                 //now get all the rels relating to this file
                                 var imageName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
                                 var imageRels = self.ppt.getImageRels(imageName);
-
                                 for (var i = 0; i < imageRels.length; i++) {
                                     var imageRel = imageRels[i];
                                     if (imageRel.hasChange()) {
+                                        
                                         //write the change to the powerpoint
                                         var change = imageRel.getChange();
 
@@ -85,19 +84,43 @@ function PowerPointWriter(ppt) {
                                                     var ctx = canvas.getContext("2d");
                                                     ctx.drawImage(this, 0, 0);
 
-                                                    var dataURL = canvas.toDataURL("image/jpg");
-
+                                                    var dataURL = canvas.toDataURL("image/jpeg");
+                                                    console.log(dataURL);
                                                     zipWriter.add(fileName, new zip.Data64URIReader(dataURL), function() {
                                                         add(fileIndex + 1);
                                                     }, onProgress);
                                                 }
                                                 
+                                                if (change.getType() === "cc") {
+                                                    //some of this may be deletable                                    
+                                                    var canvas = document.createElement("canvas");
+                                                    canvas.width = this.width;
+                                                    canvas.height = this.height;
+
+                                                    var ctx = canvas.getContext("2d");
+                                                    ctx.drawImage(this, 0, 0);
+
+                                                    var dataURL = canvas.toDataURL("image/jpeg");
+                                                    var licence = change.licence;
+                                                    var phpUrl = "php/imagegrabber.php?callback=?";
+                                                    $.getJSON(phpUrl, {src: dataURL, licence: licence},
+                                                    function(res) {
+                                                        console.log("hello");
+                                                        console.log(res);
+                                                        zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
+                                                            //update the global writer
+                                                            $('#download').data("writer", zipWriter);
+                                                            add(fileIndex + 1);
+                                                        }, function() {
+                                                        });
+                                                    });                                                 
+                                                }
+                                                                                                                                              
                                                 if (change.getType() === "flickr") {
                                                     var newSrc = change.newImageSrc;
                                                     var phpUrl = "php/imagegrabber.php?callback=?";
                                                     $.getJSON(phpUrl, {src: newSrc},
                                                     function(res) {
-                                                        console.log(res.result);
                                                         zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
                                                             //update the global writer
                                                             $('#download').data("writer", zipWriter);
