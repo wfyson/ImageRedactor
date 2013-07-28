@@ -6,6 +6,7 @@ function PowerPointViewer(powerpoint){
     //a function which takes the rels array and gets appropriate images
     
     self.displayImages = function(powerpoint){
+       
         //update reference to powerpoint
         self.powerpoint = powerpoint;
         
@@ -14,13 +15,65 @@ function PowerPointViewer(powerpoint){
         for (var i = 0; i < pptImages.length; i++){
             //generate html for the image
             var pptImage = pptImages[i];
-            var html = '<img id="image' + i + '" src="' + pptImage.url + '" width="90" height="90" alt="' + pptImage.url + '" />';
+            var html = '<img id="image' + i + '" src="' + pptImage.url + '" width="110" height="110" alt="' + pptImage.url + '" />';
             
             carousel.add(i+1, html);
             
             $('#image' + i).click({param1: i, param2: pptImage}, function(event){
-                //display the image here
-                console.log(event.data.param1);});
+                var pptImage = event.data.param2;
+                
+                //clear previous info
+                $('#pptImage').empty();
+                $('#imageLicence').empty();
+                $('#imageAuthor').empty();
+                $('#imageSlides').empty();
+                $('#imageSize').empty();                 
+                
+                //attach image to the div to get later
+                $('#imageOverview').data("pptImage", pptImage);
+                
+                //make buttons work
+                $('.imageButtons').removeClass("disabled");
+                
+                //display the image                
+                var img = document.createElement('img');
+                $(img).addClass("ppt-image");
+                $(img).attr("src", pptImage.url);
+                $(img).attr("style", "display: none");
+                $('#pptImage').append($(img));
+                $(img).fadeIn('slow');
+
+                //display the slide numbers - TODO: ensure slides are in correct order!
+                var rels = self.powerpoint.getImageRels(pptImage.name);
+                var slides = "";
+                for (var i = 0; i < rels.length-1; i++){
+                    var slideString = rels[i].slide;
+                    //substring here removes the word "slide" from the rel's slide property                   
+                    slides = slides + slideString.substring(5) + ", "; 
+                }
+                slides = slides + rels[rels.length-1].slide.substring(5);
+                $('#imageSlides').append(slides);
+                
+                //display image licence
+                var width = pptImage.width;
+                var height = pptImage.height;
+                $('#imageSize').append(width + "x" + height);
+                
+                //display image licence
+                var licence = pptImage.licence;
+                if (typeof licence === "undefined")
+                    licence = "Unknown";
+                $('#imageLicence').append(licence);
+
+                //display image author
+                var author = pptImage.author;
+                if (typeof author === "undefined")
+                    author = "Unknown";
+                $('#imageAuthor').append(author);
+
+                
+                
+            });
         }
         carousel.size(pptImages.length);
         

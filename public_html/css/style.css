@@ -30,17 +30,36 @@ body .modal {
 #imageWindow{
     border-style: solid;
     border-color: #ee5f5b;
+    padding: 10px;
     height: 100%;
+    text-align: center;
 }
 
 #imagePanel{
     border-style: solid;
     border-color: #ee5f5b;
     height: 100%;
+     
+}
+
+.imageField{
+    margin-left: 2px;
+    margin-bottom: 2px;
+    float: left;
+    font-family: Arial,Helvetica,sans-serif;   
+    width: 100%;
 }
 
 #imageCarousel{
     height: 100px;
+}
+
+#placeholder{
+    display: none;
+}
+
+#placeholderArrow{
+    margin-left: 30px;
 }
 
 .image-viewer { 

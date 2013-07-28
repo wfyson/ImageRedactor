@@ -10,8 +10,9 @@
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-fileupload.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-arrows.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="stylesheet" type="text/css" href="css/skin.css">
+        <link rel="stylesheet" type="text/css" href="css/skin.css">        
 
         <script type="text/javascript" src="js/libs/zip.js"></script>
         <script type="text/javascript" src="js/libs/zip-ext.js"></script>
@@ -24,6 +25,7 @@
 
         <script type="text/javascript" src="js/libs/bootstrap.js"></script>
         <script type="text/javascript" src="js/libs/bootstrap-fileupload.min.js"></script>
+        <script type="text/javascript" src="js/libs/bootstrap-arrows.js"></script>
 
         <script type="text/javascript" src="js/libs/jquery.jcarousel.js"></script>
         <script type="text/javascript" src="js/libs/jquery.jcarousel.min.js"></script>
@@ -60,193 +62,265 @@
 
         <div class="container-fluid">
             <div id="controlPanel" class="row-fluid">
-            <div class="fileupload fileupload-new" data-provides="fileupload">
-                <span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input id="files" type="file" /></span>
-                <span class="fileupload-preview"></span>
-                <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
-            </div>
+                <div class="fileupload fileupload-new" data-provides="fileupload">
+                    <span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input id="files" type="file" /></span>
+                    <span class="fileupload-preview"></span>
+                    <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+                </div>
 
-            <button id="redactBtn" type="submit" class="btn disabled">Redact...</button>
-            <a id="download" href="#" class="btn disabled">Download...</a>
-            <!--<input type="file" id="files" name="files[]" multiple/>
-            <output id="list"></output>-->
+                <button id="redactBtn" type="submit" class="btn disabled">Redact...</button>
+                <a id="download" href="#" class="btn disabled">Download...</a>
+                <!--<input type="file" id="files" name="files[]" multiple/>
+                <output id="list"></output>-->
             </div>
             <!--<div id="imageList" class="row-fluid">
             </div>-->
-            
+
             <div id="imageOverview" class="row-fluid">
                 <div id="imageWindow" class="span9">
+                    <span id="pptImage">
+                    </span>       
                     
+                    <!-- placeholder -->
+                    <span id="placeholder">
+                        <span id="placeholderOld">
+                        </span>
+                        <span id="placeholderArrow">
+                            <span class="arrow-primary-large" data-angle="90"></span>
+                        </span>
+                        <span id="placeholderNew">
+                            <img src="img/placeholder.jpg"/>
+                        </span>                  
+                    </span>
                 </div>
+                
+                <!-- Image Info/Buttons Panel -->
                 <div id="imagePanel" class="span3">
-                    <span>
-                        Slides:
-                    </span>                    
-                    <span>
-                        Licence:
-                    </span>    
-                </div>
+                    <div id="imageInfo">
+                        <span class="imageField">
+                            <span>
+                                Slides:
+                            </span>                         
+                            <span>
+                                <span id="imageSlides">
+
+                                </span>
+                            </span>
+                        </span>
+                        <span class="imageField">
+                            <span>
+                                Author:
+                            </span>
+                            <span id="imageAuthor">
+                            </span>
+                        </span>
+                        <span class="imageField">
+                            <span>
+                                Licence:
+                            </span>
+                            <span id="imageLicence">
+                            </span>
+                        </span>
+                        <span class="imageField">
+                            <span>
+                                Size:
+                            </span>
+                            <span id="imageSize">
+                            </span>
+                        </span>
+                    </div>
+                    <div id="buttons">
+                        <button id="verifyBtn" class="btn btn-primary btn-block imageButtons disabled">Verify</button>                        
+                        <button id="flickrBtn" class="btn btn-success btn-block imageButtons disabled">Flickr</button>
+                        <button id="customBtn" class="btn btn-warning btn-block imageButtons disabled">Custom</button>
+                        <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Placeholder</button>
+                    </div>
+                </div>                
             </div>
             <div class="row-fluid">
                 <div id="imageCarousel" class="span12">
-                <ul id="mycarousel" class="jcarousel-skin-tango">
-                </ul>
+                    <ul id="mycarousel" class="jcarousel-skin-tango">
+                    </ul>
                 </div>
             </div>
+        </div>
+
+
+        <!-- Flickr Modal -->
+
+        <div id="flickr-modal" class="modal hide fade">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+                <form id="flickr" class="form-inline">
+                    <input type="text" class="input-medium search-query" placeholder="Search" name="tags" id="tags">
+
+                    <label class="multiple" for="sort">Sort:</label>
+                    <select id="sort" name="sort" class="input-medium">
+                        <option>Relevant</option>
+                        <option>Recent</option>
+                        <option>Interesting</option>
+                    </select>
+                    <label class="multiple" for="licence">Licence:</label>
+                    <select id="licence" name="licence" class="input-medium">
+                        <option>Attribution</option>
+                        <option>NoDerivs</option>
+                        <option>NonCommercial, NoDerivs</option>
+                        <option>NonCommercial</option>
+                        <option>NonCommercial, ShareAlike</option>
+                        <option>ShareAlike</option>
+                    </select>
+                    <button type="submit" class="btn">Search</button>
+                </form>
             </div>
-            
-
-            <!-- Flickr Modal -->
-
-            <div id="flickr-modal" class="modal hide fade">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-
-                    <form id="flickr" class="form-inline">
-                        <input type="text" class="input-medium search-query" placeholder="Search" name="tags" id="tags">
-
-                        <label class="multiple" for="sort">Sort:</label>
-                        <select id="sort" name="sort" class="input-medium">
-                            <option>Relevant</option>
-                            <option>Recent</option>
-                            <option>Interesting</option>
-                        </select>
-                        <label class="multiple" for="licence">Licence:</label>
-                        <select id="licence" name="licence" class="input-medium">
-                            <option>Attribution</option>
-                            <option>NoDerivs</option>
-                            <option>NonCommercial, NoDerivs</option>
-                            <option>NonCommercial</option>
-                            <option>NonCommercial, ShareAlike</option>
-                            <option>ShareAlike</option>
-                        </select>
-                        <button type="submit" class="btn">Search</button>
-                    </form>
+            <div class="modal-body">
+                <div id="flickr-loading">
+                    <span class="helper"></span>
+                    <img src="img/ajax-loader.gif"/>
                 </div>
-                <div class="modal-body">
-                    <div id="flickr-loading">
-                        <span class="helper"></span>
-                        <img src="img/ajax-loader.gif"/>
-                    </div>
-                    <div id="flickr-results">
-                        <div class="row flickr-row">
-                            <div id="flickr0" class="span3 flickr-result">
+                <div id="flickr-results">
+                    <div class="row flickr-row">
+                        <div id="flickr0" class="span3 flickr-result">
 
-                            </div>
-                            <div id="flickr1" class="span3 flickr-result">
-
-                            </div>
-                            <div id="flickr2" class="span3 flickr-result">
-
-                            </div>
                         </div>
-                        <div class="row flickr-row">
-                            <div id="flickr3" class="span3 flickr-result">
+                        <div id="flickr1" class="span3 flickr-result">
 
-                            </div>
-                            <div id="flickr4" class="span3 flickr-result">
-
-                            </div>
-                            <div id="flickr5" class="span3 flickr-result">
-
-                            </div>
                         </div>
-                        <div class="row flickr-row">
-                            <div id="flickr6" class="span3 flickr-result">
+                        <div id="flickr2" class="span3 flickr-result">
 
-                            </div>
-                            <div id="flickr7" class="span3 flickr-result">
-
-                            </div>
-                            <div id="flickr8" class="span3 flickr-result">
-
-                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="flickr-prev" class="btn btn-primary disabled">Previous</button>
-                    <button id="flickr-next" class="btn btn-primary disabled">Next</button>
-                    <button id="flickr-save" class="btn btn-primary disabled">Save</button>
-                </div>
-            </div>
+                    <div class="row flickr-row">
+                        <div id="flickr3" class="span3 flickr-result">
 
-            <!-- PlaceHolder Modal -->
+                        </div>
+                        <div id="flickr4" class="span3 flickr-result">
 
-            <div id="placeholder-modal" class="modal hide fade">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h3>Placeholder Image</h3>
-                </div>
-                <div class="modal-body">
-                    <div id="placeholder-body">
-                        <div id="placeholder-old" class="placeholder-image">
-                            <span class="helper"></span>                            
                         </div>
-                        <div id="placeholder-arrow">
-                            <!--arrow image here -->
-                        </div>
-                        <div id="placeholder" class="placeholder-image">
-                            <span class="helper"></span>
-                            <img id="placeholder-image" src="img/placeholder.jpg"/>
+                        <div id="flickr5" class="span3 flickr-result">
+
                         </div>
                     </div>
-                </div>                
-                <div class="modal-footer">
-                    <button id="placeholder-cancel" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                    <button id="placeholder-save" class="btn btn-success">Save</button>                    
+                    <div class="row flickr-row">
+                        <div id="flickr6" class="span3 flickr-result">
+
+                        </div>
+                        <div id="flickr7" class="span3 flickr-result">
+
+                        </div>
+                        <div id="flickr8" class="span3 flickr-result">
+
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button id="flickr-prev" class="btn btn-primary disabled">Previous</button>
+                <button id="flickr-next" class="btn btn-primary disabled">Next</button>
+                <button id="flickr-save" class="btn btn-primary disabled">Save</button>
+            </div>
+        </div>
 
-            <script>
-                //file loading functionality
+        <!-- PlaceHolder Modal 
 
-                var powerpointRedactor = new PowerPointRedactor();
-                $('#redactBtn').data("redactor", powerpointRedactor);
+        <div id="placeholder-modal" class="modal hide fade">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>Placeholder Image</h3>
+            </div>
+            <div class="modal-body">
+                <div id="placeholder-body">
+                    <div id="placeholder-old" class="placeholder-image">
+                        <span class="helper"></span>                            
+                    </div>
+                    <div id="placeholder-arrow">
+        <!--arrow image here 
+    </div>
+    <div id="placeholder" class="placeholder-image">
+        <span class="helper"></span>
+        <img id="placeholder-image" src="img/placeholder.jpg"/>
+    </div>
+</div>
+</div>                
+<div class="modal-footer">
+<button id="placeholder-cancel" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+<button id="placeholder-save" class="btn btn-success">Save</button>                    
+</div>
+</div>
+        -->
 
-                function handleFileSelect(evt) {
-                    var files = evt.target.files; // FileList object
+        <script>
+            //file loading functionality
 
-                    var powerpoint;
-                    for (var i = 0, f; f = files[i]; i++) {
-                        //create a PowerPointReader for the file
-                        var pptReader = new PowerPointReader(f);
-                        powerpoint = pptReader.readPowerPoint();
-                    }
+            var powerpointRedactor = new PowerPointRedactor();
+            $('#redactBtn').data("redactor", powerpointRedactor);
+
+            function handleFileSelect(evt) {
+
+                var files = evt.target.files; // FileList object
+
+                for (var i = 0, f; f = files[i]; i++) {
+                    //create a PowerPointReader for the file
+                    var pptReader = new PowerPointReader(f);
+                    powerpoint = pptReader.readPowerPoint();
                 }
+            }
 
-                document.getElementById('files').addEventListener('change', handleFileSelect, false);
+            document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
-                //perform flickr search
-                $('#flickr').submit(function() {
-                    if ($('#tags').val() == "") {
-                        //prompt user for search terms
-                        $('#searchControl').addClass("error");
-                    } else {
-                        $('#searchControl').removeClass("error");
-                        //do a search
-                        var tags = $('#tags').val();
-                        var sort = $('#sort').val();
-                        var licence = $('#licence').val();
-                        var flickrReader = new FlickrReader(tags, sort, licence);
-                        flickrReader.buildQuery();
-                    }
-                    return false;
-                });
+            //perform flickr search
+            $('#flickr').submit(function() {
+                if ($('#tags').val() == "") {
+                    //prompt user for search terms
+                    $('#searchControl').addClass("error");
+                } else {
+                    $('#searchControl').removeClass("error");
+                    //do a search
+                    var tags = $('#tags').val();
+                    var sort = $('#sort').val();
+                    var licence = $('#licence').val();
+                    var flickrReader = new FlickrReader(tags, sort, licence);
+                    flickrReader.buildQuery();
+                }
+                return false;
+            });
 
-                $('#redactBtn').click(function() {
-                    var redactor = $('#redactBtn').data("redactor");
-                    redactor.commitChanges();
-                });
+            //redact button
+            $('#redactBtn').click(function() {
+                var redactor = $('#redactBtn').data("redactor");
+                redactor.commitChanges();
+            });
+
+            //placeholder button
+            $('#placeholderBtn').click(function() {
+                var pptImage = $('#imageOverview').data("pptImage");
                 
-                $(document).ready(function() {
-                    $('#mycarousel').jcarousel({
-                        size: 0
-                    });
+                //show old image
+                var oldImg = document.createElement('img');
+                $(oldImg).addClass("ppt-image");
+                $(oldImg).attr("src", pptImage.url);
+                $('#placeholderOld').append($(oldImg));
+                
+                $('#pptImage').hide();
+                $('#placeholder').show();
+            });
+
+            $(document).ready(function() {
+                $('#mycarousel').jcarousel({
+                    size: 0
                 });
+            });
+
+            $(function() {
+                // Bootstrap Arrows
+                $('.arrow, [class^=arrow-]').bootstrapArrows();
+            });
 
 
-            </script>
+
+
+
+        </script>
 
     </body>
 </html>

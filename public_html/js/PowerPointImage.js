@@ -6,7 +6,10 @@ function PowerPointImage(name, format, data) {
     self.data = data;
     self.url = getImageURL(data);
     self.licence = null;
-    getImageLicence(data);
+    self.author = null;
+    self.width = null;
+    self.height = null;
+    getImageMetaData(data);
 
 
     function getImageURL(file) {
@@ -19,13 +22,23 @@ function PowerPointImage(name, format, data) {
         }
     }
 
-    function getImageLicence(data) {
+    function getImageMetaData(data) {        
+        //get sizes
+        var img = new Image();
+        img.src = self.url;
+        img.onload = function(){
+            self.width = this.width;
+            self.height = this.height;
+        };
+        
+        
         var reader = new FileReader();
         reader.onload = function(e) {
             var string = e.target.result;
             var binaryFile = new BinaryFile(string);
             var exif = EXIF.readFromBinaryFile(binaryFile);
-            self.licence = exif.Artist;
+            self.licence = exif.Copyright;
+            self.author = exif.Artist;
             //console.log(self.name + "..." + self.format + "..." + exif.Artist + "..." + exif.ImageDescription + "..." + exif.Copyright);
 
         };

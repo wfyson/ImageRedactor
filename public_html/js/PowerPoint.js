@@ -36,11 +36,11 @@ function PowerPoint(pptFile){
     };
     
     //gets all the rels that pertain to a particular image
-    self.getImageRels = function(image){
+    self.getImageRels = function(imageName){
         var rels = self.slideImageRelArray;
         var returnArray = new Array();
         for (var i = 0; i < rels.length; i++){
-            if (rels[i].image === image){
+            if (rels[i].image === imageName){
                 returnArray.push(rels[i]);
             }
         }
