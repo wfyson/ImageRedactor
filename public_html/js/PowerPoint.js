@@ -5,7 +5,6 @@ function PowerPoint(pptFile){
     self.slideImageRelArray = new Array();  
     self.pptFile = pptFile;
 
-
     self.setImageRelArray = function(slideImageRelArray){
         self.slideImageRelArray = slideImageRelArray;
     };

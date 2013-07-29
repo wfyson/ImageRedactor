@@ -3,7 +3,20 @@ function PowerPointViewer(powerpoint){
     var self = this;
     self.powerpoint = powerpoint;
     
-    //a function which takes the rels array and gets appropriate images
+    
+    self.displayOverview = function(powerpoint){
+        console.log("testing");
+        $('#pptName').append(powerpoint.pptFile.name);       
+        $('#totalImages').append(powerpoint.pptImageArray.length);
+        $('#licencedImages').append("TODO..."); //need to count how many there are to begin with
+        $('#overallLicence').append("TODO..."); //need to work this out somehow
+        //calculate progress
+        //var progress = (licenceImages / total Images) * 100;
+        $('#progressBar').attr("style", "width: 30%");
+        
+        $('#overview').addClass('hasFocus');
+        $('#overview').fadeIn('slow');
+    };
     
     self.displayImages = function(powerpoint){
        
@@ -79,10 +92,8 @@ function PowerPointViewer(powerpoint){
                 //enable/disable buttons where appropriate
                 console.log(pptImage.format);
                 if (pptImage.format === ".png"){
-                    $('#verifyBtn').addClass("disabled");
                     $('#ccBtn').addClass("disabled");
                 }else{
-                    $('#verifyBtn').removeClass("disabled");
                     $('#ccBtn').removeClass("disabled");
                 }                
 

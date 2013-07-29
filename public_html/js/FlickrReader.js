@@ -75,22 +75,22 @@ function FlickrReader(tags, sort, licence) {
         //some sort of case statement
         var licenceID;
         switch (self.licence) {
-            case "Attribution":
+            case "Attribution (CC BY)":
                 licenceID = 4;
                 break;
-            case "NoDerivs":
+            case "NoDerivs (CC BY-ND)":
                 licenceID = 6;
                 break;
-            case "NonCommercial, NoDerivs":
+            case "NonCommercial, NoDerivs (CC BY-NC-ND)":
                 licenceID = 3;
                 break;
-            case "NonCommercial":
+            case "NonCommercial (CC BY-NC)":
                 licenceID = 2;
                 break;
-            case "NonCommercial, ShareAlike":
+            case "NonCommercial, ShareAlike (CC BY-NC-SA)":
                 licenceID = 1;
                 break;
-            case "ShareAlike":
+            case "ShareAlike (CC BY-SA)":
                 licenceID = 5;
                 break;
         }

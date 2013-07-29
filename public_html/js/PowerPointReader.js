@@ -78,6 +78,7 @@ function PowerPointReader(pptFile) {
         if (self.noEntries === self.totalEntries){
             $('#redactBtn').data("redactor").setPpt(self.powerpoint);
             var powerPointViewer = new PowerPointViewer(self.powerpoint);
+            powerPointViewer.displayOverview(self.powerpoint);
             powerPointViewer.displayImages(self.powerpoint);
         }
     };

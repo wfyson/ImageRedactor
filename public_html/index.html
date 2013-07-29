@@ -82,7 +82,52 @@
                     
                     <span id="pptImage">
                         <span class="helper"></span>
-                    </span>    
+                    </span>   
+                    
+                    <!-- Overview -->
+                    <div id="overview">
+                        <h2>Overview</h2>
+                        <div class="overviewField">
+                            <h4>
+                                Name:
+                            </h4>
+                            <div id="pptName">                            
+                            </div>
+                        </div>
+                        <div class="overviewField">
+                            <h4>
+                                Total Images:
+                            </h4>
+                            <div id="totalImages">
+                            </div>
+
+                        </div>
+                        <div class="overviewField">
+                            <h4>
+                                Licenced Images:
+                            </h4>
+                            <div id="licencedImages">
+                            </div>
+
+                        </div>
+                        <div class="overviewField">
+                            <h4>
+                                Most restrictive licence:
+                            </h4>
+                            <div id="overallLicence">
+                            </div>
+
+                        </div>
+                        <div class="overviewField">
+                            <h4>
+                                Progress:
+                            </h4>
+                            <div class="progress progress-striped"> <!-- consider implementing stacked bar to show types of licence -->
+                                <div id="progressBar" class="bar" style="width: 0%"></div>
+                            </div>    
+                        </div>                   
+                    </div>
+                    
                     <!-- placeholder -->
                     <span id="placeholderOverview">
                         <span id="placeholderOld">
@@ -97,9 +142,29 @@
                     </span>
 
                     <!-- Flickr Search -->
-                    <span id="flickrSearch">
+                    <div id="flickrSearch"> 
+                        <form id="flickr" class="form-inline">
+                            <input type="text" class="input-medium search-query flickrForm" placeholder="Search" name="tags" id="tags">
 
-                    </span>  
+                            <label class="multiple flickrForm" for="sort">Sort:</label>
+                            <select id="sort" name="sort" class="input-medium">
+                                <option>Relevant</option>
+                                <option>Recent</option>
+                                <option>Interesting</option>
+                            </select>
+                            <label class="multiple flickrForm" for="licence">Licence:</label>
+                            <select id="flickrLicence" name="licence" class="input-medium">
+                                <option>Attribution (CC BY)</option>
+                                <option>ShareAlike (CC BY-SA)</option>
+                                <option>NoDerivs (CC BY-ND)</option>
+                                <option>NonCommercial (CC BY-NC)</option>
+                                <option>NonCommercial, ShareAlike (CC BY-NC-SA)</option>
+                                <option>NonCommercial, NoDerivs (CC BY-NC-ND)</option>
+                            </select>
+                            <button type="submit" class="btn flickrForm">Search</button>
+                        </form>
+
+                    </div>  
 
                     <!-- Flickr Overview -->
 
@@ -131,11 +196,9 @@
                         <span class="imageField">
                             <span>
                                 Slides:
-                            </span>                         
-                            <span>
-                                <span id="imageSlides">
+                            </span>  
+                            <span id="imageSlides">
 
-                                </span>
                             </span>
                         </span>
                         <span class="imageField">
@@ -161,7 +224,7 @@
                         </span>
                     </div>
                     <div id="buttons">
-                        <button id="verifyBtn" class="btn btn-primary btn-block imageButtons disabled">Verify</button>                        
+                        <button id="overviewBtn" class="btn btn-primary btn-block imageButtons disabled">Overview</button>                        
                         <button id="flickrBtn" class="btn btn-success btn-block imageButtons disabled">Flickr</button>
                         <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
                         <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Placeholder</button>
@@ -183,26 +246,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 
-                <form id="flickr" class="form-inline">
-                    <input type="text" class="input-medium search-query" placeholder="Search" name="tags" id="tags">
-
-                    <label class="multiple" for="sort">Sort:</label>
-                    <select id="sort" name="sort" class="input-medium">
-                        <option>Relevant</option>
-                        <option>Recent</option>
-                        <option>Interesting</option>
-                    </select>
-                    <label class="multiple" for="licence">Licence:</label>
-                    <select id="licence" name="licence" class="input-medium">
-                        <option>Attribution</option>
-                        <option>NoDerivs</option>
-                        <option>NonCommercial, NoDerivs</option>
-                        <option>NonCommercial</option>
-                        <option>NonCommercial, ShareAlike</option>
-                        <option>ShareAlike</option>
-                    </select>
-                    <button type="submit" class="btn">Search</button>
-                </form>
+               
             </div>
             <div class="modal-body">
                 <div id="flickr-loading">
@@ -282,7 +326,6 @@
 
         <script>
             //file loading functionality
-
             var powerpointRedactor = new PowerPointRedactor();
             $('#redactBtn').data("redactor", powerpointRedactor);
 
@@ -323,6 +366,22 @@
                     redactor.commitChanges();
                 }
             });
+            
+            //overview button
+            $('#overviewBtn').click(function(){
+               if (!$('#overviewBtn').hasClass("disabled")){
+                   var redactor = $('#redactBtn').data("redactor");
+                   //update overview page
+                   //TODO
+                   
+                   $('.hasFocus').fadeOut(400, function() {
+                    //remove whatever did have focus
+                    $('.hasFocus').removeClass('hasFocus');
+                    $('#overview').addClass('hasFocus');
+                    $('#overview').fadeIn(400);
+                });
+               } 
+            });
 
             //placeholder button
             $('#placeholderBtn').click(function() {
@@ -356,7 +415,22 @@
                 $('#redactBtn').data("redactor", redactor);
 
                 $('#placeholderOverview').removeClass('hasFocus');
-                $('#placeholderOverview').fadeOut('slow');
+                $('#placeholderOverview').fadeOut('400', function(){                    
+                    $('#overview').addClass('hasFocus');
+                    $('#overview').fadeIn(400);
+                });
+            });
+            
+            //placeholder button
+            $('#flickrBtn').click(function() {
+                if (!$('#flickrBtn').hasClass("disabled")){
+                   $('.hasFocus').fadeOut(400, function() {
+                    //remove whatever did have focus
+                    $('.hasFocus').removeClass('hasFocus');
+                    $('#flickrSearch').addClass('hasFocus');
+                    $('#flickrSearch').fadeIn(400);
+                });
+                }
             });
 
             
@@ -401,7 +475,10 @@
                 $('#redactBtn').data("redactor", redactor);
 
                 $('#ccOverview').removeClass('hasFocus');
-                $('#ccOverview').fadeOut('slow');
+                $('#ccOverview').fadeOut('400', function(){                    
+                    $('#overview').addClass('hasFocus');
+                    $('#overview').fadeIn(400);
+                });
             });
 
 

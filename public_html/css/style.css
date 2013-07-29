@@ -36,6 +36,7 @@ body .modal {
 }
 
 #pptImage{
+    display: none;
     height: 380px;
 }
 
@@ -65,6 +66,22 @@ body .modal {
     height: 100px;
 }
 
+#overview{
+    display: none;
+    width: 100%; 
+    text-align: left;
+}
+
+.overviewField{
+    width: 60%;
+    margin-left: 2px;
+    margin-bottom: 2px;
+    float: left;
+    font-family: Arial,Helvetica,sans-serif;  
+    font-size: 16px;
+    
+}
+
 #placeholderOverview{
     display: none;
     width: 100%;
@@ -76,6 +93,11 @@ body .modal {
 
 #placeholderArrow{
     margin-left: 30px;
+}
+
+#flickrSearch{
+    display: none;
+    width: 100%;
 }
 
 #ccOverview{
@@ -138,6 +160,14 @@ body .modal {
     height: 250px;
     width: 48%;  
     float: left;
+}
+
+#flickrLicence{
+    width: 200px;
+}
+
+.flickrForm{
+    margin-left: 10px;
 }
 
 #flickr-loading{
