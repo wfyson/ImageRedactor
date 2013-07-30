@@ -109,8 +109,9 @@ function PowerPointWriter(ppt) {
 
                                             if (change.getType() === "flickr") {
                                                 var newSrc = change.newImageSrc;
+                                                var licence = change.licence;
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
-                                                $.getJSON(phpUrl, {src: newSrc},
+                                                $.getJSON(phpUrl, {src: newSrc, licence: licence},
                                                 function(res) {
                                                     zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
                                                         //update the global writer

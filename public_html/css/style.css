@@ -100,6 +100,41 @@ body .modal {
     width: 100%;
 }
 
+#flickrOverview{
+    display: none;
+    width: 100%;
+    vertical-align: top;
+}
+
+#flickrOverviewImages{
+    display: inline;
+    vertical-align: middle;
+}
+
+#flickrOld{
+    height: 380px;
+    max-width: 200px;
+}
+
+#flickrArrow{
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.flickrImage{
+    max-width: 35%;
+    max-height: 380px;
+}
+
+#flickrNew{
+    height: 380px;
+    max-width: 200px;
+}
+
+#flickrOverviewButtons{
+    float: right;
+}
+
 #ccOverview{
     height: 100%;
     display: none;
@@ -176,21 +211,8 @@ body .modal {
     height: 200px;
 }
 
-#flickr-results{
-    display: none;
-}
-
-.flickr-result{
-    background: ghostwhite;
-}
-
 .flickr-row{
     margin-bottom: 10px;
-}
-
-.flickr-selected{
-    border-style: solid;
-    border-color: red;
 }
 
 #placeholder-body{

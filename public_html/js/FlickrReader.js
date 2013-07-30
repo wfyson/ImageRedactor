@@ -30,7 +30,7 @@ function FlickrReader(tags, sort, licence) {
     self.sort = sort;
     self.licence = licence;
     self.page = 1;
-    self.perPage = 9;
+    self.perPage = 15;
     self.totalPages = 0;
     self.totalResults = 0;
     self.results = new Array();
@@ -165,6 +165,7 @@ function FlickrReader(tags, sort, licence) {
         $.getJSON(photoInfoUrl, function(data) {
             flickrImage.setAuthor(data.owner);
             flickrImage.setTitle(data.title);
+            flickrImage.setLicence(data.photo.license);
             self.getPhotoSizes(flickrImage);
         });
     };

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>test</title>
+        <title>PowerPoint Image Redactor</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -143,6 +143,7 @@
 
                     <!-- Flickr Search -->
                     <div id="flickrSearch"> 
+                        <!-- Flickr Search Form -->
                         <form id="flickr" class="form-inline">
                             <input type="text" class="input-medium search-query flickrForm" placeholder="Search" name="tags" id="tags">
 
@@ -163,10 +164,70 @@
                             </select>
                             <button type="submit" class="btn flickrForm">Search</button>
                         </form>
-
+                        
+                        <!-- Flickr Results -->
+                        <div id="flickr-loading">
+                            <span class="flickrHelper"></span>
+                            <img src="img/ajax-loader.gif"/>
+                        </div>
+                        <div id="flickr-results">
+                            <div class="row flickr-row">
+                                <div id="flickr0" class="span2 offset1 flickr-result">
+                                </div>
+                                <div id="flickr1" class="span2 flickr-result">
+                                </div>
+                                <div id="flickr2" class="span2 flickr-result">
+                                </div>
+                                <div id="flickr3" class="span2 flickr-result">
+                                </div>
+                                <div id="flickr4" class="span2 flickr-result">
+                                </div>
+                            </div>
+                            <div class="row flickr-row">
+                                <div id="flickr5" class="span2 offset1 flickr-result">
+                                </div>
+                                <div id="flickr6" class="span2 flickr-result">
+                                </div>
+                                <div id="flickr7" class="span2 flickr-result">
+                                </div>
+                                <div id="flickr8" class="span2 flickr-result">
+                                </div>
+                                <div id="flickr9" class="span2 flickr-result">
+                                </div>
+                            </div>
+                            <div class="row flickr-row">
+                                <div id="flickr10" class="span2 offset1 flickr-result">
+                                </div>
+                                <div id="flickr11" class="span2 flickr-result">
+                                </div>
+                                <div id="flickr12" class="span2 flickr-result">
+                                </div>
+                                <div id="flickr13" class="span2 flickr-result">
+                                </div>
+                                <div id="flickr14" class="span2 flickr-result">
+                                </div>
+                            </div>
+                        </div>
                     </div>  
 
                     <!-- Flickr Overview -->
+                    <span id="flickrOverview">
+                        <span class="helper"></span>
+                        <span id="flickrOverviewImages">
+                            <span class="helper"></span>
+                            <span id="flickrOld">
+                            </span>
+                            <span id="flickrArrow">
+                                <span class="arrow-primary-large" data-angle="90"></span>
+                            </span>
+                            <span id="flickrNew">
+                            </span> 
+                        </span>
+                        <span id="flickrOverviewButtons">
+                            <button id="flickrBack" class="btn btn-primary">Back</button>                    
+                            <button id="flickrSave" class="btn btn-primary">Save</button>   
+                        </span>
+                    </span>
 
                     <!-- cc Overview -->
                     <div id="ccOverview" class="row-fluid">
@@ -249,80 +310,14 @@
                
             </div>
             <div class="modal-body">
-                <div id="flickr-loading">
-                    <span class="helper"></span>
-                    <img src="img/ajax-loader.gif"/>
+                
                 </div>
-                <div id="flickr-results">
-                    <div class="row flickr-row">
-                        <div id="flickr0" class="span3 flickr-result">
-
-                        </div>
-                        <div id="flickr1" class="span3 flickr-result">
-
-                        </div>
-                        <div id="flickr2" class="span3 flickr-result">
-
-                        </div>
-                    </div>
-                    <div class="row flickr-row">
-                        <div id="flickr3" class="span3 flickr-result">
-
-                        </div>
-                        <div id="flickr4" class="span3 flickr-result">
-
-                        </div>
-                        <div id="flickr5" class="span3 flickr-result">
-
-                        </div>
-                    </div>
-                    <div class="row flickr-row">
-                        <div id="flickr6" class="span3 flickr-result">
-
-                        </div>
-                        <div id="flickr7" class="span3 flickr-result">
-
-                        </div>
-                        <div id="flickr8" class="span3 flickr-result">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="modal-footer">
                 <button id="flickr-prev" class="btn btn-primary disabled">Previous</button>
                 <button id="flickr-next" class="btn btn-primary disabled">Next</button>
                 <button id="flickr-save" class="btn btn-primary disabled">Save</button>
             </div>
         </div>
-
-        <!-- PlaceHolder Modal 
-
-        <div id="placeholder-modal" class="modal hide fade">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h3>Placeholder Image</h3>
-            </div>
-            <div class="modal-body">
-                <div id="placeholder-body">
-                    <div id="placeholder-old" class="placeholder-image">
-                        <span class="helper"></span>                            
-                    </div>
-                    <div id="placeholder-arrow">
-        <!--arrow image here 
-    </div>
-    <div id="placeholder" class="placeholder-image">
-        <span class="helper"></span>
-        <img id="placeholder-image" src="img/placeholder.jpg"/>
-    </div>
-</div>
-</div>                
-<div class="modal-footer">
-<button id="placeholder-cancel" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-<button id="placeholder-save" class="btn btn-success">Save</button>                    
-</div>
-</div>
-        -->
 
         <script>
             //file loading functionality
@@ -352,7 +347,7 @@
                     //do a search
                     var tags = $('#tags').val();
                     var sort = $('#sort').val();
-                    var licence = $('#licence').val();
+                    var licence = $('#flickrLicence').val();
                     var flickrReader = new FlickrReader(tags, sort, licence);
                     flickrReader.buildQuery();
                 }
@@ -433,7 +428,32 @@
                 }
             });
 
+            //flickrBack button
+            $('#flickrBack').click(function(){
+                $('#flickrOverview').fadeOut(400, function() {
+                    //remove whatever did have focus
+                    $('#flickrOverview').removeClass('hasFocus');
+                    $('#flickrSearch').addClass('hasFocus');
+                    $('#flickrSearch').fadeIn(400);
+                });                
+            });
             
+            //flickrSave button
+            $('#flickrSave').click(function(){
+                var pptImage = $('#imageOverview').data("pptImage");
+                var flickrImage = $('#flickrOverview').data("flickrImage");
+                               
+                var flickrChange = new Change("flickr", pptImage, flickrImage.getMediumUrl(), flickrImage.textLicence);
+                var redactor = $('#redactBtn').data("redactor");
+                redactor.addChange(flickrChange);
+                $('#redactBtn').data("redactor", redactor);
+
+                $('#flickrOverview').removeClass('hasFocus');
+                $('#flickrOverview').fadeOut('400', function(){                    
+                    $('#overview').addClass('hasFocus');
+                    $('#overview').fadeIn(400);
+                });
+            });
             
             //cc button
             $('#ccBtn').click(function() {

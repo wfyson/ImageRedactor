@@ -20,20 +20,32 @@ function FlickrResultsViewer(){
             
             $("#flickr" + i).click({param1: i, param2: flickrImage}, function(event){
                 var i = event.data.param1;
+                var flickrImage = event.data.param2;
+                var pptImage = $('#imageOverview').data("pptImage");
 
-                //if it has already been selected, unselect it
-                if ($("#flickr" + i).hasClass("flickr-selected")){
-                    $("#flickr-modal").data("selectedImage", null);
-                    $("#flickr" + i).removeClass("flickr-selected");
-                    $("#flickr-save").addClass("disabled");
-                }else{ //hasn't been selected
-                    //remove anything that may have been selected
-                    $(".flickr-selected").removeClass("flickr-selected");
-                    //and select the new one
-                    $("#flickr-modal").data("selectedImage", event.data.param2);
-                    $("#flickr" + i).addClass("flickr-selected");
-                    $("#flickr-save").removeClass("disabled");
-                }
+                //save flickr image
+                $('#flickrOverview').data("flickrImage", flickrImage);
+
+                //show old image
+                $('#flickrOld').empty();
+                var oldImg = document.createElement('img');
+                $(oldImg).addClass("flickrImage");
+                $(oldImg).attr("src", pptImage.url);
+                $('#flickrOld').append($(oldImg));
+                
+                //show new image
+                $('#flickrNew').empty();
+                var newImg = document.createElement('img');
+                $(newImg).addClass("flickrImage");
+                $(newImg).attr("src", flickrImage.getMediumUrl());
+                $('#flickrNew').append($(newImg));
+
+                $('#flickrSearch').fadeOut(400, function() {
+                    //remove whatever did have focus
+                    $('#flickrSearch').removeClass('hasFocus');
+                    $('#flickrOverview').addClass('hasFocus');
+                    $('#flickrOverview').fadeIn(400);
+                });                
             });
             
             $('#flickr-loading').hide();
