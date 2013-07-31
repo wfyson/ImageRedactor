@@ -5,14 +5,42 @@ function PowerPointViewer(powerpoint){
     
     
     self.displayOverview = function(powerpoint){
-        console.log("testing");
-        $('#pptName').append(powerpoint.pptFile.name);       
-        $('#totalImages').append(powerpoint.pptImageArray.length);
-        $('#licencedImages').append("TODO..."); //need to count how many there are to begin with
+        //name
+        $('#pptName').empty();       
+        $('#pptName').append(powerpoint.pptFile.name); 
+        
+        //total images
+        $('#totalImages').empty();
+        var totalImages = powerpoint.pptImageArray.length;
+        $('#totalImages').append(totalImages);
+        
+        //licenced images
+        var licenceNumbers = self.getNoLicencedImages(powerpoint);    
+        var totalNull = licenceNumbers.none;
+        var totalOther = licenceNumbers.other;
+        var totalCC = licenceNumbers.cc;
+        var totalLicenced = totalOther + totalCC;        
+        
+        $('#licencedImages').empty(); 
+        $('#licencedImages').append(totalLicenced); 
+        
+        //overall licence
+        $('#overallLicence').empty();
         $('#overallLicence').append("TODO..."); //need to work this out somehow
+        
         //calculate progress
-        //var progress = (licenceImages / total Images) * 100;
-        $('#progressBar').attr("style", "width: 30%");
+        console.log(totalCC); //1
+        console.log(totalOther); //1
+        console.log(totalNull); //2
+        console.log(totalImages); //4
+        
+        var progressCC = (totalCC / totalImages) * 100;
+        var progressOther = (totalOther / totalImages) * 100;
+        var progressNull = (totalNull / totalImages) * 100;
+        
+        $('#progressCC').attr("style", "width:" + progressCC + "%");
+        $('#progressOther').attr("style", "width:" + progressOther + "%");
+        $('#progressNull').attr("style", "width:" + progressNull + "%");
         
         $('#overview').addClass('hasFocus');
         $('#overview').fadeIn('slow');
@@ -68,7 +96,7 @@ function PowerPointViewer(powerpoint){
                     var slideString = rels[i].slide;
                     //substring here removes the word "slide" from the rel's slide property                   
                     slides = slides + slideString.substring(5) + ", "; 
-                }
+                }                
                 slides = slides + rels[rels.length-1].slide.substring(5);
                 $('#imageSlides').append(slides);
                 
@@ -239,41 +267,41 @@ function PowerPointViewer(powerpoint){
         }
     };
     
+    self.getNoLicencedImages = function(powerpoint){
+        pptImageArray = powerpoint.pptImageArray;
+        var totalCC = 0;
+        var totalOther = 0;
+        var totalNull = 0;
+        for (var i=0; i<pptImageArray.length; i++){
+            var pptImage = pptImageArray[i];
+            var licence = pptImage.licence; 
+            console.log(pptImage);
+            console.log(licence);
+            if (licence === "CC0" ||
+                licence === "Attribution (CC BY)" ||
+                licence === "NoDerivs (CC BY-ND)" ||
+                licence === "NonCommercial, NoDerivs (CC BY-NC-ND)" ||
+                licence === "NonCommercial (CC BY-NC)" ||
+                licence === "NonCommercial, ShareAlike (CC BY-NC-SA)" ||
+                licence === "ShareAlike (CC BY-SA)") {
+                totalCC++;
+            }else{
+                if (typeof licence !== "undefined" && licence !== "null" && licence !== null){
+                    console.log(licence);
+                    totalOther++;
+                }else{
+                    totalNull++;
+                }
+            }            
+        }
+        return new licenceNumbers(totalNull, totalOther, totalCC);        
+    };
     
-    function flickr(pptImage){
-        $('#flickr-modal').modal('toggle');
-        
-        $("#flickr-save").click(function(){
-            var flickrImage = $("#flickr-modal").data("selectedImage");
-            var flickrChange = new Change("flickr", pptImage, flickrImage.getBiggestImage().source);
-
-            var redactor = $('#redactBtn').data("redactor");
-            redactor.addChange(flickrChange);
-            $('#redactBtn').data("redactor", redactor);
-            
-        });
-        
-        
-       
-        
+    function licenceNumbers(none, other, cc){
+        var self = this;
+        self.none = none;
+        self.other = other;
+        self.cc = cc;
     }
-    
-    function placeholder(pptImage){
-        $('#placeholder-modal').modal('toggle');
-        
-        var oldImage = document.createElement('img');
-        $(oldImage).addClass('placeholder-old');
-        $(oldImage).attr('src', pptImage.url);
-        $('#placeholder-old').append($(oldImage));
-        
-        $('#placeholder-save').click(function(){
-                       
-            var newSrc = 'img/placeholder.jpg';
-            var placeHolderChange = new Change("placeholder", pptImage, newSrc);
-
-            var redactor = $('#redactBtn').data("redactor");
-            redactor.addChange(placeHolderChange);
-            $('#redactBtn').data("redactor", redactor);
-        });
-    }
+  
 }

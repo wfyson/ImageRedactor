@@ -66,6 +66,9 @@ function PowerPointImage(name, format, data) {
             self.width = this.width;
             self.height = this.height;
         };
+        
+        //get exif
+        if (self.format === ".jpeg" || self.format === ".jpg"){
         var reader = new FileReader();
         reader.onload = function(e) {
             var string = e.target.result;
@@ -76,6 +79,10 @@ function PowerPointImage(name, format, data) {
             //console.log(self.name + "..." + self.format + "..." + exif.Artist + "..." + exif.ImageDescription + "..." + exif.Copyright);
         };
         reader.readAsBinaryString(data);
+        }else{
+            self.licence = "null";
+            self.author = "null";
+        }
     }
 
 }
