@@ -39,17 +39,21 @@ function FlickrReader(tags, sort, licence) {
     var API_KEY = "7493f1b9adc9c0e8e55d5be46f60ddb7";
 
     //assign next and previous functionality    
-    $("#flickr-prev").click(function() {
-        if (self.page > 1) {
-            self.page--;
-            self.buildQuery();
+    $("#flickrPrev").click(function() {
+        if (!$('#flickrPrev').hasClass('disabled')){
+            if (self.page > 1) {
+                self.page--;
+                self.buildQuery();
+            }
         }
     });
     
-    $("#flickr-next").click(function() {
-        if (self.page < self.totalPages) {
-            self.page++;
-            self.buildQuery();
+    $("#flickrNext").click(function() {
+        if (!$('#flickrNext').hasClass('disabled')){
+            if (self.page < self.totalPages) {
+                self.page++;
+                self.buildQuery();
+            }
         }
     });
 
@@ -135,16 +139,16 @@ function FlickrReader(tags, sort, licence) {
         self.results = new Array();
 
         if (self.page < self.totalPages) {
-            $("#flickr-next").removeClass("disabled");
+            $("#flickrNext").removeClass("disabled");
         }
         if (self.page === self.totalPages) {
-            $("#flickr-next").addClass("disabled");
+            $("#flickrNext").addClass("disabled");
         }
         if (self.page > 1) {
-            $("#flickr-prev").removeClass("disabled");
+            $("#flickrPrev").removeClass("disabled");
         }
         if (self.page === 1) {
-            $("#flickr-prev").addClass("disabled");
+            $("#flickrPrev").addClass("disabled");
         }
         var photos = data.photos.photo;
         self.noResults = photos.length;
@@ -194,12 +198,6 @@ function FlickrReader(tags, sort, licence) {
         });
     };
 }
-
-        //function myCallbackFunction(data){
-            
-    //console.log(data.sizes.size[0].source);
-    
-//}
         
 
 

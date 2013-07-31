@@ -170,43 +170,47 @@
                             <span class="flickrHelper"></span>
                             <img src="img/ajax-loader.gif"/>
                         </div>
-                        <div id="flickr-results">
-                            <div class="row flickr-row">
-                                <div id="flickr0" class="span2 offset1 flickr-result">
+                        <div id="flickr-results" class="row">
+                            <div id="flickrPrev" class="span1 disabled"></div>
+                            <div id="resultImages" class="span10">
+                                <div class="row flickr-row">
+                                    <div id="flickr0" class="span2 offset1">
+                                    </div>
+                                    <div id="flickr1" class="span2">
+                                    </div>
+                                    <div id="flickr2" class="span2">
+                                    </div>
+                                    <div id="flickr3" class="span2">
+                                    </div>
+                                    <div id="flickr4" class="span2">
+                                    </div>
                                 </div>
-                                <div id="flickr1" class="span2 flickr-result">
+                                <div class="row flickr-row">
+                                    <div id="flickr5" class="span2 offset1">
+                                    </div>
+                                    <div id="flickr6" class="span2">
+                                    </div>
+                                    <div id="flickr7" class="span2">
+                                    </div>
+                                    <div id="flickr8" class="span2">
+                                    </div>
+                                    <div id="flickr9" class="span2">
+                                    </div>
                                 </div>
-                                <div id="flickr2" class="span2 flickr-result">
-                                </div>
-                                <div id="flickr3" class="span2 flickr-result">
-                                </div>
-                                <div id="flickr4" class="span2 flickr-result">
+                                <div class="row flickr-row">
+                                    <div id="flickr10" class="span2 offset1">
+                                    </div>
+                                    <div id="flickr11" class="span2">
+                                    </div>
+                                    <div id="flickr12" class="span2">
+                                    </div>
+                                    <div id="flickr13" class="span2">
+                                    </div>
+                                    <div id="flickr14" class="span2">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row flickr-row">
-                                <div id="flickr5" class="span2 offset1 flickr-result">
-                                </div>
-                                <div id="flickr6" class="span2 flickr-result">
-                                </div>
-                                <div id="flickr7" class="span2 flickr-result">
-                                </div>
-                                <div id="flickr8" class="span2 flickr-result">
-                                </div>
-                                <div id="flickr9" class="span2 flickr-result">
-                                </div>
-                            </div>
-                            <div class="row flickr-row">
-                                <div id="flickr10" class="span2 offset1 flickr-result">
-                                </div>
-                                <div id="flickr11" class="span2 flickr-result">
-                                </div>
-                                <div id="flickr12" class="span2 flickr-result">
-                                </div>
-                                <div id="flickr13" class="span2 flickr-result">
-                                </div>
-                                <div id="flickr14" class="span2 flickr-result">
-                                </div>
-                            </div>
+                            <div id="flickrNext" class="span1 disabled"></div>
                         </div>
                     </div>  
 
@@ -297,25 +301,6 @@
                     <ul id="mycarousel" class="jcarousel-skin-tango">
                     </ul>
                 </div>
-            </div>
-        </div>
-
-
-        <!-- Flickr Modal -->
-
-        <div id="flickr-modal" class="modal hide fade">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-
-               
-            </div>
-            <div class="modal-body">
-                
-                </div>
-            <div class="modal-footer">
-                <button id="flickr-prev" class="btn btn-primary disabled">Previous</button>
-                <button id="flickr-next" class="btn btn-primary disabled">Next</button>
-                <button id="flickr-save" class="btn btn-primary disabled">Save</button>
             </div>
         </div>
 
@@ -416,7 +401,7 @@
                 });
             });
             
-            //placeholder button
+            //flickr button
             $('#flickrBtn').click(function() {
                 if (!$('#flickrBtn').hasClass("disabled")){
                    $('.hasFocus').fadeOut(400, function() {
@@ -426,9 +411,9 @@
                     $('#flickrSearch').fadeIn(400);
                 });
                 }
-            });
+            });            
 
-            //flickrBack button
+            //flickrBack button (from overview to search results)
             $('#flickrBack').click(function(){
                 $('#flickrOverview').fadeOut(400, function() {
                     //remove whatever did have focus
