@@ -500,10 +500,20 @@
                 $('.arrow, [class^=arrow-]').bootstrapArrows();
             });
 
-
-
-
-
+            $(window).on('beforeunload', function() {
+                var redactor = $('#redactBtn').data("redactor");
+                var images = redactor.ppt.pptImageArray;
+                for (var i = 0; i < images.length; i++){
+                    var image = images[i];
+                    if (image.format === ".jpeg") {
+                       var filename = image.name + image.format;
+                       var phpUrl = "php/imagedeleter.php";
+                       $.get(phpUrl, { fname: filename } );         
+                    }
+                }
+            });
+            
+           
         </script>
 
     </body>

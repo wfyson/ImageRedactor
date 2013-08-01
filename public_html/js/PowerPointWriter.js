@@ -177,7 +177,7 @@ function PowerPointWriter(ppt) {
                 } else {
                     blobURL = null;
                 }
-                //in the real thing a download link will be made available
+
                 $('#download').removeClass('disabled');
                 $('#download').attr('href', blobURL);
                 $('#download').attr('download', "super.pptx");
