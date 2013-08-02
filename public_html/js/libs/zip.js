@@ -381,8 +381,9 @@
 	}
 
 	function inflate(reader, writer, offset, size, computeCrc32, onend, onprogress, onreaderror, onwriteerror) {
-		var worker, crc32 = new Crc32();
-
+		//error happens here somewhere
+                var worker, crc32 = new Crc32();
+                
 		function oninflateappend(sending, array) {
 			if (computeCrc32 && !sending)
 				crc32.append(array);
@@ -393,11 +394,13 @@
 		}
 
 		if (obj.zip.useWebWorkers) {
-			worker = new Worker(obj.zip.workerScriptsPath + INFLATE_JS);
+                        //console.log("hello"); //all of them do this
+                        //console.log(obj.zipworkerScriptsPath); //all comes out undefined
+			worker = new Worker(obj.zip.workerScriptsPath + INFLATE_JS); //can't print this or firefox crashes                        
 			launchWorkerProcess(worker, reader, writer, offset, size, oninflateappend, onprogress, oninflateend, onreaderror, onwriteerror);
-		} else
+		} else{
 			launchProcess(new obj.zip.Inflater(), reader, writer, offset, size, oninflateappend, onprogress, oninflateend, onreaderror, onwriteerror);
-		return worker;
+                }return worker;
 	}
 
 	function deflate(reader, writer, level, onend, onprogress, onreaderror, onwriteerror) {
@@ -523,8 +526,10 @@
 
 		Entry.prototype.getData = function(writer, onend, onprogress, checkCrc32) {
 			var that = this, worker;
-
+                        //console.log(that);
 			function terminate(callback, param, param2) {
+                                //console.log(that);
+                                console.log("terminate");
 				if (worker)
 					worker.terminate();
 				worker = null;
@@ -539,9 +544,10 @@
 			}
 
 			function getWriterData(uncompressedSize, crc32) {
-				if (checkCrc32 && !testCrc32(crc32))
-					onreaderror();
-				else
+				//console.log("hello world"); //only 25 get this far, error comes previously
+                                if (checkCrc32 && !testCrc32(crc32)){                                    
+                                    onreaderror();
+                                }else
 					writer.getData(function(data) {
 						terminate(onend, data, that);
 					});

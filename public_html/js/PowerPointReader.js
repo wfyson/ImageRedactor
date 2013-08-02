@@ -26,7 +26,7 @@ function PowerPointReader(pptFile) {
                                 format = filename.substr(filename.lastIndexOf("."));
                                 pptImage = new PowerPointImage(name, format, data);
                                 self.powerpoint.addImage(pptImage);
-                                self.increment();                                
+                                self.increment(i);                                
                                 //console.log("image");
                             }, function(current, total) {
                                 // onprogress callback
@@ -34,7 +34,7 @@ function PowerPointReader(pptFile) {
                         } else {
                             //if a slides rel file
                             if ((entries[i].filename).indexOf("ppt/slides/_rels") !== -1) {
-                                entries[i].getData(new zip.TextWriter(), function(text, entry) {
+                                entries[i].getData(new zip.TextWriter('utf-8'), function(text, entry) {
                                     var filename, slideNo, xmlDoc, rels, target, imageName;
                                     filename = entry.filename;
                                     slideNo = filename.substring(filename.lastIndexOf("/") + 1, filename.indexOf("."));
@@ -50,13 +50,13 @@ function PowerPointReader(pptFile) {
                                             }
                                         }
                                     }
-                                    self.increment();
+                                    self.increment(i);
                                     //console.log("rel");
                                 }, function(current, total) {
                                     //onprogress callback
                                 });
                             } else {
-                                self.increment();
+                                self.increment(i);
                             }
                         }
 
@@ -73,9 +73,11 @@ function PowerPointReader(pptFile) {
         console.log("Job Done...");
     };
 
-    self.increment = function() {
+    self.increment = function(i) {
         self.noEntries++;
-        if (self.noEntries === self.totalEntries){
+        //console.log("incrementer");
+        //console.log(self.noEntries);
+        if (i === self.totalEntries){
             $('#redactBtn').data("redactor").setPpt(self.powerpoint);
             var powerPointViewer = new PowerPointViewer(self.powerpoint);
             powerPointViewer.displayOverview(self.powerpoint);

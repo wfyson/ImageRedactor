@@ -29,10 +29,10 @@ function PowerPointViewer(powerpoint){
         $('#overallLicence').append("TODO..."); //need to work this out somehow
         
         //calculate progress
-        console.log(totalCC); //1
-        console.log(totalOther); //1
-        console.log(totalNull); //2
-        console.log(totalImages); //4
+        //console.log(totalCC); //1
+        //console.log(totalOther); //1
+        //console.log(totalNull); //2
+        //console.log(totalImages); //4
         
         var progressCC = (totalCC / totalImages) * 100;
         var progressOther = (totalOther / totalImages) * 100;
@@ -97,6 +97,7 @@ function PowerPointViewer(powerpoint){
                     //substring here removes the word "slide" from the rel's slide property                   
                     slides = slides + slideString.substring(5) + ", "; 
                 }                
+                
                 slides = slides + rels[rels.length-1].slide.substring(5);
                 $('#imageSlides').append(slides);
                 
@@ -118,7 +119,6 @@ function PowerPointViewer(powerpoint){
                 $('#imageAuthor').append(author);
                 
                 //enable/disable buttons where appropriate
-                console.log(pptImage.format);
                 if (pptImage.format === ".png"){
                     $('#ccBtn').addClass("disabled");
                 }else{
@@ -275,8 +275,6 @@ function PowerPointViewer(powerpoint){
         for (var i=0; i<pptImageArray.length; i++){
             var pptImage = pptImageArray[i];
             var licence = pptImage.licence; 
-            console.log(pptImage);
-            console.log(licence);
             if (licence === "CC0" ||
                 licence === "Attribution (CC BY)" ||
                 licence === "NoDerivs (CC BY-ND)" ||
@@ -287,7 +285,6 @@ function PowerPointViewer(powerpoint){
                 totalCC++;
             }else{
                 if (typeof licence !== "undefined" && licence !== "null" && licence !== null){
-                    console.log(licence);
                     totalOther++;
                 }else{
                     totalNull++;

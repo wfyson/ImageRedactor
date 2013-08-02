@@ -1,4 +1,0 @@
-TODO on Redactor
-
-With regards to changing exif metadata of images that we already have - may need to upload them right at the very start of the exercise and then change them on the server afterwards.
-

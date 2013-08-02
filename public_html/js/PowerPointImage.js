@@ -23,7 +23,6 @@ function PowerPointImage(name, format, data) {
     }
 
     function getImageMetaData(blob, format) {
-
         if (format === ".jpeg") {    //or perhaps others???
             //upload the images
             
@@ -33,7 +32,6 @@ function PowerPointImage(name, format, data) {
             var img = new Image();
             img.src = self.url;
             img.onload = function() {
-
                 //some of this may be deletable                                    
                 var canvas = document.createElement("canvas");
                 canvas.width = this.width;
@@ -70,7 +68,7 @@ function PowerPointImage(name, format, data) {
         //get exif
         if (self.format === ".jpeg" || self.format === ".jpg"){
         var reader = new FileReader();
-        reader.onload = function(e) {
+            reader.onload = function(e) {
             var string = e.target.result;
             var binaryFile = new BinaryFile(string);
             var exif = EXIF.readFromBinaryFile(binaryFile);

@@ -10,23 +10,32 @@ function PowerPointWriter(ppt) {
 
     self.readPowerPoint = function() {
         console.log("reading...");
-        //read all powerpoint entries
+         
+         //read all powerpoint entries
         zip.createReader(new zip.BlobReader(self.ppt.pptFile), function(reader) {
             // get all entries from the zip
             reader.getEntries(function(entries) {
-                if (entries.length) {
-                    self.totalEntries = entries.length;
-                    for (var i = 0; i < entries.length; i++) {
-                        entries[i].getData(new zip.BlobWriter(), function(data, entry) {
-                            self.entries.push(new EntryData(data, entry.filename));
-                            if (self.entries.length === entries.length) {
-                                self.writePowerPoint(self.entries);
-                            }
-                        });
-                    }
-                }
+                self.totalEntries = entries.length;
+                processEntries(entries, 0);
             });
+        }, function(error) {
+            console.log(error);
         });
+        
+        function processEntries(entries, i){
+            var entry = entries[i];
+            var entries = entries;
+            var i = i;
+            entry.getData(new zip.BlobWriter(), function(data, entry) {
+                self.entries.push(new EntryData(data, entry.filename));
+                i++;
+                if (i === self.totalEntries){
+                    self.writePowerPoint(self.entries);
+                }else{
+                    processEntries(entries, i);
+                }
+             });            
+        }
     };
 
     self.writePowerPoint = function(contents) {
@@ -91,7 +100,7 @@ function PowerPointWriter(ppt) {
                                                 };
                                             }
 
-                                            if (change.getType() === "cc") {                                  
+                                            if (change.getType() === "cc") {
                                                 var newSrc = change.newImageSrc;
                                                 var licence = change.licence;
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
@@ -177,13 +186,25 @@ function PowerPointWriter(ppt) {
                 } else {
                     blobURL = null;
                 }
-
-                $('#download').removeClass('disabled');
-                $('#download').attr('href', blobURL);
-                $('#download').attr('download', "super.pptx");
+                $('#downloadLoading').hide();
+                
+                var a = document.createElement('a');
+                $(a).attr('href', blobURL);
+                $(a).attr('download', "super.pptx");
+                $(a).append("super.pptx");
+                $('#download').append($(a));
                 console.log("done");
             });
         });
+    };
+
+    self.increment = function() {
+        self.entriesCount++;
+        //console.log(self.entriesCount);
+        if (self.entriesCount === self.totalEntries) {
+            console.log("writing");
+            self.writePowerPoint(self.entries);
+        }
     };
 }
 
