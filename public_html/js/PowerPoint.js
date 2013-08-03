@@ -18,7 +18,6 @@ function PowerPoint(pptFile){
     };
     
     self.addSlideImageRel = function(slideImageRel){
-        console.log(slideImageRel);
         self.slideImageRelArray.push(slideImageRel);
     };
     

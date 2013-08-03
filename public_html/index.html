@@ -403,6 +403,8 @@
                 redactor.addChange(placeholderChange);
                 $('#redactBtn').data("redactor", redactor);
 
+                updateOverview(redactor);
+                
                 $('#placeholderOverview').removeClass('hasFocus');
                 $('#placeholderOverview').fadeOut('400', function(){                    
                     $('#overview').addClass('hasFocus');
@@ -441,6 +443,8 @@
                 var redactor = $('#redactBtn').data("redactor");
                 redactor.addChange(flickrChange);
                 $('#redactBtn').data("redactor", redactor);
+                
+                updateOverview(redactor);
 
                 $('#flickrOverview').removeClass('hasFocus');
                 $('#flickrOverview').fadeOut('400', function(){                    
@@ -487,13 +491,63 @@
                 var redactor = $('#redactBtn').data("redactor");
                 redactor.addChange(ccChange);
                 $('#redactBtn').data("redactor", redactor);
+                
+                updateOverview(redactor);
 
-                $('#ccOverview').removeClass('hasFocus');
+                $('#ccOverview').removeClass('hasFocus');                
                 $('#ccOverview').fadeOut('400', function(){                    
                     $('#overview').addClass('hasFocus');
                     $('#overview').fadeIn(400);
                 });
             });
+            
+            function updateOverview(redactor){
+                //get initial numbers
+                var pptViewer = new PowerPointViewer(redactor.ppt);
+                var licenceNumbers = pptViewer.getNoLicencedImages();    
+                var totalNull = licenceNumbers.none;
+                var totalOther = licenceNumbers.other;
+                var totalCC = licenceNumbers.cc;                
+                
+                var changeArray = redactor.changeArray;
+                for (var i = 0; i < changeArray.length; i++){
+                     var licence = changeArray[i].licence;
+                     var oldLicence = changeArray[i].pptImage.licence;
+                     totalCC++;
+                     if (oldLicence === "CC0" ||
+                         oldLicence === "Attribution (CC BY)" ||
+                         oldLicence === "NoDerivs (CC BY-ND)" ||
+                         oldLicence === "NonCommercial, NoDerivs (CC BY-NC-ND)" ||
+                         oldLicence === "NonCommercial (CC BY-NC)" ||
+                         oldLicence === "NonCommercial, ShareAlike (CC BY-NC-SA)" ||
+                         oldLicence === "ShareAlike (CC BY-SA)") {
+                         totalCC--;
+                     }else{
+                         if (typeof oldLicence !== "undefined" && oldLicence !== "null" && oldLicence !== null){
+                             totalOther--;
+                         }else{
+                            totalNull--;
+                        }
+                    }                        
+                }
+                
+                var totalLicenced = totalOther + totalCC;
+                $('#licencedImages').empty(); 
+                $('#licencedImages').append(totalLicenced); 
+        
+                //overall licence
+                $('#overallLicence').empty();
+                $('#overallLicence').append("TODO..."); //need to work this out somehow
+                
+                var totalImages = redactor.ppt.pptImageArray.length;
+                var progressCC = (totalCC / totalImages) * 100;
+                var progressOther = (totalOther / totalImages) * 100;
+                var progressNull = (totalNull / totalImages) * 100;
+        
+                $('#progressCC').attr("style", "width:" + progressCC + "%");
+                $('#progressOther').attr("style", "width:" + progressOther + "%");
+                $('#progressNull').attr("style", "width:" + progressNull + "%");                    
+            }
 
 
             $(document).ready(function() {

@@ -15,7 +15,7 @@ function PowerPointViewer(powerpoint){
         $('#totalImages').append(totalImages);
         
         //licenced images
-        var licenceNumbers = self.getNoLicencedImages(powerpoint);    
+        var licenceNumbers = self.getNoLicencedImages();    
         var totalNull = licenceNumbers.none;
         var totalOther = licenceNumbers.other;
         var totalCC = licenceNumbers.cc;
@@ -25,8 +25,9 @@ function PowerPointViewer(powerpoint){
         $('#licencedImages').append(totalLicenced); 
         
         //overall licence
+        var lowest = self.getLowestLicence(licenceNumbers);        
         $('#overallLicence').empty();
-        $('#overallLicence').append("TODO..."); //need to work this out somehow
+        $('#overallLicence').append(lowest); //need to work this out somehow
         
         //calculate progress
         //console.log(totalCC); //1
@@ -104,7 +105,7 @@ function PowerPointViewer(powerpoint){
                 //display image licence
                 var width = pptImage.width;
                 var height = pptImage.height;
-                $('#imageSize').append(width + "x" + height);
+                $('#imageSize').append(pptImage.name + pptImage.format);
                 
                 //display image licence
                 var licence = pptImage.licence;
@@ -267,14 +268,16 @@ function PowerPointViewer(powerpoint){
         }
     };
     
-    self.getNoLicencedImages = function(powerpoint){
-        pptImageArray = powerpoint.pptImageArray;
+    self.getNoLicencedImages = function(){
+        var pptImageArray = self.powerpoint.pptImageArray;
         var totalCC = 0;
         var totalOther = 0;
         var totalNull = 0;
         for (var i=0; i<pptImageArray.length; i++){
             var pptImage = pptImageArray[i];
             var licence = pptImage.licence; 
+            console.log(pptImage.name + pptImage.format);
+            console.log(licence);
             if (licence === "CC0" ||
                 licence === "Attribution (CC BY)" ||
                 licence === "NoDerivs (CC BY-ND)" ||
@@ -292,6 +295,75 @@ function PowerPointViewer(powerpoint){
             }            
         }
         return new licenceNumbers(totalNull, totalOther, totalCC);        
+    };
+    
+    self.getLowestLicence = function(licenceNumbers){
+        if (licenceNumbers.none > 0){
+            return "Unknown Licence";
+        }else{
+            if (licenceNumbers.other > 0){
+                return "Custom Licence";
+            }else{
+                var images = self.powerpoint.pptImageArray; 
+                var lowest = 0;
+                for (var i=0; i<images.length; i++){
+                    var pptImage = images[i];
+                    var licence = pptImage.licence;
+                    if (licence === "CC0" && lowest === 0){
+                        lowest = 0;
+                    }else{
+                        if (licence === "Attribution (CC BY)" && lowest < 1){
+                            lowest = 1;
+                        }else{
+                            if (licence === "ShareAlike (CC BY-SA)" && lowest < 2){
+                            lowest = 2;
+                            }else{
+                                if (licence === "NoDerivs (CC BY-ND)" && lowest < 3){
+                                    lowest = 3;
+                                }else{
+                                    if (licence === "NonCommercial (CC BY-NC)" && lowest < 4){
+                                        lowest = 4;
+                                    }else{
+                                        if (licence === "NonCommercial, ShareAlike (CC BY-NC-SA)" && lowest < 5){
+                                            lowest = 5;
+                                        }else{
+                                            if (licence === "NonCommercial, NoDerivs (CC BY-NC-ND)" && lowest < 6){
+                                                lowest = 6;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                var result;
+                switch (lowest) {
+                    case 0:
+                        result = "CC0";
+                    break;
+                    case 1:
+                        result = "Attribution (CC BY)";
+                    break;
+                    case 2:
+                        result = "ShareAlike (CC BY-SA)";
+                    break;
+                    case 3:
+                        result = "NoDerivs (CC BY-ND)";
+                    break;
+                    case 4:
+                        result = "NonCommercial (CC BY-NC)";
+                    break;
+                    case 5:
+                        result = "NonCommercial, ShareAlike (CC BY-NC-SA)";
+                    break;
+                    case 6:
+                        result = "NonCommercial, NoDerivs (CC BY-NC-ND)";
+                    break;
+                }
+                return result;              
+            }
+        }
     };
     
     function licenceNumbers(none, other, cc){

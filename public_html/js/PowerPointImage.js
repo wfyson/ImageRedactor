@@ -1,4 +1,4 @@
-function PowerPointImage(name, format, data) {
+function PowerPointImage(name, format, data, callback) {
 
     var self = this;
     self.name = name;
@@ -10,6 +10,7 @@ function PowerPointImage(name, format, data) {
     self.width = null;
     self.height = null;
     getImageMetaData(data, format);
+    //self.callback = callback;
 
 
     function getImageURL(file) {
@@ -23,11 +24,12 @@ function PowerPointImage(name, format, data) {
     }
 
     function getImageMetaData(blob, format) {
+        console.log(self.name + self.format);
         if (format === ".jpeg") {    //or perhaps others???
             //upload the images
             
             var filename = self.name + self.format;
-            console.log(filename);  //may want to make this somewhat random and keep a reference to avoid conflicts
+            //console.log(filename);  //may want to make this somewhat random and keep a reference to avoid conflicts
 
             var img = new Image();
             img.src = self.url;
@@ -67,19 +69,21 @@ function PowerPointImage(name, format, data) {
         
         //get exif
         if (self.format === ".jpeg" || self.format === ".jpg"){
-        var reader = new FileReader();
+            var reader = new FileReader();
             reader.onload = function(e) {
-            var string = e.target.result;
-            var binaryFile = new BinaryFile(string);
-            var exif = EXIF.readFromBinaryFile(binaryFile);
-            self.licence = exif.Copyright;
-            self.author = exif.Artist;
-            //console.log(self.name + "..." + self.format + "..." + exif.Artist + "..." + exif.ImageDescription + "..." + exif.Copyright);
-        };
-        reader.readAsBinaryString(data);
+                var string = e.target.result;
+                var binaryFile = new BinaryFile(string);
+                var exif = EXIF.readFromBinaryFile(binaryFile);
+                self.licence = exif.Copyright;
+                self.author = exif.Artist;
+                //console.log(self.name + "..." + self.format + "..." + exif.Artist + "..." + exif.ImageDescription + "..." + exif.Copyright);         
+                callback(self);
+            };
+            reader.readAsBinaryString(data);
         }else{
             self.licence = "null";
             self.author = "null";
+            callback(self);
         }
     }
 

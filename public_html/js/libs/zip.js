@@ -529,7 +529,7 @@
                         //console.log(that);
 			function terminate(callback, param, param2) {
                                 //console.log(that);
-                                console.log("terminate");
+                                //console.log("terminate");
 				if (worker)
 					worker.terminate();
 				worker = null;
