@@ -25,7 +25,12 @@ function PowerPointViewer(powerpoint){
         $('#licencedImages').append(totalLicenced); 
         
         //overall licence
-        var lowest = self.getLowestLicence(licenceNumbers);        
+        var imageLicences = new Array();
+        var images = self.powerpoint.pptImageArray;
+        for (var i = 0; i < images.length; i++){
+            imageLicences.push(images[i].licence);
+        }
+        var lowest = self.getLowestLicence(totalNull, totalOther, imageLicences);        
         $('#overallLicence').empty();
         $('#overallLicence').append(lowest); //need to work this out somehow
         
@@ -297,22 +302,21 @@ function PowerPointViewer(powerpoint){
         return new licenceNumbers(totalNull, totalOther, totalCC);        
     };
     
-    self.getLowestLicence = function(licenceNumbers){
-        if (licenceNumbers.none > 0){
+    self.getLowestLicence = function(totalNull, totalOther, imageLicences){
+        if (totalNull > 0){
             return "Unknown Licence";
         }else{
-            if (licenceNumbers.other > 0){
+            if (totalOther > 0){
                 return "Custom Licence";
             }else{
-                var images = self.powerpoint.pptImageArray; 
                 var lowest = 0;
-                for (var i=0; i<images.length; i++){
-                    var pptImage = images[i];
-                    var licence = pptImage.licence;
+                for (var i=0; i<imageLicences.length; i++){
+                    var licence = imageLicences[i];
                     if (licence === "CC0" && lowest === 0){
                         lowest = 0;
                     }else{
                         if (licence === "Attribution (CC BY)" && lowest < 1){
+                            console.log("hello");
                             lowest = 1;
                         }else{
                             if (licence === "ShareAlike (CC BY-SA)" && lowest < 2){

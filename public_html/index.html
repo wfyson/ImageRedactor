@@ -511,7 +511,6 @@
                 
                 var changeArray = redactor.changeArray;
                 for (var i = 0; i < changeArray.length; i++){
-                     var licence = changeArray[i].licence;
                      var oldLicence = changeArray[i].pptImage.licence;
                      totalCC++;
                      if (oldLicence === "CC0" ||
@@ -536,8 +535,23 @@
                 $('#licencedImages').append(totalLicenced); 
         
                 //overall licence
+                var imageLicences = new Array();
+                var images = redactor.ppt.pptImageArray;
+                for (var j = 0; j < images.length; j++){
+                    var image = images[j];
+                    //console.log(image);
+                    var imageChange = redactor.getImageChange(image);
+                    //console.log(imageChange);
+                    if (imageChange !== false){
+                        imageLicences.push(imageChange.licence);
+                    }else{
+                        imageLicences.push(image.licence);
+                    }
+                }              
+                
+                var lowestLicence = pptViewer.getLowestLicence(totalNull, totalOther, imageLicences);                
                 $('#overallLicence').empty();
-                $('#overallLicence').append("TODO..."); //need to work this out somehow
+                $('#overallLicence').append(lowestLicence); //need to work this out somehow
                 
                 var totalImages = redactor.ppt.pptImageArray.length;
                 var progressCC = (totalCC / totalImages) * 100;

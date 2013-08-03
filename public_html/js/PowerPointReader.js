@@ -36,11 +36,8 @@ function PowerPointReader(pptFile) {
                     name = filename.substring(filename.lastIndexOf("/") + 1, filename.lastIndexOf("."));
                     format = filename.substr(filename.lastIndexOf("."));
                     pptImage = new PowerPointImage(name, format, data, function(pptImage){
-                        console.log("hello");
-                        self.powerpoint.addImage(pptImage);
-                    
+                        self.powerpoint.addImage(pptImage);                    
                         i++;
-                        console.log(i);
                         if (i === self.totalEntries){
                             self.displayPpt();
                         }else{

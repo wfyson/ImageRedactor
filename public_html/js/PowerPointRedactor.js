@@ -46,6 +46,16 @@ function PowerPointRedactor() {
         
     };
     
+    self.getImageChange = function(pptImage){
+        var changes = self.changeArray;
+        for (var i = 0; i < changes.length; i++){
+            var change = changes[i];
+            if (change.pptImage === pptImage)
+                return change;
+        }
+        return false;
+    };
+    
 }
 
 
