@@ -74,7 +74,7 @@ body .modal {
     margin-bottom: 2px;
     float: left;
     font-family: Arial,Helvetica,sans-serif;
-    font-size: 16px;
+    font-size: 18px;
     width: 100%;
 }
 
@@ -94,7 +94,7 @@ body .modal {
     margin-bottom: 2px;
     float: left;
     font-family: Arial,Helvetica,sans-serif;  
-    font-size: 16px;
+    font-size: 18px;
     
 }
 
@@ -109,6 +109,12 @@ body .modal {
 
 #placeholderArrow{
     margin-left: 30px;
+    margin-right: 30px;
+}
+
+#placeholderImage{
+    max-width: 35%;
+    max-height: 380px;
 }
 
 #flickrSearch{
