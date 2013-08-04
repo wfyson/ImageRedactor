@@ -110,7 +110,7 @@ function PowerPointViewer(powerpoint){
                 //display image licence
                 var width = pptImage.width;
                 var height = pptImage.height;
-                $('#imageSize').append(pptImage.name + pptImage.format);
+                $('#imageSize').append(width + " x " + height);
                 
                 //display image licence
                 var licence = pptImage.licence;

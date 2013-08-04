@@ -81,23 +81,19 @@ function PowerPointWriter(ppt) {
                                         if (!imageChanged) {
                                             imageChanged = true;
                                             if (change.getType() === "placeholder") {
-                                                var img = new Image();
-                                                img.src = change.newImageSrc;
-                                                img.onload = function() {
-                                                    //some of this may be deletable                                    
-                                                    var canvas = document.createElement("canvas");
-                                                    canvas.width = this.width;
-                                                    canvas.height = this.height;
-
-                                                    var ctx = canvas.getContext("2d");
-                                                    ctx.drawImage(this, 0, 0);
-
-                                                    var dataURL = canvas.toDataURL("image/jpeg");
-                                                    console.log(dataURL);
-                                                    zipWriter.add(fileName, new zip.Data64URIReader(dataURL), function() {
+                                                var newSrc = change.newImageSrc;
+                                                var licence = change.licence;
+                                                var phpUrl = "php/imagegrabber.php?callback=?";
+                                                $.getJSON(phpUrl, {src: newSrc, licence: licence},
+                                                function(res) {
+                                                    console.log(res);
+                                                    zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
+                                                        //update the global writer
+                                                        $('#download').data("writer", zipWriter);
                                                         add(fileIndex + 1);
-                                                    }, onProgress);
-                                                };
+                                                    }, function() {
+                                                    });
+                                                });       
                                             }
 
                                             if (change.getType() === "cc") {
