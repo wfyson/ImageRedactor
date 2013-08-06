@@ -342,6 +342,10 @@
 
             //perform flickr search
             $('#flickr').submit(function() {
+                //unbind any previous functions associated with the next and previous buttons for flickr
+                $("#flickrPrev").unbind('click');
+                $("#flickrNext").unbind('click');
+                
                 if ($('#tags').val() == "") {
                     //prompt user for search terms
                     $('#searchControl').addClass("error");
@@ -369,8 +373,9 @@
             $('#overviewBtn').click(function(){
                if (!$('#overviewBtn').hasClass("disabled")){
                    var redactor = $('#redactBtn').data("redactor");
-                   //update overview page
-                   //TODO
+                   
+                   //disable buttons
+                   $('.imageButtons').addClass("disabled");
                    
                    $('.hasFocus').fadeOut(400, function() {
                     //remove whatever did have focus
