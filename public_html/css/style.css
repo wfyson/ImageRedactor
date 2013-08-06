@@ -17,6 +17,19 @@ body .modal {
   margin: auto auto auto auto; /* place center */
 }
 
+#title{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#copyright{
+    margin-right: 20px;
+    float: right;
+    clear: both;   
+}
+
 #controlPanel{
     margin-top: 10px;
     margin-bottom: 10px;
@@ -79,7 +92,7 @@ body .modal {
 }
 
 #imageCarousel{
-    height: 100px;
+    height: 150px;
 }
 
 #overview{

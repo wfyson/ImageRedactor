@@ -1,4 +1,8 @@
 <?php
+    session_start();
+    
+    $id = session_id();    
     $name = $_GET['fname'];
-    unlink($name);
+    $path = $id . $name;
+    unlink($path);
 ?>

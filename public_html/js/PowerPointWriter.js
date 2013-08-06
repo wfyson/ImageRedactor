@@ -84,7 +84,7 @@ function PowerPointWriter(ppt) {
                                                 var newSrc = change.newImageSrc;
                                                 var licence = change.licence;
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
-                                                $.getJSON(phpUrl, {src: newSrc, licence: licence},
+                                                $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "placeholder"},
                                                 function(res) {
                                                     console.log(res);
                                                     zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
@@ -100,7 +100,7 @@ function PowerPointWriter(ppt) {
                                                 var newSrc = change.newImageSrc;
                                                 var licence = change.licence;
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
-                                                $.getJSON(phpUrl, {src: newSrc, licence: licence},
+                                                $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "cc"},
                                                 function(res) {
                                                     console.log(res);
                                                     zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
@@ -116,7 +116,7 @@ function PowerPointWriter(ppt) {
                                                 var newSrc = change.newImageSrc;
                                                 var licence = change.licence;
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
-                                                $.getJSON(phpUrl, {src: newSrc, licence: licence},
+                                                $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "flickr"},
                                                 function(res) {
                                                     zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
                                                         //update the global writer
