@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="graphics.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,8 +25,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="98.790095"
-     inkscape:cy="1036.5053"
+     inkscape:cx="63.134171"
+     inkscape:cy="1479.4598"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -81,5 +81,93 @@
          x="46.383663"
          y="-77.079094"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#87aade;font-family:Gulim;-inkscape-font-specification:Gulim Bold">alpha</tspan></text>
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#977901;stroke-width:0.13457670999999999;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;opacity:0.2300885"
+       id="rect3007"
+       width="1324.6405"
+       height="553.51801"
+       x="-512.32025"
+       y="-728.68256"
+       rx="29.718"
+       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-493.7778"
+       y="-663.19641"
+       id="text3009"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3011"
+         x="-493.7778"
+         y="-663.19641">1) <tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Courier New;-inkscape-font-specification:Courier New"
+   id="tspan3987">Select</tspan> PowerPoint presentation (.pptx file)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-489.32077"
+       y="-569.96344"
+       id="text3009-1"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3011-7"
+         x="-489.32077"
+         y="-569.96344">2) Choose image</tspan></text>
+    <g
+       id="g3086"
+       transform="translate(2256.6942,-839.27289)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text3009-1-4"
+         y="358.32254"
+         x="-2746.7258"
+         style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           y="358.32254"
+           x="-2746.7258"
+           id="tspan3011-7-0"
+           sodipodi:role="line">3) Choose redaction option: </tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3057"
+         y="416.44562"
+         x="-2672.8569"
+         style="font-size:48px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           y="416.44562"
+           x="-2672.8569"
+           id="tspan3059"
+           sodipodi:role="line">a) Add <tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Courier New;-inkscape-font-specification:Courier New"
+   id="tspan3981">Creative Commons</tspan> licence; or</tspan><tspan
+           id="tspan3061"
+           y="484.72519"
+           x="-2672.8569"
+           sodipodi:role="line">b) Find replacement from <tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Courier New;-inkscape-font-specification:Courier New"
+   id="tspan3983">Flickr</tspan>; or </tspan><tspan
+           id="tspan3063"
+           y="553.00476"
+           x="-2672.8569"
+           sodipodi:role="line">c) Replace image with <tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Courier New;-inkscape-font-specification:Courier New"
+   id="tspan3985">Placeholder</tspan>.</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-492.32492"
+       y="-208.70428"
+       id="text3009-1-4-9"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3011-7-0-4"
+         x="-492.32492"
+         y="-208.70428">4) Click <tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Courier New;-inkscape-font-specification:Courier New"
+   id="tspan3979">redact</tspan> to generate download link!</tspan></text>
   </g>
 </svg>

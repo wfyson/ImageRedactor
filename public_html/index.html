@@ -89,6 +89,10 @@
             <div id="imageOverview" class="row-fluid">
                 
                 <div id="imageWindow" class="span9">
+                
+                    <span id="instructions" class="hasFocus">
+                        <img src="img/instructions.png"/>
+                    </span>
                     
                     <span id="pptImage">
                         <span class="helper"></span>
@@ -149,7 +153,7 @@
                             <span class="arrow-primary-large" data-angle="90"></span>
                         </span>
                         <span id="placeholderNew">
-                            <img id="placeholderImage" src="img/placeholder.jpg"/>
+                            <img class="placeholderImage" src="img/placeholder.jpg"/>
                         </span>  
                         <button id="placeholderSave" class="btn btn-primary">Save</button>                    
                     </span>
@@ -389,21 +393,21 @@
             //placeholder button
             $('#placeholderBtn').click(function() {
                 if (!$('#placeholderBtn').hasClass("disabled")){
-                var pptImage = $('#imageOverview').data("pptImage");
+                    var pptImage = $('#imageOverview').data("pptImage");
 
-                //show old image
-                $('#placeholderOld').empty();
-                var oldImg = document.createElement('img');
-                $(oldImg).addClass("ppt-image");
-                $(oldImg).attr("src", pptImage.url);
-                $('#placeholderOld').append($(oldImg));
+                    //show old image
+                    $('#placeholderOld').empty();
+                    var oldImg = document.createElement('img');
+                    $(oldImg).addClass("ppt-image placeholderImage");
+                    $(oldImg).attr("src", pptImage.url);
+                    $('#placeholderOld').append($(oldImg));
 
-                $('.hasFocus').fadeOut(400, function() {
-                    //remove whatever did have focus
-                    $('.hasFocus').removeClass('hasFocus');
-                    $('#placeholderOverview').addClass('hasFocus');
-                    $('#placeholderOverview').fadeIn(400);
-                });
+                    $('.hasFocus').fadeOut(400, function() {
+                        //remove whatever did have focus
+                        $('.hasFocus').removeClass('hasFocus');
+                        $('#placeholderOverview').addClass('hasFocus');
+                        $('#placeholderOverview').fadeIn(400);
+                    });
                 }
             });
             
@@ -414,6 +418,12 @@
                                
                 var placeholderChange = new Change("placeholder", pptImage, newSrc, "CC0");
                 var redactor = $('#redactBtn').data("redactor");
+                
+                var oldChange = redactor.getImageChange(pptImage);
+                if (oldChange !== false){
+                    redactor.removeChange(oldChange);
+                }
+                
                 redactor.addChange(placeholderChange);
                 $('#redactBtn').data("redactor", redactor);
 
@@ -455,6 +465,12 @@
                                
                 var flickrChange = new Change("flickr", pptImage, flickrImage.getMediumUrl(), flickrImage.textLicence);
                 var redactor = $('#redactBtn').data("redactor");
+                
+                var oldChange = redactor.getImageChange(pptImage);
+                if (oldChange !== false){
+                    redactor.removeChange(oldChange);
+                }
+        
                 redactor.addChange(flickrChange);
                 $('#redactBtn').data("redactor", redactor);
                 
@@ -503,6 +519,12 @@
                 
                 var ccChange = new Change("cc", pptImage, newSrc, licence);
                 var redactor = $('#redactBtn').data("redactor");
+                
+                var oldChange = redactor.getImageChange(pptImage);
+                if (oldChange !== false){
+                    redactor.removeChange(oldChange);
+                }
+                
                 redactor.addChange(ccChange);
                 $('#redactBtn').data("redactor", redactor);
                 

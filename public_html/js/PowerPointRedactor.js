@@ -56,6 +56,26 @@ function PowerPointRedactor() {
         return false;
     };
     
+    self.removeChange = function(change){
+        var changes = self.changeArray;
+        for (var i = 0, length = changes.length; i < length; i++){
+            if (changes[i] === change){
+                self.changeArray.splice(i, 1);
+            }
+        }          
+        
+        //remove this change to every rel that it relates to
+        var rels = self.ppt.getImageRelArray();
+        for (var i = 0; i < rels.length; i++){
+            if (rels[i].image === change.pptImage.name){
+                rels[i].removeChange(change);
+            }
+        }       
+        
+        //update powerpoint
+        self.ppt.setImageRelArray(rels);
+    };
+    
 }
 
 

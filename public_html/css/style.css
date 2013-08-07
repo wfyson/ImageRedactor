@@ -129,7 +129,7 @@ body .modal {
     margin-right: 30px;
 }
 
-#placeholderImage{
+.placeholderImage{
     max-width: 35%;
     max-height: 380px;
 }

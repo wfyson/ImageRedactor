@@ -24,7 +24,7 @@ function PowerPointImage(name, format, data, callback) {
     }
 
     function getImageMetaData(blob, format) {
-        console.log(self.name + self.format);
+        //console.log(self.name + self.format);
         if (self.format === ".jpeg" || self.format === ".jpg"){    //or perhaps others???
             //upload the images
             

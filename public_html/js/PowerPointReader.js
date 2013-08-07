@@ -99,6 +99,15 @@ function PowerPointReader(pptFile) {
 
     self.displayPpt = function() {
         $('#redactBtn').data("redactor").setPpt(self.powerpoint);
+        
+        $('#redactBtn').addClass("disabled");
+        //console.log($('#download a'));
+        $('#download a').attr('href', '')
+            .attr('download', '')
+            .empty();
+                
+        
+        
         var powerPointViewer = new PowerPointViewer(self.powerpoint);
         powerPointViewer.displayOverview(self.powerpoint);
         powerPointViewer.displayImages(self.powerpoint);

@@ -185,9 +185,11 @@ function PowerPointWriter(ppt) {
                 $('#downloadLoading').hide();
                 
                 var a = document.createElement('a');
+                
+                var filename = ppt.pptFile.name.substring(0, ppt.pptFile.name.lastIndexOf(".pptx")) + "_redacted.pptx";
                 $(a).attr('href', blobURL);
-                $(a).attr('download', "super.pptx");
-                $(a).append("super.pptx");
+                $(a).attr('download', filename);
+                $(a).append(filename);
                 $('#download').append($(a));
                 console.log("done");
             });

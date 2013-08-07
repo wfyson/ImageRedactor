@@ -14,8 +14,9 @@
 
     
     if ($change === "cc"){
-        $src = $id . $src;
+        $src = "temp/" . $id . $src;
     }
+   
     
     
     

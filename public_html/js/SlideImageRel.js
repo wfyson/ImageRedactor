@@ -18,4 +18,8 @@ function SlideImageRel(slide, image) {
     self.getChange = function(){
         return self.change;
     };
+    
+    self.removeChange = function(){
+        self.change = null;
+    };
 }
