@@ -1,0 +1,27 @@
+---TODO---
+
+1) Detect PNG images and change file format if appropriate when downloading from Flickr/using placeholder.
+
+2) Detect background images and handle accordingly.
+
+3) Actually include attributions in new PPT.
+
+4) Removal of changes (needs UI, functionality already there from overwriting?).
+
+5) UI improvements (slide numbering). 
+
+---NICE TO HAVE---
+
+1) Allow users to specify how attribution works (?) - either footnote or slide of attributions?
+
+2) Present image sizes to user so can choose one they most like/fits their image.
+
+3) Image editing where appropriate (i.e. where "derivs" are allowed) - cropping of images to fit currently resolution (is cropping a derivation?).
+
+4) Metadata formats for other image types (if available) (already supported by Nihilogic library).
+
+5) Indication of changes that have been made in the carousel (maybe an icon to depict each one).
+
+6) Preview thumbnail of presentation somewhere... (but can't make this update seemingly).
+
+7) A logo!
