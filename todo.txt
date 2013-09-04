@@ -6,9 +6,7 @@
 
 3) Actually include attributions in new PPT.
 
-4) Removal of changes (needs UI, functionality already there from overwriting?).
-
-5) UI improvements (slide numbering). 
+4) UI improvements (slide numbering). 
 
 ---NICE TO HAVE---
 
@@ -20,8 +18,6 @@
 
 4) Metadata formats for other image types (if available) (already supported by Nihilogic library).
 
-5) Indication of changes that have been made in the carousel (maybe an icon to depict each one).
+5) Preview thumbnail of presentation somewhere... (but can't make this update seemingly).
 
-6) Preview thumbnail of presentation somewhere... (but can't make this update seemingly).
-
-7) A logo!
+6) A logo!

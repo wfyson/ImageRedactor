@@ -27,9 +27,9 @@ function PowerPointRedactor() {
         //update powerpoint
         self.ppt.setImageRelArray(rels);
         
-        //reload the viewer
-        var pptViewer = new PowerPointViewer(self.ppt);
-        pptViewer.displayImages(self.ppt);
+        //reload the viewer - not sure why this used to happen, seems unnecessary
+        //var pptViewer = new PowerPointViewer(self.ppt);
+        //pptViewer.displayImages(self.ppt);
     };
     
     self.setPpt = function(ppt){

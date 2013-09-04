@@ -38,11 +38,11 @@ function PowerPointViewer(powerpoint){
             $('#overallLicence').empty();
             $('#overallLicence').append(lowest); //need to work this out somehow
         
-        //calculate progress
-        //console.log(totalCC); //1
-        //console.log(totalOther); //1
-        //console.log(totalNull); //2
-        //console.log(totalImages); //4
+            //calculate progress
+            //console.log(totalCC);
+            //console.log(totalOther);
+            //console.log(totalNull);
+            //console.log(totalImages);
         
             var progressCC = (totalCC / totalImages) * 100;
             var progressOther = (totalOther / totalImages) * 100;
@@ -65,13 +65,14 @@ function PowerPointViewer(powerpoint){
         var pptImages = powerpoint.getPptImageArray();
         var carousel = $('#mycarousel').data('jcarousel');                
         for (var i = 0; i < pptImages.length; i++){
+            console.log("testing..." + i);
             //generate html for the image
             var pptImage = pptImages[i];
-            var html = '<img id="image' + i + '" src="' + pptImage.url + '" width="110" height="110" alt="' + pptImage.url + '" />';
+            var html = '<span id="' + pptImage.name + '"><img id="img' + i + '" src="' + pptImage.url + '" width="110" height="110" alt="' + pptImage.url + '" /><span class="changeIcon"/></span>';
             
             carousel.add(i+1, html);
             
-            $('#image' + i).click({param1: i, param2: pptImage}, function(event){
+            $('#img' + i).click({param1: i, param2: pptImage}, function(event){
                 var pptImage = event.data.param2;
                 
                 //clear previous info

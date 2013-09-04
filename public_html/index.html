@@ -428,7 +428,19 @@
                 var redactor = $('#redactBtn').data("redactor");
                 
                 var oldChange = redactor.getImageChange(pptImage);
-                if (oldChange !== false){
+                
+                if (oldChange !== false){                    
+                    switch (oldChange.type) {
+                        case "cc":                 
+                            $('#' + pptImage.name + ' .changeIcon').removeClass("ccChange");
+                        break;
+                        case "placeholder":
+                            $('#' + pptImage.name + ' .changeIcon').removeClass("placeholderchange");
+                        break;
+                        case "flickr":
+                            $('#' + pptImage.name + ' .changeIcon').removeClass("flickrchange");
+                        break;
+                    }    
                     redactor.removeChange(oldChange);
                 }
                 
@@ -436,6 +448,8 @@
                 $('#redactBtn').data("redactor", redactor);
 
                 updateOverview(redactor);
+                
+                $('#' + pptImage.name + ' .changeIcon').addClass("placeholderChange");
                 
                 $('#placeholderOverview').removeClass('hasFocus');
                 $('#placeholderOverview').fadeOut('400', function(){                    
@@ -453,7 +467,11 @@
                     redactor.removeChange(oldChange);
                 }                
                 $('#redactBtn').data("redactor", redactor);
+                
                 updateOverview(redactor);
+                
+                $('#' + pptImage.name + ' .changeIcon').removeClass("placeholderChange");
+                
                 $('#placeholderOverview').removeClass('hasFocus');
                 $('#placeholderOverview').fadeOut('400', function(){                    
                     $('#overview').addClass('hasFocus');
@@ -493,6 +511,17 @@
                 
                 var oldChange = redactor.getImageChange(pptImage);
                 if (oldChange !== false){
+                    switch (oldChange.type) {
+                        case "cc":                 
+                            $('#' + pptImage.name + ' .changeIcon').removeClass("ccChange");
+                        break;
+                        case "placeholder":
+                            $('#' + pptImage.name + ' .changeIcon').removeClass("placeholderchange");
+                        break;
+                        case "flickr":
+                            $('#' + pptImage.name + ' .changeIcon').removeClass("flickrchange");
+                        break;
+                    } 
                     redactor.removeChange(oldChange);
                 }
         
@@ -500,6 +529,8 @@
                 $('#redactBtn').data("redactor", redactor);
                 
                 updateOverview(redactor);
+
+                $('#' + pptImage.name + ' .changeIcon').addClass("flickrChange");
 
                 $('#flickrOverview').removeClass('hasFocus');
                 $('#flickrOverview').fadeOut('400', function(){                    
@@ -517,7 +548,11 @@
                     redactor.removeChange(oldChange);
                 }                
                 $('#redactBtn').data("redactor", redactor);
+                
                 updateOverview(redactor);
+                
+                $('#' + pptImage.name + ' .changeIcon').removeClass("flickrChange");
+                
                 $('#flickrOverview').removeClass('hasFocus');
                 $('#flickrOverview').fadeOut('400', function(){                    
                     $('#overview').addClass('hasFocus');
@@ -568,13 +603,26 @@
                 
                 var oldChange = redactor.getImageChange(pptImage);
                 if (oldChange !== false){
+                    switch (oldChange.type) {
+                        case "cc":                 
+                            $('#' + pptImage.name + ' .changeIcon').removeClass("ccChange");
+                        break;
+                        case "placeholder":
+                            $('#' + pptImage.name + ' .changeIcon').removeClass("placeholderchange");
+                        break;
+                        case "flickr":
+                            $('#' + pptImage.name + ' .changeIcon').removeClass("flickrchange");
+                        break;
+                    } 
                     redactor.removeChange(oldChange);
                 }
                 
                 redactor.addChange(ccChange);
-                $('#redactBtn').data("redactor", redactor);
+                $('#redactBtn').data("redactor", redactor);              
                 
-                updateOverview(redactor);
+                updateOverview(redactor);    
+                
+                $('#' + pptImage.name + ' .changeIcon').addClass("ccChange");
 
                 $('#ccOverview').removeClass('hasFocus');                
                 $('#ccOverview').fadeOut('400', function(){                    
@@ -592,7 +640,11 @@
                     redactor.removeChange(oldChange);
                 }                
                 $('#redactBtn').data("redactor", redactor);
+                                
                 updateOverview(redactor);
+            
+                $('#' + pptImage.name + ' .changeIcon').removeClass("ccChange");
+            
                 $('#ccOverview').removeClass('hasFocus');
                 $('#ccOverview').fadeOut('400', function(){                    
                     $('#overview').addClass('hasFocus');
