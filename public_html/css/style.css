@@ -124,6 +124,11 @@ body .modal {
     float: right;
 }
 
+#placeholderUndo{
+    float: right;
+    display: none;
+}
+
 #placeholderArrow{
     margin-left: 30px;
     margin-right: 30px;
@@ -174,6 +179,10 @@ body .modal {
     float: right;
 }
 
+#flickrUndo{
+    display: none;
+}
+
 #ccOverview{
     height: 100%;
     display: none;
@@ -194,6 +203,10 @@ body .modal {
 
 #ccSave{
     float: right;
+}
+
+#ccUndo{
+    display: none;
 }
 
 .image-viewer { 
@@ -309,4 +322,3 @@ body .modal {
     margin-right: auto;
     vertical-align: middle;    
 }
-

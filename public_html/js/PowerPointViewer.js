@@ -154,6 +154,10 @@ function PowerPointViewer(powerpoint){
                             
                                 //set the licence
                                 $("#ccSelector").val(imageChange.licence);
+                                
+                                //hide the save button and show the undo button
+                                $('#ccSave').hide();
+                                $('#ccUndo').show();
 
                                 $('#ccOverview').fadeIn(400);
                             });              
@@ -171,7 +175,10 @@ function PowerPointViewer(powerpoint){
                                 $(oldImg).attr("src", pptImage.url);
                                 $('#placeholderOld').append($(oldImg));   
                                 
-                                $('#placeholderOverview').fadeIn(400);
+                                $('#placeholderSave').hide();
+                                $('#placeholderUndo').show();
+                                
+                                $('#placeholderOverview').fadeIn(400);                                
                             });                        
                         break;
                         case "flickr":
@@ -193,6 +200,9 @@ function PowerPointViewer(powerpoint){
                                 $(newImg).addClass("flickrImage");
                                 $(newImg).attr("src", imageChange.newImageSrc);
                                 $('#flickrNew').append($(newImg));
+                                
+                                $('#flickrSave').hide();
+                                $('#flickrUndo').show();
                             
                                 $('#flickrOverview').addClass('hasFocus');
                                 $('#flickrOverview').fadeIn(400);

@@ -40,6 +40,11 @@ function FlickrResultsViewer(){
                 $(newImg).attr("src", flickrImage.getMediumUrl());
                 $('#flickrNew').append($(newImg));
 
+                //ensure undo button is absent and save button is visible
+                $('#flickrUndo').hide();
+                $('#flickrSave').show();
+                console.log("test");
+
                 $('#flickrSearch').fadeOut(400, function() {
                     //remove whatever did have focus
                     $('#flickrSearch').removeClass('hasFocus');

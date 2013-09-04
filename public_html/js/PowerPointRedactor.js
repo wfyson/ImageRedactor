@@ -70,7 +70,11 @@ function PowerPointRedactor() {
             if (rels[i].image === change.pptImage.name){
                 rels[i].removeChange(change);
             }
-        }       
+        }
+        
+        //if all changes have been removed disable redact button
+        if (self.changeArray.length === 0)
+            $('#redactBtn').addClass("disabled");
         
         //update powerpoint
         self.ppt.setImageRelArray(rels);

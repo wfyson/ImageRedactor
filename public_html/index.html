@@ -155,7 +155,8 @@
                         <span id="placeholderNew">
                             <img class="placeholderImage" src="img/placeholder.jpg"/>
                         </span>  
-                        <button id="placeholderSave" class="btn btn-primary">Save</button>                    
+                        <button id="placeholderSave" class="btn btn-primary">Save</button>
+                        <button id="placeholderUndo" class="btn btn-danger">Undo</button>
                     </span>
 
                     <!-- Flickr Search -->
@@ -246,7 +247,8 @@
                         </span>
                         <span id="flickrOverviewButtons">
                             <button id="flickrBack" class="btn btn-primary">Back</button>                    
-                            <button id="flickrSave" class="btn btn-primary">Save</button>   
+                            <button id="flickrSave" class="btn btn-primary">Save</button>
+                            <button id="flickrUndo" class="btn btn-danger">Undo</button>
                         </span>
                     </span>
 
@@ -254,8 +256,7 @@
                     <div id="ccOverview" class="row-fluid">
                         <div id="ccOld" class="span6">
                         </div>                        
-                        <div id="ccText" class="span6">
-                            
+                        <div id="ccText" class="span6">                            
                             <h2>Choose a CC Licence:</h2>
                             <p>For more information see: <a href="http://creativecommons.org/" target="_blank">Creative Commons</a></p>
                             <select id="ccSelector">
@@ -268,7 +269,10 @@
                                 <option>NonCommercial, NoDerivs (CC BY-NC-ND)</option>                                
                             </select>
                         </div>  
-                        <button id="ccSave" class="btn btn-primary">Save</button>                    
+                        <span class="overviewButtons">
+                            <button id="ccSave" class="btn btn-primary">Save</button>
+                            <button id="ccUndo" class="btn btn-danger">Undo</button>
+                        </span>
                     </div>
 
                 </div>
@@ -401,8 +405,12 @@
                     $(oldImg).addClass("ppt-image placeholderImage");
                     $(oldImg).attr("src", pptImage.url);
                     $('#placeholderOld').append($(oldImg));
-
+                    
                     $('.hasFocus').fadeOut(400, function() {
+                        //ensure save button is present and undo button is absent
+                        $('#placeholderUndo').hide();
+                        $('#placeholderSave').show();
+                                
                         //remove whatever did have focus
                         $('.hasFocus').removeClass('hasFocus');
                         $('#placeholderOverview').addClass('hasFocus');
@@ -434,6 +442,23 @@
                     $('#overview').addClass('hasFocus');
                     $('#overview').fadeIn(400);
                 });
+            });
+            
+            //placeholder undo
+            $('#placeholderUndo').click(function(){                
+                var redactor = $('#redactBtn').data("redactor");
+                var pptImage = $('#imageOverview').data("pptImage");
+                var oldChange = redactor.getImageChange(pptImage);
+                if (oldChange !== false){
+                    redactor.removeChange(oldChange);
+                }                
+                $('#redactBtn').data("redactor", redactor);
+                updateOverview(redactor);
+                $('#placeholderOverview').removeClass('hasFocus');
+                $('#placeholderOverview').fadeOut('400', function(){                    
+                    $('#overview').addClass('hasFocus');
+                    $('#overview').fadeIn(400);
+                });                      
             });
             
             //flickr button
@@ -483,6 +508,23 @@
                 });
             });
             
+            //flickr undo
+            $('#flickrUndo').click(function(){                
+                var redactor = $('#redactBtn').data("redactor");
+                var pptImage = $('#imageOverview').data("pptImage");
+                var oldChange = redactor.getImageChange(pptImage);
+                if (oldChange !== false){
+                    redactor.removeChange(oldChange);
+                }                
+                $('#redactBtn').data("redactor", redactor);
+                updateOverview(redactor);
+                $('#flickrOverview').removeClass('hasFocus');
+                $('#flickrOverview').fadeOut('400', function(){                    
+                    $('#overview').addClass('hasFocus');
+                    $('#overview').fadeIn(400);
+                });                      
+            });
+            
             //cc button
             $('#ccBtn').click(function() {
                 if (!$('#ccBtn').hasClass("disabled")){
@@ -499,8 +541,12 @@
                 var span = document.createElement('span');
                 $(span).addClass("helper");
                 $('#ccOld').append($(span)); 
-
+                
                 $('.hasFocus').fadeOut(400, function() {
+                    //ensure save button is present and undo button is absent
+                    $('#ccUndo').hide();
+                    $('#ccSave').show();
+                    
                     //remove whatever did have focus
                     $('.hasFocus').removeClass('hasFocus');
                     $('#ccOverview').addClass('hasFocus');
@@ -535,6 +581,23 @@
                     $('#overview').addClass('hasFocus');
                     $('#overview').fadeIn(400);
                 });
+            });
+            
+            //cc undo
+            $('#ccUndo').click(function(){                
+                var redactor = $('#redactBtn').data("redactor");
+                var pptImage = $('#imageOverview').data("pptImage");
+                var oldChange = redactor.getImageChange(pptImage);
+                if (oldChange !== false){
+                    redactor.removeChange(oldChange);
+                }                
+                $('#redactBtn').data("redactor", redactor);
+                updateOverview(redactor);
+                $('#ccOverview').removeClass('hasFocus');
+                $('#ccOverview').fadeOut('400', function(){                    
+                    $('#overview').addClass('hasFocus');
+                    $('#overview').fadeIn(400);
+                });                      
             });
             
             function updateOverview(redactor){
