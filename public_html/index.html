@@ -12,9 +12,11 @@
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-fileupload.min.css">
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-arrows.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-arrows.css">        
+        <link rel="stylesheet" type="text/css" href="css/jquery.Jcrop.css">         
         <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="stylesheet" type="text/css" href="css/skin.css">        
+        <link rel="stylesheet" type="text/css" href="css/skin.css"> 
+        
 
         <script type="text/javascript" src="js/libs/zip.js"></script>
         <script type="text/javascript" src="js/libs/zip-ext.js"></script>
@@ -32,6 +34,8 @@
         <script type="text/javascript" src="js/libs/jquery.jcarousel.js"></script>
         <script type="text/javascript" src="js/libs/jquery.jcarousel.min.js"></script>
 
+        <script type="text/javascript" src="js/libs/jquery.Jcrop.min.js"></script>     
+        
         <script type="text/javascript" src="js/PowerPointReader.js"></script>
         <script type="text/javascript" src="js/PowerPointImage.js"></script>
         <script type="text/javascript" src="js/PowerPoint.js"></script>
@@ -230,7 +234,13 @@
                             </div>
                             <div id="flickrNext" class="span1 disabled"></div>
                         </div>
-                    </div>  
+                    </div> 
+                    
+                    <!-- Flickr Cropper -->
+                    <span id="flickrCropper">
+                        <!--<span class="helper"></span>-->
+                        <span id="flickrCropping"></span> 
+                    </span>
 
                     <!-- Flickr Overview -->
                     <span id="flickrOverview">

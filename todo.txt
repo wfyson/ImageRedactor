@@ -2,22 +2,16 @@
 
 1) Detect PNG images and change file format if appropriate when downloading from Flickr/using placeholder.
 
-2) Detect background images and handle accordingly.
+2) Actually include attributions in new PPT.
 
-3) Actually include attributions in new PPT.
+3) Allow users to specify how attribution works (?) - either footnote or slide of attributions?
 
-4) UI improvements (slide numbering). 
+4) Present image sizes to user so can choose one they most like/fits their image.
 
----NICE TO HAVE---
+5) Image editing where appropriate (i.e. where "derivs" are allowed) - cropping of images to fit currently resolution (is cropping a derivation?).
 
-1) Allow users to specify how attribution works (?) - either footnote or slide of attributions?
+6) Metadata formats for other image types (if available) (already supported by Nihilogic library).
 
-2) Present image sizes to user so can choose one they most like/fits their image.
+7) Preview thumbnail of presentation somewhere... (but can't make this update seemingly).
 
-3) Image editing where appropriate (i.e. where "derivs" are allowed) - cropping of images to fit currently resolution (is cropping a derivation?).
-
-4) Metadata formats for other image types (if available) (already supported by Nihilogic library).
-
-5) Preview thumbnail of presentation somewhere... (but can't make this update seemingly).
-
-6) A logo!
+8) A logo and a name!

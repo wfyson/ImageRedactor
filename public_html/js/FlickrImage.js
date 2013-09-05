@@ -23,7 +23,6 @@ function FlickrImage(imageID) {
     
     self.setLicence = function(licence){
         self.licence = licence;
-        console.log("licencing");
         self.setTextLicence(licence);
     };
     

@@ -23,6 +23,34 @@ function FlickrResultsViewer(){
                 var flickrImage = event.data.param2;
                 var pptImage = $('#imageOverview').data("pptImage");
 
+                var licence = parseInt(flickrImage.licence);
+                if ((licence === 1) || 
+                    (licence === 2) || 
+                    (licence === 4) || 
+                    (licence === 5) || 
+                    (licence === 7)){
+                    
+                    //then we are allowed to make a derivation so present cropping page instead
+                    var newImg = document.createElement('img');
+                    $('#flickrCropping').append($(newImg)); 
+                    $(newImg).attr("id", "croppingImage");
+                    $(newImg).attr("src", flickrImage.getMediumUrl());
+                    $(newImg).Jcrop();
+                    
+                    //if(!!document.addEventListener){
+                    //    $(newImg).on("load", loadTest);
+                    //}else{
+                    //    $(newImg).get(0).attachEvent("onreadystatechange", loadTest);                   
+                    //} 
+                    
+                    $('#flickrSearch').fadeOut(400, function() {
+                        //remove whatever did have focus
+                        $('#flickrSearch').removeClass('hasFocus');
+                        $('#flickrCropper').addClass('hasFocus');
+                        $('#flickrCropper').fadeIn(400);
+                    });          
+                }else{
+
                 //save flickr image
                 $('#flickrOverview').data("flickrImage", flickrImage);
 
@@ -42,21 +70,29 @@ function FlickrResultsViewer(){
 
                 //ensure undo button is absent and save button is visible
                 $('#flickrUndo').hide();
-                $('#flickrSave').show();
-                console.log("test");
+                $('#flickrSave').show();                
 
                 $('#flickrSearch').fadeOut(400, function() {
                     //remove whatever did have focus
                     $('#flickrSearch').removeClass('hasFocus');
                     $('#flickrOverview').addClass('hasFocus');
                     $('#flickrOverview').fadeIn(400);
-                });                
+                });
+                }
             });
+            
             
             $('#flickr-loading').hide();
             $('#flickr-results').show();
         }
     };
+    
+    //function loadTest(event)
+    //{
+    //    $('#croppingImage').show();
+    //    $('#croppingImage').Jcrop();
+    //}
+  
     
 }
 

@@ -169,6 +169,11 @@ body .modal {
     width: 100%;
 }
 
+#flickrCropper{
+    display: none;
+    width: 100%;
+}
+
 #flickrOverview{
     display: none;
     width: 100%;
