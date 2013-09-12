@@ -36,6 +36,8 @@
 
         <script type="text/javascript" src="js/libs/jquery.Jcrop.min.js"></script>     
         
+        <script type="text/javascript" src="js/libs/pixastic.custom.js"></script>     
+        
         <script type="text/javascript" src="js/PowerPointReader.js"></script>
         <script type="text/javascript" src="js/PowerPointImage.js"></script>
         <script type="text/javascript" src="js/PowerPoint.js"></script>
@@ -449,12 +451,18 @@
                     
                     //show pixelated image
                     var canvas = document.createElement('canvas');
-                    var ctx = canvas.getContext('2d');
-                    var img = new Image();
-                    img.onload = function(){
-                        ctx.drawImage(img, 0, 0, 250, 300);
+                    
+                    var image = new Image();
+                    image.src = pptImage.url;        
+ 
+                    image.onload = function(){
+                        var options;
+                        var newimg = Pixastic.process(image, "mosaic", {blockSize:10}, function(newImage){
+                            var dataURL = newImage.toDataURL("image/jpeg");
+                            $('#placeholderPixelated').attr("src", dataURL);
+                        });
                     };
-                    img.src = pptImage.url;
+                    
                     
                     $('.hasFocus').fadeOut(400, function() {
                         //ensure save button is present and undo button is absent
@@ -472,7 +480,7 @@
             //placeholder save
             $('#placeholderSave').click(function() {                
                 var pptImage = $('#imageOverview').data("image");
-                var newSrc = 'img/placeholder.jpg';
+                var newSrc = $('#placeholderPixelated').attr("src");
                                
                 var placeholderChange = new Change("placeholder", pptImage, newSrc, "CC0");
                 var redactor = $('#redactBtn').data("redactor");

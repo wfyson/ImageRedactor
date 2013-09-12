@@ -81,7 +81,8 @@ function PowerPointWriter(ppt) {
                                         if (!imageChanged) {
                                             imageChanged = true;
                                             if (change.getType() === "placeholder") {
-                                                var newSrc = change.newImageSrc;
+                                                console.log("hello placeholder");
+                                                var newSrc = change.newImageSrc;                                                
                                                 var licence = change.licence;
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
                                                 $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "placeholder"},
@@ -97,7 +98,9 @@ function PowerPointWriter(ppt) {
                                             }
 
                                             if (change.getType() === "cc") {
+                                                console.log("hello cc");
                                                 var newSrc = change.newImageSrc;
+                                                console.log(newSrc);
                                                 var licence = change.licence;
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
                                                 $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "cc"},
