@@ -15,3 +15,5 @@
 7) Preview thumbnail of presentation somewhere... (but can't make this update seemingly).
 
 8) A logo and a name!
+
+9) Resizing of images in the PowerPoint around the centre of the image to ensure correct aspect ratio (ala ctrl-resize in PowerPoint).

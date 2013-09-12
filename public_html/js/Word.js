@@ -1,9 +1,9 @@
-function PowerPoint(pptFile){
+function Word(wordFile){
 
     var self = this;
-    self.pptImageArray = new Array();
+    self.wordImageArray = new Array();
     self.slideImageRelArray = new Array();  
-    self.pptFile = pptFile;
+    self.wordFile = wordFile;
 
     self.setImageRelArray = function(slideImageRelArray){
         self.slideImageRelArray = slideImageRelArray;
@@ -14,21 +14,21 @@ function PowerPoint(pptFile){
     };
 
     self.addImage = function(pptImage){
-        self.pptImageArray.push(pptImage);
+        self.wordImageArray.push(pptImage);
     };
     
     self.addSlideImageRel = function(slideImageRel){
         self.slideImageRelArray.push(slideImageRel);
     };
     
-    self.getPptImageArray = function(){
-        return self.pptImageArray;
+    self.getWordImageArray = function(){
+        return self.wordImageArray;
     };
     
-    self.getPptImage = function(imageName){
-        for (var i = 0; i < self.pptImageArray.length; i++){
-            if (self.pptImageArray[i].name === imageName){
-                return self.pptImageArray[i];
+    self.getWordImage = function(imageName){
+        for (var i = 0; i < self.wordImageArray.length; i++){
+            if (self.wordImageArray[i].name === imageName){
+                return self.wordImageArray[i];
             }
         }
         return false;
@@ -47,7 +47,7 @@ function PowerPoint(pptFile){
     };
     
     self.getImageArray = function(){
-        return self.pptImageArray;
+        return self.wordImageArray;
     };
 
 }

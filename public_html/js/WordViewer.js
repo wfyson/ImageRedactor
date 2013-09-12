@@ -1,24 +1,24 @@
-function PowerPointViewer(powerpoint){
+function WordViewer(word){
 
     var self = this;
-    self.powerpoint = powerpoint;
+    self.word = word;
     
     self.getDocument = function(){
-        return self.powerpoint;
+        return self.word;
     };
     
-    self.displayOverview = function(powerpoint){
+    self.displayOverview = function(word){
         $('.hasFocus').fadeOut(400, function() {
             //remove whatever did have focus
             $('.hasFocus').removeClass('hasFocus');
         
             //name
             $('#pptName').empty();       
-            $('#pptName').append(powerpoint.pptFile.name); 
+            $('#pptName').append(word.wordFile.name); 
         
             //total images
             $('#totalImages').empty();
-            var totalImages = powerpoint.pptImageArray.length;
+            var totalImages = word.wordImageArray.length;
             $('#totalImages').append(totalImages);
         
             //licenced images
@@ -33,7 +33,7 @@ function PowerPointViewer(powerpoint){
         
             //overall licence
             var imageLicences = new Array();
-            var images = self.powerpoint.pptImageArray;
+            var images = self.word.wordImageArray;
             for (var i = 0; i < images.length; i++){
                 imageLicences.push(images[i].licence);
             }
@@ -60,34 +60,34 @@ function PowerPointViewer(powerpoint){
         });
     };
     
-    self.displayImages = function(powerpoint){
+    self.displayImages = function(word){
        
         //update reference to powerpoint
-        self.powerpoint = powerpoint;
+        self.word = word;
         
-        var pptImages = powerpoint.getPptImageArray();
+        var wordImages = word.getWordImageArray();
         var carousel = $('#mycarousel').data('jcarousel');                
-        for (var i = 0; i < pptImages.length; i++){
+        for (var i = 0; i < wordImages.length; i++){
             console.log("testing..." + i);
             //generate html for the image
-            var pptImage = pptImages[i];
-            var html = '<span id="' + pptImage.name + '"><img id="img' + i + '" src="' + pptImage.url + '" width="110" height="110" alt="' + pptImage.url + '" /><span class="changeIcon"/></span>';
+            var wordImage = wordImages[i];
+            var html = '<span id="' + wordImage.name + '"><img id="img' + i + '" src="' + wordImage.url + '" width="110" height="110" alt="' + wordImage.url + '" /><span class="changeIcon"/></span>';
             
             carousel.add(i+1, html);
             
-            $('#img' + i).click({param1: i, param2: pptImage}, function(event){
-                var pptImage = event.data.param2;
+            $('#img' + i).click({param1: i, param2: wordImage}, function(event){
+                var wordImage = event.data.param2;
                 
                 //clear previous info
                 $('#pptImage').empty();
                 $('#imageLicence').empty();
                 $('#imageAuthor').empty();
                 $('#imageSlides').empty();
-                $('#imageSize').empty();                 
+                $('#imageSize').empty(); 
                 $('#imageFormat').empty();
                 
                 //attach image to the div to get later
-                $('#imageOverview').data("image", pptImage);
+                $('#imageOverview').data("image", wordImage);
                 
                 //make buttons work
                 $('.imageButtons').removeClass("disabled");
@@ -98,42 +98,42 @@ function PowerPointViewer(powerpoint){
                 $('#pptImage').append($(span));  
                 
                 //display the slide numbers - TODO: ensure slides are in correct order!
-                var rels = self.powerpoint.getImageRels(pptImage.name);
-                var slides = "";
-                for (var i = 0, length = rels.length-1; i < length; i++){
-                    var slideString = rels[i].slide;
+                var rels = self.word.getImageRels(wordImage.name);
+                var slides = "N/A";
+                //for (var i = 0, length = rels.length-1; i < length; i++){
+                //    var slideString = rels[i].slide;
                     //substring here removes the word "slide" from the rel's slide property                   
-                    slides = slides + slideString.substring(5) + ", "; 
-                }                
+                //    slides = slides + slideString.substring(5) + ", "; 
+                //}                
                 
-                slides = slides + rels[rels.length-1].slide.substring(5);
+                //slides = slides + rels[rels.length-1].slide.substring(5);
                 $('#imageSlides').append(slides);
                 
                 //display image licence
-                var width = pptImage.width;
-                var height = pptImage.height;
+                var width = wordImage.width;
+                var height = wordImage.height;
                 $('#imageSize').append(width + " x " + height);
                 
                 //display image licence
-                var licence = pptImage.licence;
+                var licence = wordImage.licence;
                 if (typeof licence === "undefined")
                     licence = "Unknown";
                 $('#imageLicence').append(licence);
 
                 //display image author
-                var author = pptImage.author;
+                var author = wordImage.author;
                 if (typeof author === "undefined")
                     author = "Unknown";
                 $('#imageAuthor').append(author);
                 
                 //display image format
-                var format = pptImage.format;
+                var format = wordImage.format;
                 if (typeof format === "undefined")
                     format = "Unknown";
                 $('#imageFormat').append(format);
                 
                 //enable/disable buttons where appropriate
-                if (pptImage.format === ".png"){
+                if (wordImage.format === ".png"){
                     $('#ccBtn').addClass("disabled");
                 }else{
                     $('#ccBtn').removeClass("disabled");
@@ -141,7 +141,8 @@ function PowerPointViewer(powerpoint){
                 
                 //display the image  
                 var redactor = $('#redactBtn').data("redactor");
-                var imageChange = redactor.getImageChange(pptImage);
+                var imageChange = redactor.getImageChange(wordImage);
+                console.log()
                 if (imageChange !== false){
                     //display the change appropriately.
                     switch (imageChange.type) {
@@ -155,7 +156,7 @@ function PowerPointViewer(powerpoint){
                                 $('#ccOld').empty();
                                 var oldImg = document.createElement('img');
                                 $(oldImg).addClass("ppt-image");
-                                $(oldImg).attr("src", pptImage.url);
+                                $(oldImg).attr("src", wordImage.url);
                                 $('#ccOld').append($(oldImg));
                 
                                 //add the span helper for centering images
@@ -183,7 +184,7 @@ function PowerPointViewer(powerpoint){
                                 $('#placeholderOld').empty();
                                 var oldImg = document.createElement('img');
                                 $(oldImg).addClass("ppt-image placeholderImage");
-                                $(oldImg).attr("src", pptImage.url);
+                                $(oldImg).attr("src", wordImage.url);
                                 $('#placeholderOld').append($(oldImg));   
                                 
                                 $('#placeholderSave').hide();
@@ -202,7 +203,7 @@ function PowerPointViewer(powerpoint){
                                 $('#flickrOld').empty();
                                 var oldImg = document.createElement('img');
                                 $(oldImg).addClass("flickrImage");
-                                $(oldImg).attr("src", pptImage.url);
+                                $(oldImg).attr("src", wordImage.url);
                                 $('#flickrOld').append($(oldImg));
                 
                                 //show new image
@@ -223,7 +224,7 @@ function PowerPointViewer(powerpoint){
                 }else{               
                     var img = document.createElement('img');
                     $(img).addClass("ppt-image");
-                    $(img).attr("src", pptImage.url);
+                    $(img).attr("src", wordImage.url);
                     $('#pptImage').append($(img));
                     
                     if ($('.hasFocus').length === 0){
@@ -244,7 +245,7 @@ function PowerPointViewer(powerpoint){
                 }
             });
         }
-        carousel.size(pptImages.length);
+        carousel.size(wordImages.length);
         
         
         /*
@@ -309,7 +310,7 @@ function PowerPointViewer(powerpoint){
     };
     
     //creates a box for showing images
-    self.pptImageViewer = function(pptImage){
+    self.wordImageViewer = function(pptImage){
         var container = document.createElement("div");
         $(container).addClass("image-viewer");
         
@@ -335,7 +336,7 @@ function PowerPointViewer(powerpoint){
         var replaceBtn = document.createElement("button");
         $(replaceBtn).addClass("replace-button btn btn-primary");
         $(replaceBtn).append("Flickr Image");
-        $(replaceBtn).click({param1: pptImage}, function(event){           
+        $(replaceBtn).click({param1: wordImage}, function(event){           
             flickr(event.data.param1);
         });        
         $(buttonContainer).append($(replaceBtn));
@@ -344,7 +345,7 @@ function PowerPointViewer(powerpoint){
         var placeholderBtn = document.createElement("button");
         $(placeholderBtn).addClass("placeholder-button btn btn-primary");
         $(placeholderBtn).append("Placeholder");
-        $(placeholderBtn).click({param1: pptImage}, function(event){           
+        $(placeholderBtn).click({param1: wordImage}, function(event){           
             placeholder(event.data.param1);
         });
         $(buttonContainer).append($(placeholderBtn));
@@ -358,25 +359,25 @@ function PowerPointViewer(powerpoint){
     //creates a box for showing images
     self.changeImageViewer = function(changeImage){
         if (changeImage !== null){
-        var container = document.createElement("div");
+            var container = document.createElement("div");
 
-        var img = document.createElement('img');
-        $(img).attr("src", changeImage.newImageSrc);
+            var img = document.createElement('img');
+            $(img).attr("src", changeImage.newImageSrc);
 
-        $(container).append($(img));
+            $(container).append($(img));
 
-        return $(container);
+            return $(container);
         }
     };
     
     self.getNoLicencedImages = function(){
-        var pptImageArray = self.powerpoint.pptImageArray;
+        var wordImageArray = self.word.wordImageArray;
         var totalCC = 0;
         var totalOther = 0;
         var totalNull = 0;
-        for (var i=0; i<pptImageArray.length; i++){
-            var pptImage = pptImageArray[i];
-            var licence = pptImage.licence; 
+        for (var i=0; i<wordImageArray.length; i++){
+            var wordImage = wordImageArray[i];
+            var licence = wordImage.licence; 
             //console.log(pptImage.name + pptImage.format);
             //console.log(licence);
             if (licence === "CC0" ||

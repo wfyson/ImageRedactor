@@ -21,8 +21,9 @@ function FlickrResultsViewer(){
             $("#flickr" + i).click({param1: i, param2: flickrImage}, function(event){
                 var i = event.data.param1;
                 var flickrImage = event.data.param2;
-                var pptImage = $('#imageOverview').data("pptImage");
+                var pptImage = $('#imageOverview').data("image");
 
+                /*
                 var licence = parseInt(flickrImage.licence);
                 if ((licence === 1) || 
                     (licence === 2) || 
@@ -32,8 +33,8 @@ function FlickrResultsViewer(){
                     
                     //then we are allowed to make a derivation so present cropping page instead
                     var newImg = document.createElement('img');
-                    $('#flickrCropping').append($(newImg)); 
-                    $(newImg).attr("id", "croppingImage");
+                    $('#croppingImage').append($(newImg)); 
+                    $(newImg).attr("id", "cropper");
                     $(newImg).attr("src", flickrImage.getMediumUrl());
                     $(newImg).Jcrop();
                     
@@ -50,7 +51,8 @@ function FlickrResultsViewer(){
                         $('#flickrCropper').fadeIn(400);
                     });          
                 }else{
-
+                */
+                
                 //save flickr image
                 $('#flickrOverview').data("flickrImage", flickrImage);
 
@@ -78,7 +80,7 @@ function FlickrResultsViewer(){
                     $('#flickrOverview').addClass('hasFocus');
                     $('#flickrOverview').fadeIn(400);
                 });
-                }
+                //}
             });
             
             
@@ -89,8 +91,8 @@ function FlickrResultsViewer(){
     
     //function loadTest(event)
     //{
-    //    $('#croppingImage').show();
-    //    $('#croppingImage').Jcrop();
+    //    $('#cropper').show();
+    //    $('#cropper').Jcrop();
     //}
   
     

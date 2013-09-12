@@ -120,6 +120,10 @@ body .modal {
     background-image: url(placeholderIcon.png);
 }
 
+.changeIcon.licensed{    
+    background-image: url(licensedIcon.png);
+}
+
 #overview{
     display: none;
     width: 100%; 
@@ -164,6 +168,12 @@ body .modal {
     max-height: 380px;
 }
 
+#placeholderCanvas{
+    max-height: 340px;
+    max-width: 35%;
+    vertical-align: middle;
+}
+
 #flickrSearch{
     display: none;
     width: 100%;
@@ -172,6 +182,16 @@ body .modal {
 #flickrCropper{
     display: none;
     width: 100%;
+}
+
+#croppingImage{
+    width: 60%;
+}
+
+#croppingOptions{
+    margin-top: 100px;
+    width: 20%;
+    text-align: left;
 }
 
 #flickrOverview{
@@ -351,4 +371,10 @@ body .modal {
     margin-left: auto;
     margin-right: auto;
     vertical-align: middle;    
+}
+
+.placeholderHelper{
+    display: inline-block;
+    height: 340px;
+    vertical-align: middle;
 }

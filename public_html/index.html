@@ -51,6 +51,13 @@
         <script type="text/javascript" src="js/FlickrReader.js"></script>
         <script type="text/javascript" src="js/FlickrImage.js"></script>
         <script type="text/javascript" src="js/FlickrResultsViewer.js"></script>
+        
+        <script type="text/javascript" src="js/Word.js"></script>
+        <script type="text/javascript" src="js/WordImage.js"></script>
+        <script type="text/javascript" src="js/WordReader.js"></script>
+        <script type="text/javascript" src="js/WordRedactor.js"></script>
+        <script type="text/javascript" src="js/WordViewer.js"></script>
+        <script type="text/javascript" src="js/WordWriter.js"></script>
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -80,13 +87,8 @@
                 <button id="redactBtn" type="submit" class="btn disabled">Redact...</button>
                 <span id="download">
                     <img id="downloadLoading" src="img/ajax-loader-small.gif"/>
-                    <!--<a id="download" href="#"></a>-->
                 </span>
-                <!--<input type="file" id="files" name="files[]" multiple/>
-                <output id="list"></output>-->
             </div>
-            <!--<div id="imageList" class="row-fluid">
-            </div>-->
             
             <div id="test"></div>
 
@@ -150,14 +152,15 @@
                     
                     <!-- placeholder -->
                     <span id="placeholderOverview">                        
-                        <span class="helper"></span>
+                        <span class="placeholderHelper"></span>
                         <span id="placeholderOld">
                         </span>
                         <span id="placeholderArrow">
                             <span class="arrow-primary-large" data-angle="90"></span>
                         </span>
                         <span id="placeholderNew">
-                            <img class="placeholderImage" src="img/placeholder.jpg"/>
+                            <!--<canvas id="placeholderCanvas"></canvas>-->
+                            <img id="placeholderPixelated" class="placeholderImage" src="img/placeholder.jpg"/>
                         </span>  
                         <button id="placeholderSave" class="btn btn-primary">Save</button>
                         <button id="placeholderUndo" class="btn btn-danger">Undo</button>
@@ -237,10 +240,20 @@
                     </div> 
                     
                     <!-- Flickr Cropper -->
-                    <span id="flickrCropper">
-                        <!--<span class="helper"></span>-->
-                        <span id="flickrCropping"></span> 
-                    </span>
+                    <!--
+                    <div id="flickrCropper">
+                        <!--<span class="helper"></span>
+                        <span id="croppingImage" class="span6"></span> 
+                        <div id="croppingOptions" class="span6">
+                            <label class="checkbox">
+                                <input id="cropCheckbox" type="checkbox"> Keep old proportions
+                            </label>                           
+                        </div>  
+                        <span class="overviewButtons">
+                            <button id="cropperBack" class="btn btn-primary">Back</button>
+                            <button id="cropperContinue" class="btn btn-primary">Continue</button>                            
+                        </span>
+                    </div>-->
 
                     <!-- Flickr Overview -->
                     <span id="flickrOverview">
@@ -319,6 +332,13 @@
                             <span id="imageSize">
                             </span>
                         </span>
+                        <span class="imageField">
+                            <span>
+                                Format:
+                            </span>
+                            <span id="imageFormat">
+                            </span>
+                        </span>
                     </div>
                     <div id="buttons">
                         <button id="overviewBtn" class="btn btn-primary btn-block imageButtons disabled">Overview</button>                        
@@ -341,9 +361,7 @@
         </div>
 
         <script>
-            //file loading functionality
-            var powerpointRedactor = new PowerPointRedactor();
-            $('#redactBtn').data("redactor", powerpointRedactor);
+            //file loading functionality            
 
             function handleFileSelect(evt) {
 
@@ -351,8 +369,21 @@
 
                 for (var i = 0, f; f = files[i]; i++) {
                     //create a PowerPointReader for the file
-                    var pptReader = new PowerPointReader(f);
-                    powerpoint = pptReader.readPowerPoint();
+                    if ((f.name.substr(f.name.lastIndexOf("."))) === ".pptx"){                        
+                        var pptReader = new PowerPointReader(f);
+                        powerpoint = pptReader.readPowerPoint();
+                        //create a redactor
+                        var powerpointRedactor = new PowerPointRedactor();
+                        $('#redactBtn').data("redactor", powerpointRedactor);
+                    }else{
+                        if((f.name.substr(f.name.lastIndexOf("."))) === ".docx"){                        
+                            var wordReader = new WordReader(f);
+                            word = wordReader.readWord();
+                            //create a redactor
+                            var wordRedactor = new WordRedactor();
+                            $('#redactBtn').data("redactor", wordRedactor);
+                        }
+                    }
                 }
             }
 
@@ -364,7 +395,7 @@
                 $("#flickrPrev").unbind('click');
                 $("#flickrNext").unbind('click');
                 
-                if ($('#tags').val() == "") {
+                if ($('#tags').val() === "") {
                     //prompt user for search terms
                     $('#searchControl').addClass("error");
                 } else {
@@ -407,7 +438,7 @@
             //placeholder button
             $('#placeholderBtn').click(function() {
                 if (!$('#placeholderBtn').hasClass("disabled")){
-                    var pptImage = $('#imageOverview').data("pptImage");
+                    var pptImage = $('#imageOverview').data("image");
 
                     //show old image
                     $('#placeholderOld').empty();
@@ -415,6 +446,15 @@
                     $(oldImg).addClass("ppt-image placeholderImage");
                     $(oldImg).attr("src", pptImage.url);
                     $('#placeholderOld').append($(oldImg));
+                    
+                    //show pixelated image
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+                    var img = new Image();
+                    img.onload = function(){
+                        ctx.drawImage(img, 0, 0, 250, 300);
+                    };
+                    img.src = pptImage.url;
                     
                     $('.hasFocus').fadeOut(400, function() {
                         //ensure save button is present and undo button is absent
@@ -431,7 +471,7 @@
             
             //placeholder save
             $('#placeholderSave').click(function() {                
-                var pptImage = $('#imageOverview').data("pptImage");
+                var pptImage = $('#imageOverview').data("image");
                 var newSrc = 'img/placeholder.jpg';
                                
                 var placeholderChange = new Change("placeholder", pptImage, newSrc, "CC0");
@@ -471,7 +511,7 @@
             //placeholder undo
             $('#placeholderUndo').click(function(){                
                 var redactor = $('#redactBtn').data("redactor");
-                var pptImage = $('#imageOverview').data("pptImage");
+                var pptImage = $('#imageOverview').data("image");
                 var oldChange = redactor.getImageChange(pptImage);
                 if (oldChange !== false){
                     redactor.removeChange(oldChange);
@@ -499,8 +539,19 @@
                     $('#flickrSearch').fadeIn(400);
                 });
                 }
-            });            
-
+            });         
+            
+            //cropping back button (from cropper to search results)
+            /*
+            $('#cropperBack').click(function(){
+                $('#flickrCropper').fadeOut(400, function() {
+                    //remove whatever did have focus
+                    $('#flickrCropper').removeClass('hasFocus');
+                    $('#flickrSearch').addClass('hasFocus');
+                    $('#flickrSearch').fadeIn(400);
+                });                
+            });
+            */
             //flickrBack button (from overview to search results)
             $('#flickrBack').click(function(){
                 $('#flickrOverview').fadeOut(400, function() {
@@ -513,7 +564,7 @@
             
             //flickrSave button
             $('#flickrSave').click(function(){
-                var pptImage = $('#imageOverview').data("pptImage");
+                var pptImage = $('#imageOverview').data("image");
                 var flickrImage = $('#flickrOverview').data("flickrImage");
                                
                 var flickrChange = new Change("flickr", pptImage, flickrImage.getMediumUrl(), flickrImage.textLicence);
@@ -552,7 +603,7 @@
             //flickr undo
             $('#flickrUndo').click(function(){                
                 var redactor = $('#redactBtn').data("redactor");
-                var pptImage = $('#imageOverview').data("pptImage");
+                var pptImage = $('#imageOverview').data("image");
                 var oldChange = redactor.getImageChange(pptImage);
                 if (oldChange !== false){
                     redactor.removeChange(oldChange);
@@ -573,7 +624,7 @@
             //cc button
             $('#ccBtn').click(function() {
                 if (!$('#ccBtn').hasClass("disabled")){
-                var pptImage = $('#imageOverview').data("pptImage");
+                var pptImage = $('#imageOverview').data("image");
 
                 //show old image
                 $('#ccOld').empty();
@@ -602,7 +653,7 @@
             
             //cc save
             $('#ccSave').click(function() {                
-                var pptImage = $('#imageOverview').data("pptImage");
+                var pptImage = $('#imageOverview').data("image");
                 var newSrc = pptImage.name + pptImage.format;
                 
                 var selector = document.getElementById("ccSelector");
@@ -644,7 +695,7 @@
             //cc undo
             $('#ccUndo').click(function(){                
                 var redactor = $('#redactBtn').data("redactor");
-                var pptImage = $('#imageOverview').data("pptImage");
+                var pptImage = $('#imageOverview').data("image");
                 var oldChange = redactor.getImageChange(pptImage);
                 if (oldChange !== false){
                     redactor.removeChange(oldChange);
@@ -664,8 +715,15 @@
             
             function updateOverview(redactor){
                 //get initial numbers
-                var pptViewer = new PowerPointViewer(redactor.ppt);
-                var licenceNumbers = pptViewer.getNoLicencedImages();    
+                var viewer;
+                if (redactor instanceof PowerPointRedactor){
+                    viewer = new PowerPointViewer(redactor.ppt);
+                }else{
+                    if (redactor instanceof WordRedactor){
+                        viewer = new WordViewer(redactor.word);
+                    }
+                }
+                var licenceNumbers = viewer.getNoLicencedImages();    
                 var totalNull = licenceNumbers.none;
                 var totalOther = licenceNumbers.other;
                 var totalCC = licenceNumbers.cc;                
@@ -697,7 +755,7 @@
         
                 //overall licence
                 var imageLicences = new Array();
-                var images = redactor.ppt.pptImageArray;
+                var images = viewer.getDocument().getImageArray();
                 for (var j = 0; j < images.length; j++){
                     var image = images[j];
                     //console.log(image);
@@ -710,11 +768,11 @@
                     }
                 }              
                 
-                var lowestLicence = pptViewer.getLowestLicence(totalNull, totalOther, imageLicences);                
+                var lowestLicence = viewer.getLowestLicence(totalNull, totalOther, imageLicences);                
                 $('#overallLicence').empty();
                 $('#overallLicence').append(lowestLicence); //need to work this out somehow
                 
-                var totalImages = redactor.ppt.pptImageArray.length;
+                var totalImages = images.length;
                 var progressCC = (totalCC / totalImages) * 100;
                 var progressOther = (totalOther / totalImages) * 100;
                 var progressNull = (totalNull / totalImages) * 100;
