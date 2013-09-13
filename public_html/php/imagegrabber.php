@@ -16,10 +16,11 @@
     if ($change === "cc"){
         $src = "temp/" . $id . $src;
     }
+    
+    if ($change === "placeholder"){
+        $src = "temp/" . $id . $src;
+    }
    
-    
-    
-    
     $jpeg = new PelJpeg($src);
     
     $exif = $jpeg->getExif();

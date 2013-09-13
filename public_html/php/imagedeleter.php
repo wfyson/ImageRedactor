@@ -1,8 +1,10 @@
 <?php
     session_start();
-    
-    $id = session_id();    
-    $name = $_GET['fname'];
-    $path = "temp/" . $id . $name;
-    unlink($path);
+
+    $files = glob("temp/*");
+
+    foreach($files as $file){ // iterate files
+        if(is_file($file))
+        unlink($file); // delete file
+    }
 ?>

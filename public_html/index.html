@@ -346,7 +346,7 @@
                         <button id="overviewBtn" class="btn btn-primary btn-block imageButtons disabled">Overview</button>                        
                         <button id="flickrBtn" class="btn btn-success btn-block imageButtons disabled">Flickr</button>
                         <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
-                        <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Placeholder</button>
+                        <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Obfuscate</button>
                     </div>
                 </div>                
             </div>
@@ -449,17 +449,30 @@
                     $(oldImg).attr("src", pptImage.url);
                     $('#placeholderOld').append($(oldImg));
                     
-                    //show pixelated image
-                    var canvas = document.createElement('canvas');
-                    
+                    //show pixelated image                    
                     var image = new Image();
-                    image.src = pptImage.url;        
- 
+                    image.src = pptImage.url;
+                    var pixelatedFileName = "_pixelated_" + pptImage.name +  pptImage.format;
                     image.onload = function(){
                         var options;
-                        var newimg = Pixastic.process(image, "mosaic", {blockSize:10}, function(newImage){
+                        var newimg = Pixastic.process(image, "mosaic", {blockSize:20}, function(newImage){
                             var dataURL = newImage.toDataURL("image/jpeg");
                             $('#placeholderPixelated').attr("src", dataURL);
+                            
+                            //save pixelated image to server
+                            var postURL = (dataURL.substr(dataURL.lastIndexOf('base64') + 7));
+
+                            var fd = new FormData();
+                            fd.append('fname', pixelatedFileName);
+                            fd.append('data', postURL);
+                            $.ajax({
+                                type: 'POST',
+                                url: 'php/imagewriter.php',
+                                data: fd,
+                                processData: false,
+                                contentType: false
+                            });
+                            
                         });
                     };
                     
@@ -480,7 +493,7 @@
             //placeholder save
             $('#placeholderSave').click(function() {                
                 var pptImage = $('#imageOverview').data("image");
-                var newSrc = $('#placeholderPixelated').attr("src");
+                var newSrc = "_pixelated_" + pptImage.name +  pptImage.format;
                                
                 var placeholderChange = new Change("placeholder", pptImage, newSrc, "CC0");
                 var redactor = $('#redactBtn').data("redactor");
@@ -803,16 +816,10 @@
             });
 
             $(window).on('beforeunload', function() {
-                var redactor = $('#redactBtn').data("redactor");
-                var images = redactor.ppt.pptImageArray;
-                for (var i = 0; i < images.length; i++){
-                    var image = images[i];
-                    if (image.format === ".jpeg") {
-                       var filename = image.name + image.format;
+              
                        var phpUrl = "php/imagedeleter.php";
-                       $.get(phpUrl, { fname: filename } );         
-                    }
-                }
+                       $.get(phpUrl);         
+              
             });
             
            

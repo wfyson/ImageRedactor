@@ -81,7 +81,6 @@ function PowerPointWriter(ppt) {
                                         if (!imageChanged) {
                                             imageChanged = true;
                                             if (change.getType() === "placeholder") {
-                                                console.log("hello placeholder");
                                                 var newSrc = change.newImageSrc;                                                
                                                 var licence = change.licence;
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
