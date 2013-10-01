@@ -77,11 +77,11 @@ function PowerPointWriter(ppt) {
                 addTexts: function(files, callback /* [2] new parameter */) {
 
                     function add(fileIndex) {
-                        if (fileIndex < files.length) {
+                        if (fileIndex < self.entries.length) {
                             //console.log(files[fileIndex].name);
                             //console.log(files[fileIndex].name.indexOf("image1.jpeg"));
 
-                            var fileName = files[fileIndex].name;
+                            var fileName = self.entries[fileIndex].name;
                             $('#download').data("filename", fileName);
                             $('#download').data("fileindex", fileIndex);
                             if (fileName.indexOf("ppt/media") !== -1) {
@@ -92,10 +92,8 @@ function PowerPointWriter(ppt) {
                                 //now get all the rels relating to this file
                                 var imageName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
                                 var imageRels = self.ppt.getImageRels(imageName);
-                                for (var i = 0; i < imageRels.length; i++) {
-                                    
+                                for (var i = 0; i < imageRels.length; i++) {                                    
                                     var imageRel = imageRels[i];
-                                    console.log(imageRel.relID);
                                     if (imageRel.hasChange()){
 
                                         //write the change to the powerpoint
@@ -126,7 +124,7 @@ function PowerPointWriter(ppt) {
                                                 $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "cc"},
                                                 function(res) {
                                                     zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
-                                                        //update the global writer
+                                                    //update the global writer
                                                         $('#download').data("writer", zipWriter);
                                                         add(fileIndex + 1);
                                                     }, function() {
@@ -148,76 +146,7 @@ function PowerPointWriter(ppt) {
                                                     });
                                                 });
                                             }
-                                        }
-                                        
-                                        //for each slide the image appears in, add a caption                                        
-                                        var entries = self.entries;
-                                        for(var j = 0; j < entries.length; j++){
-                                            
-                                            var entry = entries[j];
-                                            var slideFile = imageRel.slide + ".xml";                                            
-                                            if (entry.name.indexOf("ppt/slides/" + slideFile) !== -1) {
-                                                
-                                                //get greatest id for document elements in the xml and the greatest textnox number
-                                                var xmlDoc = ($.parseXML(entry.data));
-                                                var tags = $(xmlDoc).find('cNvPr');                                                
-                                                var id = 1;
-                                                var textNo = 1;
-                                                tags.each(function(key){
-                                                    var tag = tags[key];                                                    
-                                                    if ($(tag).attr('id') >= id){                                                        
-                                                        id = $(tag).attr('id');
-                                                    }
-                                                    var name = $(tag).attr('name');
-                                                    if (name.indexOf("TextBox") !== -1){
-                                                        var number = parseInt((name.substr(name.lastIndexOf(" ") +1 )));
-                                                        if (number >= textNo){
-                                                            textNo = number; 
-                                                        }
-                                                    }                                           
-                                                });
-                                                
-                                                //find all of the picture elements to get the location and then append a text box
-                                                var pics = $(xmlDoc).find('pic');
-                                                pics.each(function(key){
-                                                    if(imageRel.relID === $($(pics[key]).find('blipFill').find('blip')[0]).attr('r:embed')){
-                                                        //get the location                                                        
-                                                        var off = $(pics[key]).find('spPr').find('off')[0];
-                                                        var ext = $(pics[key]).find('spPr').find('ext')[0];
-                                                        var offX = $(off).attr('x');
-                                                        var offY = $(off).attr('y');
-                                                        var extX = $(ext).attr('cx');
-                                                        var extY = $(ext).attr('cy');   
-                                                        
-                                                        //append a new text box to the document for all locations of that image
-                                                        var xmlString = entries[j].data;
-                                                        var startIndex = 0;
-                                                        var indices = new Array();
-                                                        var searchStrLen = imageRel.relID.length;
-                                                        while ((index = xmlString.indexOf(imageRel.relID, startIndex)) > -1){
-                                                            indices.push(index);
-                                                            startIndex = index + searchStrLen;
-                                                        }
-                                                        //for each location of the image place the new text box immediately after the end of the pic element
-                                                        for(i = 0; i < indices.length; i++){
-                                                            var newLocation = xmlString.indexOf("</p:pic>", indices[i]) + 8;
-                                                            //entries[j].data = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + (parseInt(id)+1) + ATTRIBUTION_2 + (textNo+1) + 
-                                                            //    ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX + 
-                                                            //    ATTRIBUTION_6 + extY + ATTRIBUTION_7 + "blah blah" + ATTRIBUTION_8));                                                                                  
-                                                        }
-                                                        
-                                                        //var node = $.parseXML(ATTRIBUTION_1 + (parseInt(id)+1) + ATTRIBUTION_2 + (textNo+1) + ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX + ATTRIBUTION_6 + extY + ATTRIBUTION_7 + "blah blah" + ATTRIBUTION_8).documentElement;
-                                                        //$(pics[key]).after(node);
-                                                        //
-                                                        //$(pics[key]).after($(ATTRIBUTION_1 + (parseInt(id)+1) + ATTRIBUTION_2 + (textNo+1) + 
-                                                        //    ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX + 
-                                                        //    ATTRIBUTION_6 + extY + ATTRIBUTION_7 + "blah blah" + ATTRIBUTION_8
-                                                        //));                                              
-                                                    }                                                   
-                                                });                                                
-                                                //console.log(entries[j].data);                                                  
-                                            }
-                                        }
+                                        }                                                                                
 
                                         //if the image format has changed then the powerpoint slide rels need to be updated
                                         //TODO!!!! (possibly)    
@@ -227,7 +156,7 @@ function PowerPointWriter(ppt) {
                                         //just write the original image
                                         if (!imageChanged) {
                                             imageChanged = true;
-                                            zipWriter.add(fileName, new zip.BlobReader(files[fileIndex].data), function() {
+                                            zipWriter.add(fileName, new zip.BlobReader(self.entries[fileIndex].data), function() {
                                                 //update the global writer
                                                 $('#download').data("writer", zipWriter);
                                                 add(fileIndex + 1); /* [1] add the next file */
@@ -238,13 +167,13 @@ function PowerPointWriter(ppt) {
                             } else {
                                 //not a media file, just write like normal
                                 if (fileName.substr(fileName.lastIndexOf(".")) === ".xml"){
-                                    zipWriter.add(fileName, new zip.TextReader(files[fileIndex].data), function() {
+                                    zipWriter.add(fileName, new zip.TextReader(self.entries[fileIndex].data), function() {
                                         //update the global writer
                                         $('#download').data("writer", zipWriter);
                                         add(fileIndex + 1); /* [1] add the next file */
                                     }, onProgress);
                                 }else{
-                                    zipWriter.add(fileName, new zip.BlobReader(files[fileIndex].data), function() {
+                                    zipWriter.add(fileName, new zip.BlobReader(self.entries[fileIndex].data), function() {
                                         //update the global writer
                                         $('#download').data("writer", zipWriter);
                                         add(fileIndex + 1); /* [1] add the next file */
@@ -271,7 +200,76 @@ function PowerPointWriter(ppt) {
                 }
             };
         })();
+        
+        //go through all the rels and adjust slides accordingly
+        var rels = self.ppt.getImageRelArray();
+        for (var i = 0; i < rels.length; i++){
+            var imageRel = rels[i];
+            if (imageRel.hasChange()) {
+                var entries = self.entries;
+                for (var j = 0; j < entries.length; j++) {
 
+                    var entry = entries[j];
+                    var slideFile = imageRel.slide + ".xml";
+                    if (entry.name.indexOf("ppt/slides/" + slideFile) !== -1) {
+
+                        //get greatest id for document elements in the xml and the greatest textnox number
+                        var xmlDoc = ($.parseXML(entry.data));
+                        var tags = $(xmlDoc).find('cNvPr');
+                        var id = 1;
+                        var textNo = 1;
+                        tags.each(function(key) {
+                            var tag = tags[key];
+                            if ($(tag).attr('id') >= id) {
+                                id = $(tag).attr('id');
+                            }
+                            var name = $(tag).attr('name');
+                            if (name.indexOf("TextBox") !== -1) {
+                                var number = parseInt((name.substr(name.lastIndexOf(" ") + 1)));
+                                if (number >= textNo) {
+                                    textNo = number;
+                                }
+                            }
+                        });
+
+                        //find all of the picture elements to get the location and then append a text box
+                        var pics = $(xmlDoc).find('pic');
+                        pics.each(function(key) {
+                            if (imageRel.relID === $($(pics[key]).find('blipFill').find('blip')[0]).attr('r:embed')) {
+                                //get the location                                                        
+                                var off = $(pics[key]).find('spPr').find('off')[0];
+                                var ext = $(pics[key]).find('spPr').find('ext')[0];
+                                //need to fix size and position
+                                var offX = $(off).attr('x');
+                                var offY = $(off).attr('y');
+                                var extX = $(ext).attr('cx');
+                                var extY = $(ext).attr('cy');
+
+                                //append a new text box to the document for all locations of that image
+                                var xmlString = entries[j].data;
+                                var startIndex = 0;
+                                var indices = new Array();
+                                var searchStrLen = imageRel.relID.length;
+                                while ((index = xmlString.indexOf(imageRel.relID, startIndex)) > -1) {
+                                    indices.push(index);
+                                    startIndex = index + searchStrLen;
+                                }
+                                //for each location of the image place the new text box immediately after the end of the pic element
+                                for (x = 0; x < indices.length; x++) {
+                                    var newLocation = xmlString.indexOf("</p:pic>", indices[x]) + 8;
+                                    var newXml = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + (parseInt(id) + 1) + ATTRIBUTION_2 + (textNo + 1) +
+                                            ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX +
+                                            ATTRIBUTION_6 + extY + ATTRIBUTION_7 + "blah blah" + ATTRIBUTION_8));
+                                    self.entries[j].data = newXml;
+                                }
+                            }
+                        });                                                 
+                    }
+                } 
+            }
+        }
+
+        //captions have been added to slides... now write the powerpoint
         zipper.addTexts(contents, function() {
             zipper.getBlob(function(blob) {
                 var blobURL;
@@ -311,6 +309,10 @@ function EntryData(data, name) {
     var self = this;
     self.data = data;
     self.name = name;
+    
+    self.setData = function(data){
+        self.data = data;
+    };
 }
 
 String.prototype.splice = function( idx, rem, s ) {
