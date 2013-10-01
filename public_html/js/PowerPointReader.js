@@ -51,7 +51,7 @@ function PowerPointReader(pptFile) {
                 //if a slides rel file
                 if ((entry.filename).indexOf("ppt/slides/_rels") !== -1) {
                     entry.getData(new zip.TextWriter('utf-8'), function(text, entry) {
-                        var filename, slideNo, xmlDoc, rels, target, imageName;
+                        var filename, slideNo, xmlDoc, rels, relID, target, imageName;
                         filename = entry.filename;
                         slideNo = filename.substring(filename.lastIndexOf("/") + 1, filename.indexOf("."));
                         xmlDoc = $.parseXML(text);
@@ -60,8 +60,9 @@ function PowerPointReader(pptFile) {
                             for (var j = 0; j < rels.length; j++) {
                                 if ($(rels[j]).attr("Type") === IMAGE_REL_TYPE) {
                                     target = $(rels[j]).attr("Target");
+                                    relID = $(rels[j]).attr("Id");
                                     imageName = target.substring(target.lastIndexOf("/") + 1, target.lastIndexOf("."));
-                                    slideImageRel = new SlideImageRel(slideNo, imageName);
+                                    slideImageRel = new SlideImageRel(relID, slideNo, imageName);
                                     self.powerpoint.addSlideImageRel(slideImageRel);
                                 }
                             }

@@ -455,24 +455,25 @@
                     var pixelatedFileName = "_pixelated_" + pptImage.name +  pptImage.format;
                     image.onload = function(){
                         var options;
-                        var newimg = Pixastic.process(image, "mosaic", {blockSize:20}, function(newImage){
-                            var dataURL = newImage.toDataURL("image/jpeg");
-                            $('#placeholderPixelated').attr("src", dataURL);
+                        var newimg = Pixastic.process(image, "mosaic", {blockSize:20}, function(mosaicImage){
+                            newimg = Pixastic.process(mosaicImage, "blurfast", {amount:2.5}, function(blurImage){                            
+                                var dataURL = blurImage.toDataURL("image/jpeg");
+                                $('#placeholderPixelated').attr("src", dataURL);
                             
-                            //save pixelated image to server
-                            var postURL = (dataURL.substr(dataURL.lastIndexOf('base64') + 7));
+                                //save pixelated image to server
+                                var postURL = (dataURL.substr(dataURL.lastIndexOf('base64') + 7));
 
-                            var fd = new FormData();
-                            fd.append('fname', pixelatedFileName);
-                            fd.append('data', postURL);
-                            $.ajax({
-                                type: 'POST',
-                                url: 'php/imagewriter.php',
-                                data: fd,
-                                processData: false,
-                                contentType: false
-                            });
-                            
+                                var fd = new FormData();
+                                fd.append('fname', pixelatedFileName);
+                                fd.append('data', postURL);
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'php/imagewriter.php',
+                                    data: fd,
+                                    processData: false,
+                                    contentType: false
+                                });
+                            });                            
                         });
                     };
                     

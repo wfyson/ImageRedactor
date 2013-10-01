@@ -1,5 +1,6 @@
-function SlideImageRel(slide, image) {
+function SlideImageRel(relID, slide, image) {
     var self = this;
+    self.relID = relID;
     self.slide = slide;
     self.image = image; //this is just the name, not a PPT image
     self.change = null;
