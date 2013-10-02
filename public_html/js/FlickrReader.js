@@ -167,8 +167,8 @@ function FlickrReader(tags, sort, licence) {
         photoInfoUrl = photoInfoUrl + "&photo_id=" + flickrImage.imageID;
         photoInfoUrl = photoInfoUrl + "&format=json&nojsoncallback=1";
         $.getJSON(photoInfoUrl, function(data) {
-            flickrImage.setAuthor(data.owner);
-            flickrImage.setTitle(data.title);
+            flickrImage.setAuthor(data.photo.owner.username);
+            flickrImage.setTitle(data.photo.title._content);
             flickrImage.setLicence(data.photo.license);
             self.getPhotoSizes(flickrImage);
         });

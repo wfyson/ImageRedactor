@@ -10,8 +10,26 @@ function Change(type, pptImage, newImageSrc, licence) {
     self.pptImage = pptImage;
     self.newImageSrc = newImageSrc;
     self.licence = licence;
+    self.author = null;
+    
+    self.setAuthor = function(author){
+        self.author = author;
+    };
+    
+    self.setTitle = function(title){
+        self.title = title;
+    };
     
     self.getType = function(){
         return self.type;
     };
+    
+    self.getAuthor = function(){
+        return self.author;
+    };      
+    
+    self.getTitle = function(){
+        return self.title;
+    };
+            
 };

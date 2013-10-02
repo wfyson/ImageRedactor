@@ -201,71 +201,87 @@ function PowerPointWriter(ppt) {
             };
         })();
         
-        //go through all the rels and adjust slides accordingly
+        //go through all the rels and adjust slides accordingly to add captions to the new images
         var rels = self.ppt.getImageRelArray();
         for (var i = 0; i < rels.length; i++){
             var imageRel = rels[i];
             if (imageRel.hasChange()) {
-                var entries = self.entries;
-                for (var j = 0; j < entries.length; j++) {
-
-                    var entry = entries[j];
-                    var slideFile = imageRel.slide + ".xml";
-                    if (entry.name.indexOf("ppt/slides/" + slideFile) !== -1) {
-
-                        //get greatest id for document elements in the xml and the greatest textnox number
-                        var xmlDoc = ($.parseXML(entry.data));
-                        var tags = $(xmlDoc).find('cNvPr');
-                        var id = 1;
-                        var textNo = 1;
-                        tags.each(function(key) {
-                            var tag = tags[key];
-                            if ($(tag).attr('id') >= id) {
-                                id = $(tag).attr('id');
-                            }
-                            var name = $(tag).attr('name');
-                            if (name.indexOf("TextBox") !== -1) {
-                                var number = parseInt((name.substr(name.lastIndexOf(" ") + 1)));
-                                if (number >= textNo) {
-                                    textNo = number;
-                                }
-                            }
-                        });
-
-                        //find all of the picture elements to get the location and then append a text box
-                        var pics = $(xmlDoc).find('pic');
-                        pics.each(function(key) {
-                            if (imageRel.relID === $($(pics[key]).find('blipFill').find('blip')[0]).attr('r:embed')) {
-                                //get the location                                                        
-                                var off = $(pics[key]).find('spPr').find('off')[0];
-                                var ext = $(pics[key]).find('spPr').find('ext')[0];
-                                //need to fix size and position
-                                var offX = $(off).attr('x');
-                                var offY = $(off).attr('y');
-                                var extX = $(ext).attr('cx');
-                                var extY = $(ext).attr('cy');
-
-                                //append a new text box to the document for all locations of that image
-                                var xmlString = entries[j].data;
-                                var startIndex = 0;
-                                var indices = new Array();
-                                var searchStrLen = imageRel.relID.length;
-                                while ((index = xmlString.indexOf(imageRel.relID, startIndex)) > -1) {
-                                    indices.push(index);
-                                    startIndex = index + searchStrLen;
-                                }
-                                //for each location of the image place the new text box immediately after the end of the pic element
-                                for (x = 0; x < indices.length; x++) {
-                                    var newLocation = xmlString.indexOf("</p:pic>", indices[x]) + 8;
-                                    var newXml = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + (parseInt(id) + 1) + ATTRIBUTION_2 + (textNo + 1) +
-                                            ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX +
-                                            ATTRIBUTION_6 + extY + ATTRIBUTION_7 + "blah blah" + ATTRIBUTION_8));
-                                    self.entries[j].data = newXml;
-                                }
-                            }
-                        });                                                 
+                
+                //create the citation text
+                var change = imageRel.getChange();                
+                var citation = null;
+                if (change.getType() === "flickr") {
+                    citation = '"' + change.getTitle() + '" by ' + change.getAuthor() +", " + change.licence; 
+                }else{
+                    if (change.getType() === "cc"){
+                        citation = change.licence;
                     }
-                } 
+                }
+                
+                if (citation !== null){
+                
+                    var entries = self.entries;
+                    for (var j = 0; j < entries.length; j++) {
+
+                        var entry = entries[j];
+                        var slideFile = imageRel.slide + ".xml";
+                        if (entry.name.indexOf("ppt/slides/" + slideFile) !== -1) {
+
+                            //get greatest id for document elements in the xml and the greatest textnox number
+                            var xmlDoc = ($.parseXML(entry.data));
+                            var tags = $(xmlDoc).find('cNvPr');
+                            var id = 1;
+                            var textNo = 1;
+                            tags.each(function(key) {
+                                var tag = tags[key];
+                                if ($(tag).attr('id') >= id) {
+                                    id = $(tag).attr('id');
+                                }
+                                var name = $(tag).attr('name');
+                                if (name.indexOf("TextBox") !== -1) {
+                                    var number = parseInt((name.substr(name.lastIndexOf(" ") + 1)));
+                                    if (number >= textNo) {
+                                        textNo = number;
+                                    }
+                                }
+                            });
+
+                            //find all of the picture elements to get the location and then append a text box
+                            var pics = $(xmlDoc).find('pic');
+                            pics.each(function(key) {
+                                if (imageRel.relID === $($(pics[key]).find('blipFill').find('blip')[0]).attr('r:embed')) {
+                                    //get the location                                                        
+                                    var off = $(pics[key]).find('spPr').find('off')[0];
+                                    var ext = $(pics[key]).find('spPr').find('ext')[0];
+                                    //position
+                                    var offX = $(off).attr('x');
+                                    var offY = parseInt($(off).attr('y')) + parseInt($(ext).attr('cy'));
+                                    //size
+                                    var extX = $(ext).attr('cx');
+                                    var extY = '246221';
+
+                                    //append a new text box to the document for all locations of that image
+                                    var xmlString = entries[j].data;
+                                    var startIndex = 0;
+                                    var indices = new Array();
+                                    var searchStrLen = imageRel.relID.length;
+                                    while ((index = xmlString.indexOf(imageRel.relID, startIndex)) > -1) {
+                                        indices.push(index);
+                                        startIndex = index + searchStrLen;
+                                    }
+                                    //for each location of the image place the new text box immediately after the end of the pic element
+                                    for (x = 0; x < indices.length; x++) {
+                                        var newLocation = xmlString.indexOf("</p:pic>", indices[x]) + 8;
+                                        var newXml = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + (parseInt(id) + 1) + ATTRIBUTION_2 + (textNo + 1) +
+                                                ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX +
+                                                ATTRIBUTION_6 + extY + ATTRIBUTION_7 + citation + ATTRIBUTION_8));
+                                        self.entries[j].data = newXml;
+                                    }
+                                }
+                            });
+                        }
+                    } 
+                }
             }
         }
 

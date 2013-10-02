@@ -590,6 +590,9 @@
                 var flickrImage = $('#flickrOverview').data("flickrImage");
                                
                 var flickrChange = new Change("flickr", pptImage, flickrImage.getMediumUrl(), flickrImage.textLicence);
+                flickrChange.setTitle(flickrImage.title);
+                flickrChange.setAuthor(flickrImage.author); 
+                
                 var redactor = $('#redactBtn').data("redactor");
                 
                 var oldChange = redactor.getImageChange(pptImage);

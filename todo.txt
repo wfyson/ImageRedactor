@@ -2,7 +2,7 @@
 
 1) Detect PNG images and change file format if appropriate when downloading from Flickr/using placeholder.
 
-2) Actually include attributions in new PPT.
+2) Includes links in the attribution.
 
 3) Allow users to specify how attribution works (?) - either footnote or slide of attributions?
 
