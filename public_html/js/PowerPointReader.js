@@ -80,11 +80,31 @@ function PowerPointReader(pptFile) {
                         //onprogress callback
                        });
                 } else {
-                    i++;
-                    if (i === self.totalEntries){
-                        self.displayPpt();
-                    }else{
-                        processEntries(entries, i);
+                    //if the main powerpoint file, get the slide sizes (may be useful when changing backgrounds
+                    if ((entry.filename).indexOf("ppt/presentation.xml") !== -1){
+                        entry.getData(new zip.TextWriter('utf-8'), function(text, entry){
+                            var xmlDoc = $.parseXML(text);
+                            var size = $(xmlDoc).find("sldSz");
+                            if (size.length){
+                                self.powerpoint.setSlideWidth($(size[0]).attr('cx'));
+                                self.powerpoint.setSlideHeight($(size[0]).attr('cy'));
+                            }
+                            i++;
+                            if (i === self.totalEntries){
+                                self.displayPpt();
+                            }else{
+                                processEntries(entries, i);
+                            }
+                        }, function(current, total){
+                            //onprogress callback
+                        });
+                    }else{           
+                        i++;
+                        if (i === self.totalEntries){
+                            self.displayPpt();
+                        }else{
+                            processEntries(entries, i);
+                        }
                     }
                 }
           }

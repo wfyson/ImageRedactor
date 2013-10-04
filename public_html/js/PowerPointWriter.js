@@ -227,15 +227,15 @@ function PowerPointWriter(ppt) {
                         var slideFile = imageRel.slide + ".xml";
                         if (entry.name.indexOf("ppt/slides/" + slideFile) !== -1) {
 
-                            //get greatest id for document elements in the xml and the greatest textnox number
-                            var xmlDoc = ($.parseXML(entry.data));
+                            //get greatest id for document elements in the xml and the greatest textbox number
+                            var xmlDoc = ($.parseXML(entry.data));                            
                             var tags = $(xmlDoc).find('cNvPr');
-                            var id = 1;
-                            var textNo = 1;
+                            var id = 0;
+                            var textNo = 0;
                             tags.each(function(key) {
                                 var tag = tags[key];
                                 if ($(tag).attr('id') >= id) {
-                                    id = $(tag).attr('id');
+                                    id = parseInt($(tag).attr('id'));
                                 }
                                 var name = $(tag).attr('name');
                                 if (name.indexOf("TextBox") !== -1) {
@@ -260,7 +260,7 @@ function PowerPointWriter(ppt) {
                                     var extX = $(ext).attr('cx');
                                     var extY = '246221';
 
-                                    //append a new text box to the document for all locations of that image
+                                    //append a new text box to the document for all locations of that image                                    
                                     var xmlString = entries[j].data;
                                     var startIndex = 0;
                                     var indices = new Array();
@@ -271,14 +271,46 @@ function PowerPointWriter(ppt) {
                                     }
                                     //for each location of the image place the new text box immediately after the end of the pic element
                                     for (x = 0; x < indices.length; x++) {
+                                        id++;
+                                        textNo++;
                                         var newLocation = xmlString.indexOf("</p:pic>", indices[x]) + 8;
-                                        var newXml = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + (parseInt(id) + 1) + ATTRIBUTION_2 + (textNo + 1) +
+                                        var newXml = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + id + ATTRIBUTION_2 + textNo +
                                                 ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX +
                                                 ATTRIBUTION_6 + extY + ATTRIBUTION_7 + citation + ATTRIBUTION_8));
                                         self.entries[j].data = newXml;
                                     }
                                 }
                             });
+                            
+                            //check the background element and add caption to bottom of slide if new picture is the background
+                            var background = $(xmlDoc).find('bg');
+                            if (background.length){
+                                if (imageRel.relID === $($(background).find('blip')[0]).attr('r:embed')){
+    
+                                    //the image is used for the background - add a caption to the spTree
+                                    var xmlString = entries[j].data;
+                                    var newLocation = xmlString.indexOf("</p:grpSpPr>") + 12;
+                                    
+                                    //position
+                                    var offX = '0';
+                                    var offY = self.ppt.getSlideHeight() - 246221; //Y coordinate of bottom of slide - standard height of caption
+                                    //size
+                                    var extX = '5515151';
+                                    var extY = '246221';
+                                    
+                                    textNo++;
+                                    id++;
+                                    
+                                    citation = "Background: " + citation;
+                                    
+                                    var newXml = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + id + ATTRIBUTION_2 + textNo +
+                                                ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX +
+                                                ATTRIBUTION_6 + extY + ATTRIBUTION_7 + citation + ATTRIBUTION_8));
+                                        
+                                        
+                                    self.entries[j].data = newXml;
+                                }
+                            }
                         }
                     } 
                 }
