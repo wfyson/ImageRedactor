@@ -4,24 +4,6 @@ function PowerPoint(pptFile){
     self.pptImageArray = new Array();
     self.slideImageRelArray = new Array();  
     self.pptFile = pptFile;
-    self.slideWidth;
-    self.slideHeight;
-
-    self.setSlideWidth = function(slideWidth){
-        self.slideWidth = slideWidth;
-    };
-    
-    self.getSlideWidth = function(){
-        return self.slideWidth;
-    };
-    
-    self.setSlideHeight = function(slideHeight){
-        self.slideHeight = slideHeight;
-    };
-    
-    self.getSlideHeight = function(){
-        return self.slideHeight;
-    };
 
     self.setImageRelArray = function(slideImageRelArray){
         self.slideImageRelArray = slideImageRelArray;
