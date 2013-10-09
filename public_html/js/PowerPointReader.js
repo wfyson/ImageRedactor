@@ -54,7 +54,7 @@ function PowerPointReader(pptFile) {
                         var filename, slideNo, xmlDoc, rels, relID, target, imageName;
                         filename = entry.filename;
                         slideNo = filename.substring(filename.lastIndexOf("/") + 1, filename.indexOf("."));
-                        xmlDoc = $.parseXML(text);
+                        xmlDoc = $.parseXML(text);                        
                         rels = $(xmlDoc).find("Relationship");
                         if (rels.length) {
                             for (var j = 0; j < rels.length; j++) {

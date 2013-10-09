@@ -36,7 +36,7 @@ function PowerPointWriter(ppt) {
             
             if (entry.filename.substr(entry.filename.lastIndexOf(".")) === ".xml") {
                 console.log("XML");
-                entry.getData(new zip.TextWriter(), function(text, entry) {
+                entry.getData(new zip.TextWriter('utf-8'), function(text, entry){
                     self.entries.push(new EntryData(text, entry.filename));
                     i++;
                     if (i === self.totalEntries) {
@@ -76,11 +76,8 @@ function PowerPointWriter(ppt) {
             return {
                 addTexts: function(files, callback /* [2] new parameter */) {
 
-                    function add(fileIndex) {
-                        if (fileIndex < self.entries.length) {
-                            //console.log(files[fileIndex].name);
-                            //console.log(files[fileIndex].name.indexOf("image1.jpeg"));
-
+                    function add(fileIndex) {                        
+                        if (fileIndex < self.entries.length) {                                
                             var fileName = self.entries[fileIndex].name;
                             $('#download').data("filename", fileName);
                             $('#download').data("fileindex", fileIndex);
@@ -117,12 +114,13 @@ function PowerPointWriter(ppt) {
                                                 });       
                                             }
 
-                                            if (change.getType() === "cc") {
+                                            if (change.getType() === "cc") {                                               
                                                 var newSrc = change.newImageSrc;
                                                 var licence = change.licence;
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
                                                 $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "cc"},
                                                 function(res) {
+                                                    console.log("result");
                                                     zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
                                                     //update the global writer
                                                         $('#download').data("writer", zipWriter);
@@ -200,7 +198,7 @@ function PowerPointWriter(ppt) {
                 }
             };
         })();
-        
+        console.log("writing");
         //go through all the rels and adjust slides accordingly to add captions to the new images
         var rels = self.ppt.getImageRelArray();
         for (var i = 0; i < rels.length; i++){
@@ -219,6 +217,24 @@ function PowerPointWriter(ppt) {
                 }
                 
                 if (citation !== null){
+                    
+                    //get search terms depending on browser - may need to look into this more..
+                    var cNvPr = "p\\:cNvPr";
+                    var pic = "p\\:pic";
+                    var blipFill = "p\\:blipFill";
+                    var blip = "a\\:blip";
+                    var spPr = "p\\:spPr";
+                    var offTag = "a\\:off";
+                    var extTag = "a\\:ext";
+                    if (window.webkitURL) {
+                        cNvPr = "cNvPr";
+                        pic = "pic";
+                        blipFill = "blipFill";
+                        blip = "blip";
+                        spPr = "spPr";
+                        offTag = "off";
+                        extTag = "ext";
+                    }
                 
                     var entries = self.entries;
                     for (var j = 0; j < entries.length; j++) {
@@ -228,8 +244,8 @@ function PowerPointWriter(ppt) {
                         if (entry.name.indexOf("ppt/slides/" + slideFile) !== -1) {
 
                             //get greatest id for document elements in the xml and the greatest textnox number
-                            var xmlDoc = ($.parseXML(entry.data));
-                            var tags = $(xmlDoc).find('cNvPr');
+                            var xmlDoc = $.parseXML(entry.data);
+                            var tags = $(xmlDoc).find(cNvPr); 
                             var id = 1;
                             var textNo = 1;
                             tags.each(function(key) {
@@ -245,27 +261,27 @@ function PowerPointWriter(ppt) {
                                     }
                                 }
                             });
-
+                            
                             //find all of the picture elements to get the location and then append a text box
-                            var pics = $(xmlDoc).find('pic');
+                            var pics = $(xmlDoc).find(pic);
                             pics.each(function(key) {
-                                if (imageRel.relID === $($(pics[key]).find('blipFill').find('blip')[0]).attr('r:embed')) {
+                                if (imageRel.relID === $($(pics[key]).find(blipFill).find(blip)[0]).attr('r:embed')) {                       
                                     //get the location                                                        
-                                    var off = $(pics[key]).find('spPr').find('off')[0];
-                                    var ext = $(pics[key]).find('spPr').find('ext')[0];
+                                    var off = $(pics[key]).find(spPr).find(offTag)[0];
+                                    var ext = $(pics[key]).find(spPr).find(extTag)[0];
                                     //position
                                     var offX = $(off).attr('x');
                                     var offY = parseInt($(off).attr('y')) + parseInt($(ext).attr('cy'));
                                     //size
                                     var extX = $(ext).attr('cx');
                                     var extY = '246221';
-
+                                    
                                     //append a new text box to the document for all locations of that image
                                     var xmlString = entries[j].data;
                                     var startIndex = 0;
                                     var indices = new Array();
                                     var searchStrLen = imageRel.relID.length;
-                                    while ((index = xmlString.indexOf(imageRel.relID, startIndex)) > -1) {
+                                    while ((index = xmlString.indexOf(imageRel.relID, startIndex)) > -1) {                    
                                         indices.push(index);
                                         startIndex = index + searchStrLen;
                                     }
@@ -284,7 +300,7 @@ function PowerPointWriter(ppt) {
                 }
             }
         }
-
+        
         //captions have been added to slides... now write the powerpoint
         zipper.addTexts(contents, function() {
             zipper.getBlob(function(blob) {
