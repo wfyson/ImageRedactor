@@ -22,7 +22,7 @@ function PowerPointReader(pptFile) {
             console.log(error);
         });
         
-        function processEntries(entries, i){
+        function processEntries(entries, i) {
             var entry = entries[i];
             var entries = entries;
             var i = i;
@@ -35,26 +35,26 @@ function PowerPointReader(pptFile) {
                     filename = entry.filename;
                     name = filename.substring(filename.lastIndexOf("/") + 1, filename.lastIndexOf("."));
                     format = filename.substr(filename.lastIndexOf("."));
-                    pptImage = new PowerPointImage(name, format, data, function(pptImage){
-                        self.powerpoint.addImage(pptImage);                    
+                    pptImage = new PowerPointImage(name, format, data, function(pptImage) {
+                        self.powerpoint.addImage(pptImage);
                         i++;
-                        if (i === self.totalEntries){
+                        if (i === self.totalEntries) {
                             self.displayPpt();
-                        }else{
+                        } else {
                             processEntries(entries, i);
                         }
-                    });           
+                    });
                 }, function(current, total) {
                     // onprogress callback
                 });
-            }else{
+            } else {
                 //if a slides rel file
                 if ((entry.filename).indexOf("ppt/slides/_rels") !== -1) {
                     entry.getData(new zip.TextWriter('utf-8'), function(text, entry) {
                         var filename, slideNo, xmlDoc, rels, relID, target, imageName;
                         filename = entry.filename;
                         slideNo = filename.substring(filename.lastIndexOf("/") + 1, filename.indexOf("."));
-                        xmlDoc = $.parseXML(text);                        
+                        xmlDoc = $.parseXML(text);
                         rels = $(xmlDoc).find("Relationship");
                         if (rels.length) {
                             for (var j = 0; j < rels.length; j++) {
@@ -67,27 +67,55 @@ function PowerPointReader(pptFile) {
                                 }
                             }
                         }
-                        
+
                         i++;
-                        if (i === self.totalEntries){
+                        if (i === self.totalEntries) {
                             self.displayPpt();
-                        }else{
+                        } else {
                             processEntries(entries, i);
                         }
-                        
+
                         //self.increment();
                     }, function(current, total) {
                         //onprogress callback
-                       });
+                    });
                 } else {
-                    i++;
-                    if (i === self.totalEntries){
-                        self.displayPpt();
-                    }else{
-                        processEntries(entries, i);
+                    //if presentation.xml
+                    if ((entry.filename).indexOf("ppt/presentation.xml") !== -1) {
+                        entry.getData(new zip.TextWriter('utf-8'), function(text, entry) {
+                            var xmlDoc;
+                            xmlDoc = $.parseXML(text);
+                            
+                            //get tag format depending on browser
+                            var sldSz = "p\\:sldSz";                   
+                            if (window.webkitURL) {
+                                sldSz = "sldSz";
+                            }
+                            
+                            size = $(xmlDoc).find(sldSz);
+                            if (size.length) {
+                                self.powerpoint.setSlideHeight($(size[0]).attr("cy"));
+                            }
+                            i++;
+                            if (i === self.totalEntries) {
+                                self.displayPpt();
+                            } else {
+                                processEntries(entries, i);
+                            }
+                            //self.increment();
+                        }, function(current, total) {
+                            //onprogress callback
+                        });
+                    } else {
+                        i++;
+                        if (i === self.totalEntries) {
+                            self.displayPpt();
+                        } else {
+                            processEntries(entries, i);
+                        }
                     }
                 }
-          }
+            }
         }
     };
          

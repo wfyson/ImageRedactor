@@ -198,7 +198,7 @@ function PowerPointWriter(ppt) {
                 }
             };
         })();
-        console.log("writing");
+        
         //go through all the rels and adjust slides accordingly to add captions to the new images
         var rels = self.ppt.getImageRelArray();
         for (var i = 0; i < rels.length; i++){
@@ -226,6 +226,7 @@ function PowerPointWriter(ppt) {
                     var spPr = "p\\:spPr";
                     var offTag = "a\\:off";
                     var extTag = "a\\:ext";
+                    var background = "p\\:bg";                   
                     if (window.webkitURL) {
                         cNvPr = "cNvPr";
                         pic = "pic";
@@ -234,6 +235,7 @@ function PowerPointWriter(ppt) {
                         spPr = "spPr";
                         offTag = "off";
                         extTag = "ext";
+                        background = "bg"
                     }
                 
                     var entries = self.entries;
@@ -295,6 +297,36 @@ function PowerPointWriter(ppt) {
                                     }
                                 }
                             });
+                            
+                            //check the background element and add caption to bottom of slide if new picture is the background
+                            var background = $(xmlDoc).find(background);
+                            if (background.length){
+                                if (imageRel.relID === $($(background).find(blip)[0]).attr('r:embed')){
+    
+                                    //the image is used for the background - add a caption to the spTree
+                                    var xmlString = entries[j].data;
+                                    var newLocation = xmlString.indexOf("</p:grpSpPr>") + 12;
+                                    
+                                    //position
+                                    var offX = '0';
+                                    var offY = self.ppt.getSlideHeight() - 246221; //Y coordinate of bottom of slide - standard height of caption
+                                    //size
+                                    var extX = '5515151';
+                                    var extY = '246221';
+                                    
+                                    textNo++;
+                                    id++;
+                                    
+                                    citation = "Background: " + citation;
+                                    
+                                    var newXml = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + id + ATTRIBUTION_2 + textNo +
+                                                ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX +
+                                                ATTRIBUTION_6 + extY + ATTRIBUTION_7 + citation + ATTRIBUTION_8));
+                                        
+                                        
+                                    self.entries[j].data = newXml;
+                                }
+                            }
                         }
                     } 
                 }
