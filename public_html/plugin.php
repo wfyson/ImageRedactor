@@ -37,9 +37,9 @@
         <script type="text/javascript" src="js/libs/jquery.Jcrop.min.js"></script>     
         
         <script type="text/javascript" src="js/libs/pixastic.custom.js"></script>     
-        
+                
         <script type="text/javascript" src="js/control.js"></script>
-        <script type="text/javascript" src="js/readFile.js"></script>
+        <script type="text/javascript" src="js/readURL.js"></script>
         
         <script type="text/javascript" src="js/PowerPointReader.js"></script>
         <script type="text/javascript" src="js/PowerPointImage.js"></script>
@@ -72,30 +72,8 @@
         <div id="title">
             <img src="img/title.png"/>
         </div>
-        <script type="text/javascript">
-            //check for the various File API support
-            if (window.File && window.FileReader && window.FileList && window.Blob) {
-                //all file APIs are supported
-            } else {
-                alert('The File APIs are not fully supported in this browser.');
-            }
-        </script>
-
+        
         <div class="container-fluid">
-            <div id="controlPanel" class="row-fluid">
-                <div class="fileupload fileupload-new" data-provides="fileupload">
-                    <span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input id="files" type="file" /></span>
-                    <span class="fileupload-preview"></span>
-                    <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
-                </div>
-
-                <button id="redactBtn" type="submit" class="btn disabled">Redact...</button>
-                <span id="download">
-                    <img id="downloadLoading" src="img/ajax-loader-small.gif"/>
-                </span>
-            </div>
-            
-            <div id="test"></div>
 
             <div id="imageOverview" class="row-fluid">
                 
@@ -350,6 +328,7 @@
                         <button id="flickrBtn" class="btn btn-success btn-block imageButtons disabled">Flickr</button>
                         <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
                         <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Obfuscate</button>
+                        <button id="redactBtn" class="btn disabled">Redact...</button>
                     </div>
                 </div>                
             </div>
@@ -366,7 +345,22 @@
         </div>
         
         <script>
-            document.getElementById('files').addEventListener('change', handleFileSelect, false);
+            window.onload=function(){
+                
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '<?php echo $_GET['pptx'] ?>', true);
+                xhr.responseType = 'blob';
+                xhr.onload = function(e) {
+                    if (this.status == 200) {
+                        var myBlob = this.response;
+                        handleFileSelect(myBlob);
+                    }
+                };
+                xhr.send();
+                             
+                
+                
+            };
             redactorInit();
         </script>
 
