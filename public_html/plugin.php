@@ -328,7 +328,7 @@
                         <button id="flickrBtn" class="btn btn-success btn-block imageButtons disabled">Flickr</button>
                         <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
                         <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Obfuscate</button>
-                        <button id="redactBtn" class="btn disabled">Redact...</button>
+                        <button id="redactBtn" class="btn btn-inverse btn-block disabled">Redact <i class="icon-download icon-white"></i></button>
                     </div>
                 </div>                
             </div>
@@ -345,8 +345,7 @@
         </div>
         
         <script>
-            window.onload=function(){
-                
+            window.onload=function(){                
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', '<?php echo $_GET['pptx'] ?>', true);
                 xhr.responseType = 'blob';
@@ -356,10 +355,7 @@
                         handleFileSelect(myBlob);
                     }
                 };
-                xhr.send();
-                             
-                
-                
+                xhr.send();   
             };
             redactorInit();
         </script>

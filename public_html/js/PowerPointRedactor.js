@@ -13,6 +13,7 @@ function PowerPointRedactor() {
     self.addChange = function(change){    
         
         //ensure redact button is clickable now a change is available
+        console.log("hello world");
         $('#redactBtn').removeClass("disabled");
         
         self.changeArray.push(change);
