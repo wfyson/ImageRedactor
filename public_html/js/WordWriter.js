@@ -11,7 +11,7 @@ function WordWriter(word) {
     self.readWord = function() {
         console.log("reading...");
          
-         //read all powerpoint entries
+         //read all word entries
         zip.createReader(new zip.BlobReader(self.word.wordFile), function(reader) {
             // get all entries from the zip
             reader.getEntries(function(entries) {
@@ -24,17 +24,31 @@ function WordWriter(word) {
         
         function processEntries(entries, i){
             var entry = entries[i];
-            var entries = entries;
-            var i = i;
-            entry.getData(new zip.BlobWriter(), function(data, entry) {
-                self.entries.push(new EntryData(data, entry.filename));
-                i++;
-                if (i === self.totalEntries){
-                    self.writeWord(self.entries);
-                }else{
-                    processEntries(entries, i);
-                }
-             });            
+            var entries = entries;            
+            
+            if (entry.filename.substr(entry.filename.lastIndexOf(".")) === ".xml") {
+                console.log("XML");
+                entry.getData(new zip.TextWriter('utf-8'), function(text, entry){
+                    self.entries.push(new EntryData(text, entry.filename));
+                    i++;
+                    if (i === self.totalEntries) {
+                        self.writeWord(self.entries);
+                    } else {
+                        processEntries(entries, i);
+                    }
+                });
+            } else {
+                console.log("OTHER");
+                entry.getData(new zip.BlobWriter(), function(data, entry) {
+                    self.entries.push(new EntryData(data, entry.filename));
+                    i++;
+                    if (i === self.totalEntries) {
+                        self.writeWord(self.entries);
+                    } else {
+                        processEntries(entries, i);
+                    }
+                });
+            }            
         }
     };
 
@@ -60,9 +74,11 @@ function WordWriter(word) {
                             //console.log(files[fileIndex].name.indexOf("image1.jpeg"));
 
                             var fileName = files[fileIndex].name;
+                          
+                            
                             $('#download').data("filename", fileName);
                             $('#download').data("fileindex", fileIndex);
-                            if (fileName.indexOf("word/media") !== -1) {
+                            if (fileName.indexOf("word/media") !== -1) {                              
                                 //in the media directory
                                 //record image as having yet to be changed
                                 var imageChanged = false;
@@ -70,7 +86,8 @@ function WordWriter(word) {
                                 //now get all the rels relating to this file
                                 var imageName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
                                 var imageRels = self.word.getImageRels(imageName);
-                                for (var i = 0; i < imageRels.length; i++) {
+                                console.log(imageRels);
+                                for (var i = 0; i < imageRels.length; i++) {                                    
                                     var imageRel = imageRels[i];
                                     if (imageRel.hasChange()) {
 
@@ -146,11 +163,19 @@ function WordWriter(word) {
                                 }
                             } else {
                                 //not a media file, just write like normal
-                                zipWriter.add(fileName, new zip.BlobReader(files[fileIndex].data), function() {
-                                    //update the global writer
-                                    $('#download').data("writer", zipWriter);
-                                    add(fileIndex + 1); /* [1] add the next file */
-                                }, onProgress);
+                                if (fileName.substr(fileName.lastIndexOf(".")) === ".xml"){
+                                    zipWriter.add(fileName, new zip.TextReader(self.entries[fileIndex].data), function() {
+                                        //update the global writer
+                                        $('#download').data("writer", zipWriter);
+                                        add(fileIndex + 1); /* [1] add the next file */
+                                    }, onProgress);
+                                }else{
+                                    zipWriter.add(fileName, new zip.BlobReader(self.entries[fileIndex].data), function() {
+                                        //update the global writer
+                                        $('#download').data("writer", zipWriter);
+                                        add(fileIndex + 1); /* [1] add the next file */
+                                    }, onProgress);
+                                }
                             }
                         } else {
                             callback() /* [2] no more files to add: callback is called */;
@@ -186,11 +211,14 @@ function WordWriter(word) {
                 
                 var a = document.createElement('a');
                 
-                var filename = word.wordFile.name.substring(0, word.wordFile.name.lastIndexOf(".docx")) + "_redacted.docx";
+                var filename = word.name.substring(0, word.name.lastIndexOf(".docx")) + "_redacted.docx";
+                $(a).attr('id', 'downloadLink');
                 $(a).attr('href', blobURL);
                 $(a).attr('download', filename);
                 $(a).append(filename);
                 $('#download').append($(a));
+                $('#download').fadeIn("slow");              
+                
                 console.log("done");
             });
         });

@@ -14,7 +14,7 @@ function WordViewer(word){
         
             //name
             $('#pptName').empty();       
-            $('#pptName').append(word.wordFile.name); 
+            $('#pptName').append(word.name); 
         
             //total images
             $('#totalImages').empty();

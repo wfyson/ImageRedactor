@@ -348,11 +348,13 @@ function PowerPointWriter(ppt) {
                 
                 var a = document.createElement('a');
                 
-                var filename = ppt.pptFile.name.substring(0, ppt.pptFile.name.lastIndexOf(".pptx")) + "_redacted.pptx";
+                var filename = ppt.name.substring(0, ppt.name.lastIndexOf(".pptx")) + "_redacted.pptx";
+                $(a).attr('id', 'downloadLink');
                 $(a).attr('href', blobURL);
                 $(a).attr('download', filename);
                 $(a).append(filename);
                 $('#download').append($(a));
+                $('#download').fadeIn("slow");    
                 console.log("done");
             });
         });

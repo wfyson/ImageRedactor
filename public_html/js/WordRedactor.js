@@ -64,7 +64,7 @@ function WordRedactor() {
         }          
         
         //remove this change to every rel that it relates to
-        var rels = self.ppt.getImageRelArray();
+        var rels = self.word.getImageRelArray();
         for (var i = 0; i < rels.length; i++){
             if (rels[i].image === change.pptImage.name){
                 rels[i].removeChange(change);
@@ -76,7 +76,7 @@ function WordRedactor() {
             $('#redactBtn').addClass("disabled");
         
         //update powerpoint
-        self.ppt.setImageRelArray(rels);
+        self.word.setImageRelArray(rels);
     };
     
 }

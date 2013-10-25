@@ -14,7 +14,7 @@ function PowerPointViewer(powerpoint){
         
             //name
             $('#pptName').empty();       
-            $('#pptName').append(powerpoint.pptFile.name); 
+            $('#pptName').append(powerpoint.name); 
         
             //total images
             $('#totalImages').empty();
@@ -41,12 +41,7 @@ function PowerPointViewer(powerpoint){
             $('#overallLicence').empty();
             $('#overallLicence').append(lowest); //need to work this out somehow
         
-            //calculate progress
-            //console.log(totalCC);
-            //console.log(totalOther);
-            //console.log(totalNull);
-            //console.log(totalImages);
-        
+            //calculate progress        
             var progressCC = (totalCC / totalImages) * 100;
             var progressOther = (totalOther / totalImages) * 100;
             var progressNull = (totalNull / totalImages) * 100;

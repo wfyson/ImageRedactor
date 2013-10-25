@@ -1,6 +1,7 @@
-function PowerPoint(pptFile){
+function PowerPoint(name, pptFile){
 
     var self = this;
+    self.name = name;
     self.pptImageArray = new Array();
     self.slideImageRelArray = new Array();  
     self.pptFile = pptFile;

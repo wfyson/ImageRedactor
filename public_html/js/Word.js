@@ -1,6 +1,7 @@
-function Word(wordFile){
+function Word(name, wordFile){
 
     var self = this;
+    self.name = name;
     self.wordImageArray = new Array();
     self.slideImageRelArray = new Array();  
     self.wordFile = wordFile;
@@ -39,7 +40,10 @@ function Word(wordFile){
         var rels = self.slideImageRelArray;
         var returnArray = new Array();
         for (var i = 0; i < rels.length; i++){
+            console.log(rels[i]);
+            console.log(imageName);
             if (rels[i].image === imageName){
+                console.log("WOOHOO");
                 returnArray.push(rels[i]);
             }
         }

@@ -6,7 +6,7 @@ function handleFileSelect(evt) {
     for (var i = 0, f; f = files[i]; i++) {
         //create a PowerPointReader for the file
         if ((f.name.substr(f.name.lastIndexOf("."))) === ".pptx") {
-            var pptReader = new PowerPointReader(f);
+            var pptReader = new PowerPointReader(f.name, f);
             powerpoint = pptReader.readPowerPoint();
             //create a redactor
             var powerpointRedactor = new PowerPointRedactor();

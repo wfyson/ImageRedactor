@@ -1,11 +1,11 @@
-function PowerPointReader(pptFile) {
+function PowerPointReader(name, pptFile) {
 
     var self = this;
     self.pptFile = pptFile;
     self.noEntries = 0;
     self.totalEntries;
-    self.powerpoint = new PowerPoint(pptFile);
-
+    self.powerpoint = new PowerPoint(name, pptFile);
+        
     var IMAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image";
 
     self.readPowerPoint = function() {
@@ -14,7 +14,7 @@ function PowerPointReader(pptFile) {
             // get all entries from the zip
             reader.getEntries(function(entries) {
                 if (entries.length){
-                    self.totalEntries = entries.length;                
+                    self.totalEntries = entries.length;                   
                     processEntries(entries, 0);
                 }
             });

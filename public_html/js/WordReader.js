@@ -1,10 +1,10 @@
-function WordReader(wordFile) {
+function WordReader(name, wordFile) {
 
     var self = this;
     self.wordFile = wordFile;
     self.noEntries = 0;
     self.totalEntries;
-    self.word = new Word(wordFile);
+    self.word = new Word(name, wordFile);
 
     var IMAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image";
 
@@ -60,7 +60,7 @@ function WordReader(wordFile) {
                                 if ($(rels[j]).attr("Type") === IMAGE_REL_TYPE) {
                                     target = $(rels[j]).attr("Target");
                                     imageName = target.substring(target.lastIndexOf("/") + 1, target.lastIndexOf("."));
-                                    slideImageRel = new SlideImageRel(-1, imageName);
+                                    slideImageRel = new SlideImageRel(-1, -1, imageName);
                                     self.word.addSlideImageRel(slideImageRel);
                                 }
                             }

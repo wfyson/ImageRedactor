@@ -13,7 +13,6 @@
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-fileupload.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-arrows.css">        
-        <link rel="stylesheet" type="text/css" href="css/jquery.Jcrop.css">         
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/skin.css"> 
         
@@ -33,8 +32,6 @@
 
         <script type="text/javascript" src="js/libs/jquery.jcarousel.js"></script>
         <script type="text/javascript" src="js/libs/jquery.jcarousel.min.js"></script>
-
-        <script type="text/javascript" src="js/libs/jquery.Jcrop.min.js"></script>     
         
         <script type="text/javascript" src="js/libs/pixastic.custom.js"></script>     
                 
@@ -329,6 +326,7 @@
                         <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
                         <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Obfuscate</button>
                         <button id="redactBtn" class="btn btn-inverse btn-block disabled">Redact <i class="icon-download icon-white"></i></button>
+                        <span id="download" style="display:none;"><span class="label label-inverse">Download Link</span></span>
                     </div>
                 </div>                
             </div>
@@ -345,17 +343,40 @@
         </div>
         
         <script>
-            window.onload=function(){                
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', '<?php echo $_GET['pptx'] ?>', true);
-                xhr.responseType = 'blob';
-                xhr.onload = function(e) {
-                    if (this.status == 200) {
-                        var myBlob = this.response;
-                        handleFileSelect(myBlob);
-                    }
-                };
-                xhr.send();   
+            window.onload=function(){  
+                //var phpUrl = "php/documentgrabber.php?callback=?";
+                //$.getJSON(phpUrl, {doc: ''},
+                //    function(res) {
+                //        console.log(res.doc);
+                //        //handleFileSelect(res.doc, res.data);
+                //    }
+                //);       
+                
+                
+                //var xhr = new XMLHttpRequest();
+                //xhr.open('GET', '?php echo $_GET['doc'] ?>', true);
+                //xhr.responseType = 'blob';
+                //xhr.onload = function(e) {                    
+                //    if (this.status === 200) {
+                //        var myBlob = this.response;
+                //        handleFileSelect(doc, myBlob);
+                //    }
+                //};
+                //xhr.send();
+                //handleFileSelect(doc, blob);
+                
+                var doc = '<?php echo $_GET['doc'] ?>';
+                var data  = '<?php $data = file_get_contents($_GET['doc']); $encode = base64_encode($data); echo $encode; ?>';  
+                var byteCharacters = atob(data);                
+                
+                function charCodeFromCharacter(c) {
+                    return c.charCodeAt(0);     
+                }
+
+                var byteNumbers = Array.prototype.map.call(byteCharacters, charCodeFromCharacter);
+                var uint8Data = new Uint8Array(byteNumbers);
+                var blob = new Blob([uint8Data]);
+                handleFileSelect(doc, blob);                
             };
             redactorInit();
         </script>
