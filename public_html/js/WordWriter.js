@@ -208,7 +208,7 @@ function WordWriter(word) {
                     blobURL = null;
                 }
                 $('#downloadLoading').hide();
-                
+                $('#downloadLabel').show();
                 var a = document.createElement('a');
                 
                 var filename = word.name.substring(0, word.name.lastIndexOf(".docx")) + "_redacted.docx";
@@ -216,8 +216,7 @@ function WordWriter(word) {
                 $(a).attr('href', blobURL);
                 $(a).attr('download', filename);
                 $(a).append(filename);
-                $('#download').append($(a));
-                $('#download').fadeIn("slow");              
+                $('#download').append($(a));            
                 
                 console.log("done");
             });

@@ -18,7 +18,15 @@ function WordViewer(word){
         
             //total images
             $('#totalImages').empty();
-            var totalImages = word.wordImageArray.length;
+            //calculate total number of images that actually appear in the powerpoint (rather than are present in the file)
+            var wordImages = word.getWordImageArray();
+            var totalImages = 0;
+            for (var i = 0; i < wordImages.length; i++){
+                var wordImage = wordImages[i];
+                if (self.word.getImageRels(wordImage.name).length > 0){
+                    totalImages++;
+                }
+            }
             $('#totalImages').append(totalImages);
         
             //licenced images
@@ -66,186 +74,192 @@ function WordViewer(word){
         self.word = word;
         
         var wordImages = word.getWordImageArray();
-        var carousel = $('#mycarousel').data('jcarousel');                
+        var carousel = $('#mycarousel').data('jcarousel');  
+        var carouselCount = 0;
         for (var i = 0; i < wordImages.length; i++){
-            console.log("testing..." + i);
+            
             //generate html for the image
             var wordImage = wordImages[i];
-            var html = '<span id="' + wordImage.name + '"><img id="img' + i + '" src="' + wordImage.url + '" width="110" height="110" alt="' + wordImage.url + '" /><span class="changeIcon"/></span>';
-            
-            carousel.add(i+1, html);
-            
-            $('#img' + i).click({param1: i, param2: wordImage}, function(event){
-                var wordImage = event.data.param2;
+            console.log(self.word.getImageRels(word.name).length);
+            //only add an image to the carousel if it appears in the word doc (that is to say it has rels)  
+            if (self.word.getImageRels(wordImage.name).length > 0){
                 
-                //clear previous info
-                $('#pptImage').empty();
-                $('#imageLicence').empty();
-                $('#imageAuthor').empty();
-                $('#imageSlides').empty();
-                $('#imageSize').empty(); 
-                $('#imageFormat').empty();
-                
-                //attach image to the div to get later
-                $('#imageOverview').data("image", wordImage);
-                
-                //make buttons work
-                $('.imageButtons').removeClass("disabled");
-                
-                //add the span helper for centering images
-                var span = document.createElement('span');
-                $(span).addClass("helper");
-                $('#pptImage').append($(span));  
-                
-                //display the slide numbers - TODO: ensure slides are in correct order!
-                var rels = self.word.getImageRels(wordImage.name);
-                var slides = "N/A";
-                //for (var i = 0, length = rels.length-1; i < length; i++){
-                //    var slideString = rels[i].slide;
+                var html = '<span id="' + wordImage.name + '"><img id="img' + i + '" src="' + wordImage.url + '" width="110" height="110" alt="' + wordImage.url + '" /><span class="changeIcon"/></span>';
+                carouselCount++;
+                carousel.add(carouselCount, html);
+
+                $('#img' + i).click({param1: i, param2: wordImage}, function(event) {
+                    var wordImage = event.data.param2;
+
+                    //clear previous info
+                    $('#pptImage').empty();
+                    $('#imageLicence').empty();
+                    $('#imageAuthor').empty();
+                    $('#imageSlides').empty();
+                    $('#imageSize').empty();
+                    $('#imageFormat').empty();
+
+                    //attach image to the div to get later
+                    $('#imageOverview').data("image", wordImage);
+
+                    //make buttons work
+                    $('.imageButtons').removeClass("disabled");
+
+                    //add the span helper for centering images
+                    var span = document.createElement('span');
+                    $(span).addClass("helper");
+                    $('#pptImage').append($(span));
+
+                    //display the slide numbers - TODO: ensure slides are in correct order!
+                    var rels = self.word.getImageRels(wordImage.name);
+                    var slides = "N/A";
+                    //for (var i = 0, length = rels.length-1; i < length; i++){
+                    //    var slideString = rels[i].slide;
                     //substring here removes the word "slide" from the rel's slide property                   
-                //    slides = slides + slideString.substring(5) + ", "; 
-                //}                
-                
-                //slides = slides + rels[rels.length-1].slide.substring(5);
-                $('#imageSlides').append(slides);
-                
-                //display image licence
-                var width = wordImage.width;
-                var height = wordImage.height;
-                $('#imageSize').append(width + " x " + height);
-                
-                //display image licence
-                var licence = wordImage.licence;
-                if (typeof licence === "undefined")
-                    licence = "Unknown";
-                $('#imageLicence').append(licence);
+                    //    slides = slides + slideString.substring(5) + ", "; 
+                    //}                
 
-                //display image author
-                var author = wordImage.author;
-                if (typeof author === "undefined")
-                    author = "Unknown";
-                $('#imageAuthor').append(author);
-                
-                //display image format
-                var format = wordImage.format;
-                if (typeof format === "undefined")
-                    format = "Unknown";
-                $('#imageFormat').append(format);
-                
-                //enable/disable buttons where appropriate
-                if (wordImage.format === ".png"){
-                    $('#ccBtn').addClass("disabled");
-                }else{
-                    $('#ccBtn').removeClass("disabled");
-                }   
-                
-                //display the image  
-                var redactor = $('#redactBtn').data("redactor");
-                var imageChange = redactor.getImageChange(wordImage);
-                console.log()
-                if (imageChange !== false){
-                    //display the change appropriately.
-                    switch (imageChange.type) {
-                        case "cc":
-                            $('.hasFocus').fadeOut(400, function() {
-                                //remove whatever did have focus
-                                $('.hasFocus').removeClass('hasFocus');
-                                $('#ccOverview').addClass('hasFocus');
-   
-                                //show old image
-                                $('#ccOld').empty();
-                                var oldImg = document.createElement('img');
-                                $(oldImg).addClass("ppt-image");
-                                $(oldImg).attr("src", wordImage.url);
-                                $('#ccOld').append($(oldImg));
-                
-                                //add the span helper for centering images
-                                var span = document.createElement('span');
-                                $(span).addClass("helper");
-                                $('#ccOld').append($(span)); 
-                            
-                                //set the licence
-                                $("#ccSelector").val(imageChange.licence);
-                                
-                                //hide the save button and show the undo button
-                                $('#ccSave').hide();
-                                $('#ccUndo').show();
+                    //slides = slides + rels[rels.length-1].slide.substring(5);
+                    $('#imageSlides').append(slides);
 
-                                $('#ccOverview').fadeIn(400);
-                            });              
-                        break;
-                        case "placeholder":
-                            $('.hasFocus').fadeOut(400, function() {
-                                //remove whatever did have focus
-                                $('.hasFocus').removeClass('hasFocus');
-                                $('#placeholderOverview').addClass('hasFocus');
-                                
-                                //show old image
-                                $('#placeholderOld').empty();
-                                var oldImg = document.createElement('img');
-                                $(oldImg).addClass("ppt-image placeholderImage");
-                                $(oldImg).attr("src", wordImage.url);
-                                $('#placeholderOld').append($(oldImg));   
-                                
-                                $('#placeholderSave').hide();
-                                $('#placeholderUndo').show();
-                                
-                                $('#placeholderOverview').fadeIn(400);                                
-                            });                        
-                        break;
-                        case "flickr":
-                            $('.hasFocus').fadeOut(400, function() {
-                                //remove whatever did have focus
-                                $('.hasFocus').removeClass('hasFocus');
-                                $('#flickrOverview').addClass('hasFocus');
-                                                        
-                                //show old image
-                                $('#flickrOld').empty();
-                                var oldImg = document.createElement('img');
-                                $(oldImg).addClass("flickrImage");
-                                $(oldImg).attr("src", wordImage.url);
-                                $('#flickrOld').append($(oldImg));
-                
-                                //show new image
-                                $('#flickrNew').empty();
-                                var newImg = document.createElement('img');
-                                $(newImg).addClass("flickrImage");
-                                $(newImg).attr("src", imageChange.newImageSrc);
-                                $('#flickrNew').append($(newImg));
-                                
-                                $('#flickrSave').hide();
-                                $('#flickrUndo').show();
-                            
-                                $('#flickrOverview').addClass('hasFocus');
-                                $('#flickrOverview').fadeIn(400);
-                            });  
-                        break;
-                    }                                       
-                }else{               
-                    var img = document.createElement('img');
-                    $(img).addClass("ppt-image");
-                    $(img).attr("src", wordImage.url);
-                    $('#pptImage').append($(img));
-                    
-                    if ($('.hasFocus').length === 0){
-                        //nothing in focus
-                        $('#pptImage').addClass('hasFocus');
-                        $('#pptImage').fadeIn('slow'); 
-                    }else{ //something has the focus
-                        if ($('#pptImage').hasClass('hasFocus')){ //already has focus
-                            $('#pptImage').fadeIn('slow');
-                        }else{
-                            $('.hasFocus').fadeOut('400', function(){
-                                $('.hasFocus').removeClass("hasFocus");
-                                $('#pptImage').addClass('hasFocus');
-                                $('#pptImage').fadeIn('slow');                        
-                            });
-                        }  
+                    //display image licence
+                    var width = wordImage.width;
+                    var height = wordImage.height;
+                    $('#imageSize').append(width + " x " + height);
+
+                    //display image licence
+                    var licence = wordImage.licence;
+                    if (typeof licence === "undefined")
+                        licence = "Unknown";
+                    $('#imageLicence').append(licence);
+
+                    //display image author
+                    var author = wordImage.author;
+                    if (typeof author === "undefined")
+                        author = "Unknown";
+                    $('#imageAuthor').append(author);
+
+                    //display image format
+                    var format = wordImage.format;
+                    if (typeof format === "undefined")
+                        format = "Unknown";
+                    $('#imageFormat').append(format);
+
+                    //enable/disable buttons where appropriate
+                    if (wordImage.format === ".png") {
+                        $('#ccBtn').addClass("disabled");
+                    } else {
+                        $('#ccBtn').removeClass("disabled");
                     }
-                }
-            });
+
+                    //display the image  
+                    var redactor = $('#redactBtn').data("redactor");
+                    var imageChange = redactor.getImageChange(wordImage);
+                    console.log()
+                    if (imageChange !== false) {
+                        //display the change appropriately.
+                        switch (imageChange.type) {
+                            case "cc":
+                                $('.hasFocus').fadeOut(400, function() {
+                                    //remove whatever did have focus
+                                    $('.hasFocus').removeClass('hasFocus');
+                                    $('#ccOverview').addClass('hasFocus');
+
+                                    //show old image
+                                    $('#ccOld').empty();
+                                    var oldImg = document.createElement('img');
+                                    $(oldImg).addClass("ppt-image");
+                                    $(oldImg).attr("src", wordImage.url);
+                                    $('#ccOld').append($(oldImg));
+
+                                    //add the span helper for centering images
+                                    var span = document.createElement('span');
+                                    $(span).addClass("helper");
+                                    $('#ccOld').append($(span));
+
+                                    //set the licence
+                                    $("#ccSelector").val(imageChange.licence);
+
+                                    //hide the save button and show the undo button
+                                    $('#ccSave').hide();
+                                    $('#ccUndo').show();
+
+                                    $('#ccOverview').fadeIn(400);
+                                });
+                                break;
+                            case "placeholder":
+                                $('.hasFocus').fadeOut(400, function() {
+                                    //remove whatever did have focus
+                                    $('.hasFocus').removeClass('hasFocus');
+                                    $('#placeholderOverview').addClass('hasFocus');
+
+                                    //show old image
+                                    $('#placeholderOld').empty();
+                                    var oldImg = document.createElement('img');
+                                    $(oldImg).addClass("ppt-image placeholderImage");
+                                    $(oldImg).attr("src", wordImage.url);
+                                    $('#placeholderOld').append($(oldImg));
+
+                                    $('#placeholderSave').hide();
+                                    $('#placeholderUndo').show();
+
+                                    $('#placeholderOverview').fadeIn(400);
+                                });
+                                break;
+                            case "flickr":
+                                $('.hasFocus').fadeOut(400, function() {
+                                    //remove whatever did have focus
+                                    $('.hasFocus').removeClass('hasFocus');
+                                    $('#flickrOverview').addClass('hasFocus');
+
+                                    //show old image
+                                    $('#flickrOld').empty();
+                                    var oldImg = document.createElement('img');
+                                    $(oldImg).addClass("flickrImage");
+                                    $(oldImg).attr("src", wordImage.url);
+                                    $('#flickrOld').append($(oldImg));
+
+                                    //show new image
+                                    $('#flickrNew').empty();
+                                    var newImg = document.createElement('img');
+                                    $(newImg).addClass("flickrImage");
+                                    $(newImg).attr("src", imageChange.newImageSrc);
+                                    $('#flickrNew').append($(newImg));
+
+                                    $('#flickrSave').hide();
+                                    $('#flickrUndo').show();
+
+                                    $('#flickrOverview').addClass('hasFocus');
+                                    $('#flickrOverview').fadeIn(400);
+                                });
+                                break;
+                        }
+                    } else {
+                        var img = document.createElement('img');
+                        $(img).addClass("ppt-image");
+                        $(img).attr("src", wordImage.url);
+                        $('#pptImage').append($(img));
+
+                        if ($('.hasFocus').length === 0) {
+                            //nothing in focus
+                            $('#pptImage').addClass('hasFocus');
+                            $('#pptImage').fadeIn('slow');
+                        } else { //something has the focus
+                            if ($('#pptImage').hasClass('hasFocus')) { //already has focus
+                                $('#pptImage').fadeIn('slow');
+                            } else {
+                                $('.hasFocus').fadeOut('400', function() {
+                                    $('.hasFocus').removeClass("hasFocus");
+                                    $('#pptImage').addClass('hasFocus');
+                                    $('#pptImage').fadeIn('slow');
+                                });
+                            }
+                        }
+                    }
+                });
+            }
         }
-        carousel.size(wordImages.length);
+        carousel.size(carouselCount);
         
         
         /*
@@ -375,28 +389,30 @@ function WordViewer(word){
         var totalCC = 0;
         var totalOther = 0;
         var totalNull = 0;
+        var total = 0;
         for (var i=0; i<wordImageArray.length; i++){
             var wordImage = wordImageArray[i];
-            var licence = wordImage.licence; 
-            //console.log(pptImage.name + pptImage.format);
-            //console.log(licence);
-            if (licence === "CC0" ||
-                licence === "Attribution (CC BY)" ||
-                licence === "NoDerivs (CC BY-ND)" ||
-                licence === "NonCommercial, NoDerivs (CC BY-NC-ND)" ||
-                licence === "NonCommercial (CC BY-NC)" ||
-                licence === "NonCommercial, ShareAlike (CC BY-NC-SA)" ||
-                licence === "ShareAlike (CC BY-SA)") {
-                totalCC++;
-            }else{
-                if (typeof licence !== "undefined" && licence !== "null" && licence !== null){
-                    totalOther++;
+            if (self.word.getImageRels(wordImage.name).length > 0){
+                total++;
+                var licence = wordImage.licence; 
+                if (licence === "CC0" ||
+                    licence === "Attribution (CC BY)" ||
+                    licence === "NoDerivs (CC BY-ND)" ||
+                    licence === "NonCommercial, NoDerivs (CC BY-NC-ND)" ||
+                    licence === "NonCommercial (CC BY-NC)" ||
+                    licence === "NonCommercial, ShareAlike (CC BY-NC-SA)" ||
+                    licence === "ShareAlike (CC BY-SA)") {
+                    totalCC++;
                 }else{
-                    totalNull++;
+                    if (typeof licence !== "undefined" && licence !== "null" && licence !== null){
+                        totalOther++;
+                    }else{
+                        totalNull++;
+                    }
                 }
             }            
         }
-        return new licenceNumbers(totalNull, totalOther, totalCC);        
+        return new licenceNumbers(total, totalNull, totalOther, totalCC);        
     };
     
     self.getLowestLicence = function(totalNull, totalOther, imageLicences){
@@ -466,8 +482,9 @@ function WordViewer(word){
         }
     };
     
-    function licenceNumbers(none, other, cc){
+    function licenceNumbers(total, none, other, cc){
         var self = this;
+        self.total = total;
         self.none = none;
         self.other = other;
         self.cc = cc;

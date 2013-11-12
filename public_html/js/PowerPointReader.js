@@ -62,7 +62,7 @@ function PowerPointReader(name, pptFile) {
                                     target = $(rels[j]).attr("Target");
                                     relID = $(rels[j]).attr("Id");
                                     imageName = target.substring(target.lastIndexOf("/") + 1, target.lastIndexOf("."));
-                                    slideImageRel = new SlideImageRel(relID, slideNo, imageName);
+                                    slideImageRel = new SlideImageRel(relID, slideNo, imageName, false);
                                     self.powerpoint.addSlideImageRel(slideImageRel);
                                 }
                             }
@@ -80,38 +80,70 @@ function PowerPointReader(name, pptFile) {
                         //onprogress callback
                     });
                 } else {
-                    //if presentation.xml
-                    if ((entry.filename).indexOf("ppt/presentation.xml") !== -1) {
+                    //if slideMasters rels (for getting background images which have been applied to multiple slides)
+                    if ((entry.filename).indexOf("ppt/slideMasters/_rels") !== -1){
                         entry.getData(new zip.TextWriter('utf-8'), function(text, entry) {
-                            var xmlDoc;
+                            
+                            var filename, slideNo, xmlDoc, rels, relID, target, imageName;
+                            filename = entry.filename;                            
                             xmlDoc = $.parseXML(text);
-                            
-                            //get tag format depending on browser
-                            var sldSz = "p\\:sldSz";                   
-                            if (window.webkitURL) {
-                                sldSz = "sldSz";
+                            rels = $(xmlDoc).find("Relationship");
+                            if (rels.length) {
+                                for (var j = 0; j < rels.length; j++) {
+                                    if ($(rels[j]).attr("Type") === IMAGE_REL_TYPE) {
+                                        target = $(rels[j]).attr("Target");
+                                        relID = $(rels[j]).attr("Id");
+                                        imageName = target.substring(target.lastIndexOf("/") + 1, target.lastIndexOf("."));
+                                        slideImageRel = new SlideImageRel(relID, -1, imageName, true);
+                                        self.powerpoint.addSlideImageRel(slideImageRel);
+                                    }
+                                }
                             }
-                            
-                            size = $(xmlDoc).find(sldSz);
-                            if (size.length) {
-                                self.powerpoint.setSlideHeight($(size[0]).attr("cy"));
-                            }
+
                             i++;
                             if (i === self.totalEntries) {
                                 self.displayPpt();
                             } else {
                                 processEntries(entries, i);
                             }
-                            //self.increment();
-                        }, function(current, total) {
+                                                        
+                        }, function(current, total){
                             //onprogress callback
-                        });
-                    } else {
-                        i++;
-                        if (i === self.totalEntries) {
-                            self.displayPpt();
+                        });              
+                    }else{                    
+                        //if presentation.xml
+                        if ((entry.filename).indexOf("ppt/presentation.xml") !== -1) {
+                            entry.getData(new zip.TextWriter('utf-8'), function(text, entry) {
+                                var xmlDoc;
+                                xmlDoc = $.parseXML(text);
+
+                                //get tag format depending on browser
+                                var sldSz = "p\\:sldSz";
+                                if (window.webkitURL) {
+                                    sldSz = "sldSz";
+                                }
+
+                                size = $(xmlDoc).find(sldSz);
+                                if (size.length) {
+                                    self.powerpoint.setSlideHeight($(size[0]).attr("cy"));
+                                }
+                                i++;
+                                if (i === self.totalEntries) {
+                                    self.displayPpt();
+                                } else {
+                                    processEntries(entries, i);
+                                }
+                                //self.increment();
+                            }, function(current, total) {
+                                //onprogress callback
+                            });
                         } else {
-                            processEntries(entries, i);
+                            i++;
+                            if (i === self.totalEntries) {
+                                self.displayPpt();
+                            } else {
+                                processEntries(entries, i);
+                            }
                         }
                     }
                 }

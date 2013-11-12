@@ -391,9 +391,7 @@ function redactorInit() {
         var images = viewer.getDocument().getImageArray();
         for (var j = 0; j < images.length; j++) {
             var image = images[j];
-            //console.log(image);
             var imageChange = redactor.getImageChange(image);
-            //console.log(imageChange);
             if (imageChange !== false) {
                 imageLicences.push(imageChange.licence);
             } else {
@@ -405,7 +403,7 @@ function redactorInit() {
         $('#overallLicence').empty();
         $('#overallLicence').append(lowestLicence); //need to work this out somehow
 
-        var totalImages = images.length;
+        var totalImages = licenceNumbers.total;
         var progressCC = (totalCC / totalImages) * 100;
         var progressOther = (totalOther / totalImages) * 100;
         var progressNull = (totalNull / totalImages) * 100;

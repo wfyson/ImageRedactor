@@ -18,7 +18,15 @@ function PowerPointViewer(powerpoint){
         
             //total images
             $('#totalImages').empty();
-            var totalImages = powerpoint.pptImageArray.length;
+            //calculate total number of images that actually appear in the powerpoint (rather than are present in the file)
+            var pptImages = powerpoint.getPptImageArray();
+            var totalImages = 0;
+            for (var i = 0; i < pptImages.length; i++){
+                var pptImage = pptImages[i];
+                if (self.powerpoint.getImageRels(pptImage.name).length > 0){
+                    totalImages++;
+                }
+            }
             $('#totalImages').append(totalImages);
         
             //licenced images
@@ -26,7 +34,7 @@ function PowerPointViewer(powerpoint){
             var totalNull = licenceNumbers.none;
             var totalOther = licenceNumbers.other;
             var totalCC = licenceNumbers.cc;
-            var totalLicenced = totalOther + totalCC;        
+            var totalLicenced = totalOther + totalCC;   
         
             $('#licencedImages').empty(); 
             $('#licencedImages').append(totalLicenced); 
@@ -61,185 +69,200 @@ function PowerPointViewer(powerpoint){
         self.powerpoint = powerpoint;
         
         var pptImages = powerpoint.getPptImageArray();
-        var carousel = $('#mycarousel').data('jcarousel');                
+        var carousel = $('#mycarousel').data('jcarousel');    
+        var carouselCount = 0;
         for (var i = 0; i < pptImages.length; i++){
-            console.log("testing..." + i);
             //generate html for the image
             var pptImage = pptImages[i];
-            var html = '<span id="' + pptImage.name + '"><img id="img' + i + '" src="' + pptImage.url + '" width="110" height="110" alt="' + pptImage.url + '" /><span class="changeIcon"/></span>';
-            
-            carousel.add(i+1, html);
-            
-            $('#img' + i).click({param1: i, param2: pptImage}, function(event){
-                var pptImage = event.data.param2;
+            //only add an image to the carousel if it appears in the presentation (that is to say it has rels)            
+            if (self.powerpoint.getImageRels(pptImage.name).length > 0){                
                 
-                //clear previous info
-                $('#pptImage').empty();
-                $('#imageLicence').empty();
-                $('#imageAuthor').empty();
-                $('#imageSlides').empty();
-                $('#imageSize').empty();                 
-                $('#imageFormat').empty();
-                
-                //attach image to the div to get later
-                $('#imageOverview').data("image", pptImage);
-                
-                //make buttons work
-                $('.imageButtons').removeClass("disabled");
-                
-                //add the span helper for centering images
-                var span = document.createElement('span');
-                $(span).addClass("helper");
-                $('#pptImage').append($(span));  
-                
-                //display the slide numbers - TODO: ensure slides are in correct order!
-                var rels = self.powerpoint.getImageRels(pptImage.name);
-                var slides = "";
-                for (var i = 0, length = rels.length-1; i < length; i++){
-                    var slideString = rels[i].slide;
-                    //substring here removes the word "slide" from the rel's slide property                   
-                    slides = slides + slideString.substring(5) + ", "; 
-                }                
-                
-                slides = slides + rels[rels.length-1].slide.substring(5);
-                $('#imageSlides').append(slides);
-                
-                //display image licence
-                var width = pptImage.width;
-                var height = pptImage.height;
-                $('#imageSize').append(width + " x " + height);
-                
-                //display image licence
-                var licence = pptImage.licence;
-                if (typeof licence === "undefined")
-                    licence = "Unknown";
-                $('#imageLicence').append(licence);
+                var html = '<span id="' + pptImage.name + '"><img id="img' + i + '" src="' + pptImage.url + '" width="110" height="110" alt="' + pptImage.url + '" /><span class="changeIcon"/></span>';
 
-                //display image author
-                var author = pptImage.author;
-                if (typeof author === "undefined")
-                    author = "Unknown";
-                $('#imageAuthor').append(author);
+                carouselCount++;
+                carousel.add(carouselCount, html);
                 
-                //display image format
-                var format = pptImage.format;
-                if (typeof format === "undefined")
-                    format = "Unknown";
-                $('#imageFormat').append(format);
-                
-                //enable/disable buttons where appropriate
-                if (pptImage.format === ".png"){
-                    $('#ccBtn').addClass("disabled");
-                }else{
-                    $('#ccBtn').removeClass("disabled");
-                }   
-                
-                //display the image  
-                var redactor = $('#redactBtn').data("redactor");
-                var imageChange = redactor.getImageChange(pptImage);
-                if (imageChange !== false){
-                    //display the change appropriately.
-                    switch (imageChange.type) {
-                        case "cc":
-                            $('.hasFocus').fadeOut(400, function() {
-                                //remove whatever did have focus
-                                $('.hasFocus').removeClass('hasFocus');
-                                $('#ccOverview').addClass('hasFocus');
-   
-                                //show old image
-                                $('#ccOld').empty();
-                                var oldImg = document.createElement('img');
-                                $(oldImg).addClass("ppt-image");
-                                $(oldImg).attr("src", pptImage.url);
-                                $('#ccOld').append($(oldImg));
-                
-                                //add the span helper for centering images
-                                var span = document.createElement('span');
-                                $(span).addClass("helper");
-                                $('#ccOld').append($(span)); 
-                            
-                                //set the licence
-                                $("#ccSelector").val(imageChange.licence);
-                                
-                                //hide the save button and show the undo button
-                                $('#ccSave').hide();
-                                $('#ccUndo').show();
+                $('#img' + i).click({param1: i, param2: pptImage}, function(event) {
+                    var pptImage = event.data.param2;
 
-                                $('#ccOverview').fadeIn(400);
-                            });              
-                        break;
-                        case "placeholder":
-                            $('.hasFocus').fadeOut(400, function() {
-                                //remove whatever did have focus
-                                $('.hasFocus').removeClass('hasFocus');
-                                $('#placeholderOverview').addClass('hasFocus');
-                                
-                                //show old image
-                                $('#placeholderOld').empty();
-                                var oldImg = document.createElement('img');
-                                $(oldImg).addClass("ppt-image placeholderImage");
-                                $(oldImg).attr("src", pptImage.url);
-                                $('#placeholderOld').append($(oldImg));   
-                                
-                                $('#placeholderSave').hide();
-                                $('#placeholderUndo').show();
-                                
-                                $('#placeholderOverview').fadeIn(400);                                
-                            });                        
-                        break;
-                        case "flickr":
-                            $('.hasFocus').fadeOut(400, function() {
-                                //remove whatever did have focus
-                                $('.hasFocus').removeClass('hasFocus');
-                                $('#flickrOverview').addClass('hasFocus');
-                                                        
-                                //show old image
-                                $('#flickrOld').empty();
-                                var oldImg = document.createElement('img');
-                                $(oldImg).addClass("flickrImage");
-                                $(oldImg).attr("src", pptImage.url);
-                                $('#flickrOld').append($(oldImg));
-                
-                                //show new image
-                                $('#flickrNew').empty();
-                                var newImg = document.createElement('img');
-                                $(newImg).addClass("flickrImage");
-                                $(newImg).attr("src", imageChange.newImageSrc);
-                                $('#flickrNew').append($(newImg));
-                                
-                                $('#flickrSave').hide();
-                                $('#flickrUndo').show();
-                            
-                                $('#flickrOverview').addClass('hasFocus');
-                                $('#flickrOverview').fadeIn(400);
-                            });  
-                        break;
-                    }                                       
-                }else{               
-                    var img = document.createElement('img');
-                    $(img).addClass("ppt-image");
-                    $(img).attr("src", pptImage.url);
-                    $('#pptImage').append($(img));
-                    
-                    if ($('.hasFocus').length === 0){
-                        //nothing in focus
-                        $('#pptImage').addClass('hasFocus');
-                        $('#pptImage').fadeIn('slow'); 
-                    }else{ //something has the focus
-                        if ($('#pptImage').hasClass('hasFocus')){ //already has focus
-                            $('#pptImage').fadeIn('slow');
-                        }else{
-                            $('.hasFocus').fadeOut('400', function(){
-                                $('.hasFocus').removeClass("hasFocus");
-                                $('#pptImage').addClass('hasFocus');
-                                $('#pptImage').fadeIn('slow');                        
-                            });
-                        }  
+                    //clear previous info
+                    $('#pptImage').empty();
+                    $('#imageLicence').empty();
+                    $('#imageAuthor').empty();
+                    $('#imageSlides').empty();
+                    $('#imageSize').empty();
+                    $('#imageFormat').empty();
+
+                    //attach image to the div to get later
+                    $('#imageOverview').data("image", pptImage);
+
+                    //make buttons work
+                    $('.imageButtons').removeClass("disabled");
+
+                    //add the span helper for centering images
+                    var span = document.createElement('span');
+                    $(span).addClass("helper");
+                    $('#pptImage').append($(span));
+
+                    //display the slide numbers - TODO: ensure slides are in correct order!
+                    var rels = self.powerpoint.getImageRels(pptImage.name);
+                    var slides = "";
+
+                    for (var i = 0, length = rels.length - 1; i < length; i++) {
+                        if (rels[i].slide === -1) {
+                            slides = "N/A";
+                        } else {
+                            var slideString = rels[i].slide;
+                            //substring here removes the word "slide" from the rel's slide property                   
+                            slides = slides + slideString.substring(5) + ", ";
+                        }
                     }
-                }
-            });
+                    if (rels[rels.length - 1].slide !== -1) {
+                        slides = slides + rels[rels.length - 1].slide.substring(5);
+                    }else{
+                        if (rels[rels.length-1].background){
+                            slides = "Background";
+                        }
+                    }
+                    $('#imageSlides').append(slides);      
+
+                    //display image licence
+                    var width = pptImage.width;
+                    var height = pptImage.height;
+                    $('#imageSize').append(width + " x " + height);
+
+                    //display image licence
+                    var licence = pptImage.licence;
+                    if (typeof licence === "undefined")
+                        licence = "Unknown";
+                    $('#imageLicence').append(licence);
+
+                    //display image author
+                    var author = pptImage.author;
+                    if (typeof author === "undefined")
+                        author = "Unknown";
+                    $('#imageAuthor').append(author);
+
+                    //display image format
+                    var format = pptImage.format;
+                    if (typeof format === "undefined")
+                        format = "Unknown";
+                    $('#imageFormat').append(format);
+
+                    //enable/disable buttons where appropriate
+                    if (pptImage.format === ".png") {
+                        $('#ccBtn').addClass("disabled");
+                    } else {
+                        $('#ccBtn').removeClass("disabled");
+                    }
+
+                    //display the image  
+                    var redactor = $('#redactBtn').data("redactor");
+                    var imageChange = redactor.getImageChange(pptImage);
+                    if (imageChange !== false) {
+                        //display the change appropriately.
+                        switch (imageChange.type) {
+                            case "cc":
+                                $('.hasFocus').fadeOut(400, function() {
+                                    //remove whatever did have focus
+                                    $('.hasFocus').removeClass('hasFocus');
+                                    $('#ccOverview').addClass('hasFocus');
+
+                                    //show old image
+                                    $('#ccOld').empty();
+                                    var oldImg = document.createElement('img');
+                                    $(oldImg).addClass("ppt-image");
+                                    $(oldImg).attr("src", pptImage.url);
+                                    $('#ccOld').append($(oldImg));
+
+                                    //add the span helper for centering images
+                                    var span = document.createElement('span');
+                                    $(span).addClass("helper");
+                                    $('#ccOld').append($(span));
+
+                                    //set the licence
+                                    $("#ccSelector").val(imageChange.licence);
+
+                                    //hide the save button and show the undo button
+                                    $('#ccSave').hide();
+                                    $('#ccUndo').show();
+
+                                    $('#ccOverview').fadeIn(400);
+                                });
+                                break;
+                            case "placeholder":
+                                $('.hasFocus').fadeOut(400, function() {
+                                    //remove whatever did have focus
+                                    $('.hasFocus').removeClass('hasFocus');
+                                    $('#placeholderOverview').addClass('hasFocus');
+
+                                    //show old image
+                                    $('#placeholderOld').empty();
+                                    var oldImg = document.createElement('img');
+                                    $(oldImg).addClass("ppt-image placeholderImage");
+                                    $(oldImg).attr("src", pptImage.url);
+                                    $('#placeholderOld').append($(oldImg));
+
+                                    $('#placeholderSave').hide();
+                                    $('#placeholderUndo').show();
+
+                                    $('#placeholderOverview').fadeIn(400);
+                                });
+                                break;
+                            case "flickr":
+                                $('.hasFocus').fadeOut(400, function() {
+                                    //remove whatever did have focus
+                                    $('.hasFocus').removeClass('hasFocus');
+                                    $('#flickrOverview').addClass('hasFocus');
+
+                                    //show old image
+                                    $('#flickrOld').empty();
+                                    var oldImg = document.createElement('img');
+                                    $(oldImg).addClass("flickrImage");
+                                    $(oldImg).attr("src", pptImage.url);
+                                    $('#flickrOld').append($(oldImg));
+
+                                    //show new image
+                                    $('#flickrNew').empty();
+                                    var newImg = document.createElement('img');
+                                    $(newImg).addClass("flickrImage");
+                                    $(newImg).attr("src", imageChange.newImageSrc);
+                                    $('#flickrNew').append($(newImg));
+
+                                    $('#flickrSave').hide();
+                                    $('#flickrUndo').show();
+
+                                    $('#flickrOverview').addClass('hasFocus');
+                                    $('#flickrOverview').fadeIn(400);
+                                });
+                                break;
+                        }
+                    } else {
+                        var img = document.createElement('img');
+                        $(img).addClass("ppt-image");
+                        $(img).attr("src", pptImage.url);
+                        $('#pptImage').append($(img));
+
+                        if ($('.hasFocus').length === 0) {
+                            //nothing in focus
+                            $('#pptImage').addClass('hasFocus');
+                            $('#pptImage').fadeIn('slow');
+                        } else { //something has the focus
+                            if ($('#pptImage').hasClass('hasFocus')) { //already has focus
+                                $('#pptImage').fadeIn('slow');
+                            } else {
+                                $('.hasFocus').fadeOut('400', function() {
+                                    $('.hasFocus').removeClass("hasFocus");
+                                    $('#pptImage').addClass('hasFocus');
+                                    $('#pptImage').fadeIn('slow');
+                                });
+                            }
+                        }
+                    }
+                });
+            }
         }
-        carousel.size(pptImages.length);
+        carousel.size(carouselCount);
         
         
         /*
@@ -369,28 +392,30 @@ function PowerPointViewer(powerpoint){
         var totalCC = 0;
         var totalOther = 0;
         var totalNull = 0;
+        var total = 0;
         for (var i=0; i<pptImageArray.length; i++){
             var pptImage = pptImageArray[i];
-            var licence = pptImage.licence; 
-            //console.log(pptImage.name + pptImage.format);
-            //console.log(licence);
-            if (licence === "CC0" ||
-                licence === "Attribution (CC BY)" ||
-                licence === "NoDerivs (CC BY-ND)" ||
-                licence === "NonCommercial, NoDerivs (CC BY-NC-ND)" ||
-                licence === "NonCommercial (CC BY-NC)" ||
-                licence === "NonCommercial, ShareAlike (CC BY-NC-SA)" ||
-                licence === "ShareAlike (CC BY-SA)") {
-                totalCC++;
-            }else{
-                if (typeof licence !== "undefined" && licence !== "null" && licence !== null){
-                    totalOther++;
+            if (self.powerpoint.getImageRels(pptImage.name).length > 0){
+                total++;
+                var licence = pptImage.licence; 
+                if (licence === "CC0" ||
+                    licence === "Attribution (CC BY)" ||
+                    licence === "NoDerivs (CC BY-ND)" ||
+                    licence === "NonCommercial, NoDerivs (CC BY-NC-ND)" ||
+                    licence === "NonCommercial (CC BY-NC)" ||
+                    licence === "NonCommercial, ShareAlike (CC BY-NC-SA)" ||
+                    licence === "ShareAlike (CC BY-SA)") {
+                    totalCC++;
                 }else{
-                    totalNull++;
-                }
-            }            
+                    if (typeof licence !== "undefined" && licence !== "null" && licence !== null){
+                        totalOther++;
+                    }else{
+                        totalNull++;
+                    }
+                }            
+            }
         }
-        return new licenceNumbers(totalNull, totalOther, totalCC);        
+        return new licenceNumbers(total, totalNull, totalOther, totalCC);        
     };
     
     self.getLowestLicence = function(totalNull, totalOther, imageLicences){
@@ -460,8 +485,9 @@ function PowerPointViewer(powerpoint){
         }
     };
     
-    function licenceNumbers(none, other, cc){
+    function licenceNumbers(total, none, other, cc){
         var self = this;
+        self.total = total;
         self.none = none;
         self.other = other;
         self.cc = cc;

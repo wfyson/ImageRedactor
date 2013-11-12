@@ -326,7 +326,7 @@
                         <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
                         <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Obfuscate</button>
                         <button id="redactBtn" class="btn btn-inverse btn-block disabled">Redact <i class="icon-download icon-white"></i></button>
-                        <span id="download" style="display:none;"><span class="label label-inverse">Download Link</span></span>
+                        <span id="download" class='btn-block'><img id="downloadLoading" src="img/ajax-loader-small.gif"/><span id='downloadLabel' class="label label-inverse">Download Link</span></span>
                     </div>
                 </div>                
             </div>

@@ -44,6 +44,11 @@ body .modal {
     display: none;
 }
 
+#downloadLabel{
+    display: none;
+}
+
+
 #imageOverview{
     height: 400px;
     margin-bottom: 5px;

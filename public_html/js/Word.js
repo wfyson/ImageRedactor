@@ -40,10 +40,7 @@ function Word(name, wordFile){
         var rels = self.slideImageRelArray;
         var returnArray = new Array();
         for (var i = 0; i < rels.length; i++){
-            console.log(rels[i]);
-            console.log(imageName);
             if (rels[i].image === imageName){
-                console.log("WOOHOO");
                 returnArray.push(rels[i]);
             }
         }

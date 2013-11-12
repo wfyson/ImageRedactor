@@ -60,7 +60,7 @@ function WordReader(name, wordFile) {
                                 if ($(rels[j]).attr("Type") === IMAGE_REL_TYPE) {
                                     target = $(rels[j]).attr("Target");
                                     imageName = target.substring(target.lastIndexOf("/") + 1, target.lastIndexOf("."));
-                                    slideImageRel = new SlideImageRel(-1, -1, imageName);
+                                    slideImageRel = new SlideImageRel(-1, -1, imageName, false);
                                     self.word.addSlideImageRel(slideImageRel);
                                 }
                             }
