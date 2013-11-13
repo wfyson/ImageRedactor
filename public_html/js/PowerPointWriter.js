@@ -360,6 +360,7 @@ function PowerPointWriter(ppt) {
                     blobURL = null;
                 }
                 $('#downloadLoading').hide();
+                $('#downloadLabel').show();
                 
                 var a = document.createElement('a');
                 
@@ -369,8 +370,7 @@ function PowerPointWriter(ppt) {
                 $(a).attr('href', blobURL);
                 $(a).attr('download', filename);
                 $(a).append(filename);
-                $('#download').append($(a));
-                $('#download').fadeIn("slow");    
+                $('#download').append($(a));   
                 console.log("done");
             });
         });

@@ -40,6 +40,8 @@ function PowerPointRedactor() {
     self.commitChanges = function(){
         
         console.log("Redacting...");
+        $('#downloadLink').empty();
+        $('#downloadLabel').hide();
         $('#downloadLoading').show();
         var pptWriter = new PowerPointWriter(self.ppt);
         pptWriter.readPowerPoint(); //reads the powerpoint and then writes back, with additional changes

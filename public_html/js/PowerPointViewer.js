@@ -126,7 +126,7 @@ function PowerPointViewer(powerpoint){
                     }
                     $('#imageSlides').append(slides);      
 
-                    //display image licence
+                    //display image size
                     var width = pptImage.width;
                     var height = pptImage.height;
                     $('#imageSize').append(width + " x " + height);
@@ -135,7 +135,10 @@ function PowerPointViewer(powerpoint){
                     var licence = pptImage.licence;
                     if (typeof licence === "undefined")
                         licence = "Unknown";
-                    $('#imageLicence').append(licence);
+                    var licenceSpan = document.createElement('span');
+                    $(licenceSpan).attr("title", licence);
+                    $(licenceSpan).append(licence);                    
+                    $('#imageLicence').append(licenceSpan);
 
                     //display image author
                     var author = pptImage.author;

@@ -39,6 +39,8 @@ function WordRedactor() {
     self.commitChanges = function(){
         
         console.log("Redacting...");
+        $('#downloadLink').empty();
+        $('#downloadLabel').hide();
         $('#downloadLoading').show();
         var wordWriter = new WordWriter(self.word);
         wordWriter.readWord(); //reads the powerpoint and then writes back, with additional changes
