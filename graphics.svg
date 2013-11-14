@@ -26,14 +26,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.49497475"
-     inkscape:cx="-130.37249"
-     inkscape:cy="1334.7664"
+     inkscape:cx="251.34198"
+     inkscape:cy="1496.168"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1280"
-     inkscape:window-height="962"
-     inkscape:window-x="-8"
+     inkscape:window-height="1002"
+     inkscape:window-x="1272"
      inkscape:window-y="-8"
      inkscape:window-maximized="1" />
   <metadata
@@ -82,33 +82,6 @@
          x="-256.75922"
          y="-1208.5077"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#87aade;font-family:Gulim;-inkscape-font-specification:Gulim Bold">alpha</tspan></text>
-    <rect
-       style="fill:#000000;fill-opacity:1;stroke:#977901;stroke-width:0.13457670999999999;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;opacity:0"
-       id="rect3007"
-       width="1324.6405"
-       height="553.51801"
-       x="-512.32025"
-       y="-728.68256"
-       rx="29.718"
-       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
-    <text
-       xml:space="preserve"
-       style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       x="-493.7778"
-       y="-663.19641"
-       id="text3009"
-       sodipodi:linespacing="125%"
-       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"><tspan
-         sodipodi:role="line"
-         id="tspan3011"
-         x="-493.7778"
-         y="-663.19641">1) <tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Courier New;-inkscape-font-specification:Courier New"
-   id="tspan3987">Select</tspan> .docx or .pptx file</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
@@ -116,17 +89,17 @@
        y="-569.96344"
        id="text3009-1"
        sodipodi:linespacing="125%"
-       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions.png"
+       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions_plugin_5.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan3011-7"
          x="-489.32077"
-         y="-569.96344">2) Choose image</tspan></text>
+         y="-569.96344">1) Choose image</tspan></text>
     <g
        id="g3086"
        transform="translate(2256.6942,-839.27289)"
-       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions.png"
+       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions_plugin_5.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <text
@@ -139,7 +112,7 @@
            y="358.32254"
            x="-2746.7258"
            id="tspan3011-7-0"
-           sodipodi:role="line">3) Choose redaction option: </tspan></text>
+           sodipodi:role="line">2) Choose redaction option: </tspan></text>
       <text
          sodipodi:linespacing="125%"
          id="text3057"
@@ -173,13 +146,13 @@
        y="-208.70428"
        id="text3009-1-4-9"
        sodipodi:linespacing="125%"
-       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions.png"
+       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions_plugin_5.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan3011-7-0-4"
          x="-492.32492"
-         y="-208.70428">4) Click <tspan
+         y="-208.70428">3) Click <tspan
    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Courier New;-inkscape-font-specification:Courier New"
    id="tspan3979">redact</tspan> to generate download link!</tspan></text>
     <image
@@ -213,5 +186,30 @@
        x="-874.28571"
        y="92.362183"
        rx="29.718" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;opacity:1"
+       id="rect3007"
+       width="1324.6405"
+       height="553.51801"
+       x="-512.32025"
+       y="-728.68256"
+       rx="29.718"
+       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions_plugin_5.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:56px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-0.97851563"
+       y="-658.48615"
+       id="text3009-1-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\wamp\www\ImageRedactor\public_html\img\instructions_plugin_5.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3011-7-7"
+         x="-0.97851563"
+         y="-658.48615">File loading.....</tspan></text>
   </g>
 </svg>

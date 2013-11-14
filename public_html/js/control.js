@@ -1,4 +1,5 @@
-function redactorInit() {    
+function redactorInit() { 
+    
     //perform flickr search
     $('#flickr').submit(function() {
         //unbind any previous functions associated with the next and previous buttons for flickr
@@ -11,11 +12,13 @@ function redactorInit() {
         } else {
             $('#searchControl').removeClass("error");
             //do a search
+            var search = $('#replaceBtn').data("search");
+            console.log(search);
             var tags = $('#tags').val();
             var sort = $('#sort').val();
             var licence = $('#flickrLicence').val();
-            var flickrReader = new FlickrReader(tags, sort, licence);
-            flickrReader.buildQuery();
+            var flickrReader = new FlickrReader(search, tags, sort, licence);
+            flickrReader.buildQuery(search);
         }
         return false;
     });
@@ -162,6 +165,9 @@ function redactorInit() {
 //flickr button
     $('#flickrBtn').click(function() {
         if (!$('#flickrBtn').hasClass("disabled")) {
+            
+            $('#replaceBtn').data("search", "flickr");
+            
             $('.hasFocus').fadeOut(400, function() {
                 //remove whatever did have focus
                 $('.hasFocus').removeClass('hasFocus');
@@ -170,6 +176,35 @@ function redactorInit() {
             });
         }
     });
+    
+    $('#googleBtn').click(function() {
+        if (!$('#googleBtn').hasClass("disabled")) {
+            
+            $('#replaceBtn').data("search", "google");
+            
+            $('.hasFocus').fadeOut(400, function() {
+                //remove whatever did have focus
+                $('.hasFocus').removeClass('hasFocus');
+                $('#flickrSearch').addClass('hasFocus');
+                $('#flickrSearch').fadeIn(400);
+            });
+        }
+    });
+    
+    $('#clipartBtn').click(function() {
+        if (!$('#clipartBtn').hasClass("disabled")) {
+            
+            $('#replaceBtn').data("search", "clipart");
+            
+            $('.hasFocus').fadeOut(400, function() {
+                //remove whatever did have focus
+                $('.hasFocus').removeClass('hasFocus');
+                $('#flickrSearch').addClass('hasFocus');
+                $('#flickrSearch').fadeIn(400);
+            });
+        }
+    });
+    
 
 //cropping back button (from cropper to search results)
     /*

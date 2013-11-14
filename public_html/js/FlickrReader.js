@@ -23,9 +23,10 @@
  * http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=4cb26b7f09f917e2f9154d48087de93d&photo_id=8040813531&format=json&nojsoncallback=1&auth_token=72157633370337990-07d618a50f8017a0&api_sig=5cb1a90eb0bcd81abe69059741ed5fab
  */
 
-function FlickrReader(tags, sort, licence) {
+function FlickrReader(search, tags, sort, licence) {
 
     var self = this;
+    self.search = search;
     self.tags = tags;
     self.sort = sort;
     self.licence = licence;
@@ -43,7 +44,7 @@ function FlickrReader(tags, sort, licence) {
         if (!$('#flickrPrev').hasClass('disabled')){
             if (self.page > 1) {
                 self.page--;
-                self.buildQuery();
+                self.buildQuery(self.search);
             }
         }
     });
@@ -52,7 +53,7 @@ function FlickrReader(tags, sort, licence) {
         if (!$('#flickrNext').hasClass('disabled')){
             if (self.page < self.totalPages) {
                 self.page++;
-                self.buildQuery();
+                self.buildQuery(self.search);
             }
         }
     });
@@ -60,8 +61,19 @@ function FlickrReader(tags, sort, licence) {
     //ensure both buttons are disabled initially
     $("#flickr-prev").addClass("disabled");
     $("#flickr-next").addClass("disabled");
-
-    self.buildQuery = function() {        
+    
+    self.buildQuery = function(search){
+        switch (search) {
+            case "flickr":
+                self.buildFlickrQuery();
+                break;  
+            case "clipart":
+                self.buildClipartQuery();
+                break;
+        }
+    };
+    
+    self.buildFlickrQuery = function(){
         //initialise URL
         var url;
         url = "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=";
@@ -125,14 +137,14 @@ function FlickrReader(tags, sort, licence) {
         //set the format
         url = url + "&format=json&nojsoncallback=1";
 
-        $.getJSON(url, self.getPhotos);
+        $.getJSON(url, self.getFlickrPhotos);
         $('#flickr-results').hide();
-        $('#flickr-loading').show();
+        $('#flickr-loading').show();        
     };
-
+    
     //from the list of photos return by the search, get the photos
     //may want to read and store max page count from this too!
-    self.getPhotos = function(data) {
+    self.getFlickrPhotos = function(data){
         self.totalPages = data.photos.pages;
         self.totalResults = data.photos.total;
         self.page = data.photos.page;
@@ -156,11 +168,11 @@ function FlickrReader(tags, sort, licence) {
         for (var i = 0; i < photos.length; i++) {
             imageID = photos[i].id;
             flickrImage = new FlickrImage(imageID);
-            self.getPhotoInfo(flickrImage);
+            self.getFlickrPhotoInfo(flickrImage);
         }
     };
-
-    self.getPhotoInfo = function(flickrImage) {
+    
+    self.getFlickrPhotoInfo = function(flickrImage) {
         var photoInfoUrl;
         photoInfoUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=";
         photoInfoUrl = photoInfoUrl + API_KEY;
@@ -170,11 +182,11 @@ function FlickrReader(tags, sort, licence) {
             flickrImage.setAuthor(data.photo.owner.username);
             flickrImage.setTitle(data.photo.title._content);
             flickrImage.setLicence(data.photo.license);
-            self.getPhotoSizes(flickrImage);
+            self.getFlickrPhotoSizes(flickrImage);
         });
     };
-
-    self.getPhotoSizes = function(flickrImage) {
+    
+    self.getFlickrPhotoSizes = function(flickrImage) {
         var photoSizesUrl;
         photoSizesUrl = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=";
         photoSizesUrl = photoSizesUrl + API_KEY;
@@ -196,6 +208,36 @@ function FlickrReader(tags, sort, licence) {
                 flickrResultsViewer.displayResults(self.results);
             }
         });
+    };
+    
+    self.buildClipartQuery = function(){
+        //initialise URL
+        var url;
+        url = "http://openclipart.org/search/json/";
+        
+
+        //get search tags
+        var tagArray = self.tags.split(" ");
+        url = url + "?query=";
+        for (var i = 0; i < tagArray.length - 1; i++) {
+            url = url + tagArray[i] + "+";
+        }
+        url = url + tagArray[tagArray.length - 1];
+
+        //add the page no
+        url = url + "&page=" + self.page;
+
+        //add the per page
+        url = url + "&amount=" + self.perPage;        
+
+        //set the format
+        //url = url + "&format=json&nojsoncallback=1";
+
+        console.log(url)
+
+        $.getJSON(url, self.getClipartPhotos);
+        $('#flickr-results').hide();
+        $('#flickr-loading').show();        
     };
 }
         

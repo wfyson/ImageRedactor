@@ -77,7 +77,7 @@
                 <div id="imageWindow" class="span9">
                 
                     <span id="instructions" class="hasFocus">
-                        <img src="img/instructions.png"/>
+                        <img src="img/instructions.gif"/>
                     </span>
                     
                     <span id="pptImage">
