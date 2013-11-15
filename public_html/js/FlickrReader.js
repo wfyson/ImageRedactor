@@ -232,13 +232,109 @@ function FlickrReader(search, tags, sort, licence) {
 
         //set the format
         //url = url + "&format=json&nojsoncallback=1";
-
-        console.log(url)
-
         $.getJSON(url, self.getClipartPhotos);
         $('#flickr-results').hide();
         $('#flickr-loading').show();        
     };
+    
+    //from the list of photos return by the search, get the photos
+    //may want to read and store max page count from this too!
+    self.getClipartPhotos = function(data){
+        self.totalPages = data.info.pages;
+        self.totalResults = data.info.results;
+        self.page = data.info.current_page;
+        self.results = new Array();
+        if (self.page < self.totalPages) {
+            $("#flickrNext").removeClass("disabled");
+        }
+        if (self.page === self.totalPages) {
+            $("#flickrNext").addClass("disabled");
+        }
+        if (self.page > 1) {
+            $("#flickrPrev").removeClass("disabled");
+        }
+        if (self.page === 1) {
+            $("#flickrPrev").addClass("disabled");
+        }
+        var photos = data.payload;
+        self.noResults = photos.length;
+        var imageID, clipartImage;
+        for (var i = 0; i < photos.length; i++) {
+            imageID = photos[i].title;
+            clipartImage = new FlickrImage(imageID);
+            clipartImage.setTitle(photos[i].title);
+            clipartImage.setAuthor(photos[i].uploader);
+            clipartImage.setLicence("CC0");
+            
+            var sizes = new array();
+            sizes["thumbnail"] = photos[i].svg.png_thumb;
+            sizes["Medium"] = photos[i].svg.png_full_lossy;
+            clipartImage.setSizes(sizes);
+                    
+                    
+            self.results.push(clipartImage);
+            if (self.results.length === self.noResults) {
+                //all results have been generated, send array to a results viewer
+                var flickrResultsViewer = new FlickrResultsViewer();                
+                flickrResultsViewer.displayResults(self.results);
+            }        
+        }
+    };    
+    
+    self.buildGoogleQuery = function(){
+        //initialise URL
+        var url;
+        url = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0";
+
+        //get search tags
+        var tagArray = self.tags.split(" ");
+        url = url + "&q=";
+        for (var i = 0; i < tagArray.length - 1; i++) {
+            url = url + tagArray[i] + "%20";
+        }
+        url = url + tagArray[tagArray.length - 1];
+
+        //add the licence
+        //some sort of case statement
+        var licenceID;
+        switch (self.licence) {
+            case "Attribution (CC BY)":
+                licenceID = "cc_attribute";
+                break;
+            case "NoDerivs (CC BY-ND)":
+                licenceID = "cc_nonderived";
+                break;
+            case "NonCommercial, NoDerivs (CC BY-NC-ND)":
+                licenceID = "(cc_noncommercial|cc_nonderived)";
+                break;
+            case "NonCommercial (CC BY-NC)":
+                licenceID = "cc_noncommercial";
+                break;
+            case "NonCommercial, ShareAlike (CC BY-NC-SA)":
+                licenceID = "(cc_noncommercial|cc_sharealike)";
+                break;
+            case "ShareAlike (CC BY-SA)":
+                licenceID = "cc_sharealike";
+                break;
+        }
+        url = url + "&as_rights=" + licenceID;
+
+        //add the per page
+        url = url + "&rsz=8";
+
+        //add the page no
+        url = url + "&start=" + ((self.page-1) * 8);
+
+        //set the format
+        url = url + "&format=json&nojsoncallback=1";
+
+        $.getJSON(url, self.getFlickrPhotos);
+        $('#flickr-results').hide();
+        $('#flickr-loading').show();        
+    };
+    
+    
+    
 }
         
 
