@@ -23,13 +23,14 @@
  * http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=4cb26b7f09f917e2f9154d48087de93d&photo_id=8040813531&format=json&nojsoncallback=1&auth_token=72157633370337990-07d618a50f8017a0&api_sig=5cb1a90eb0bcd81abe69059741ed5fab
  */
 
-function FlickrReader(search, tags, sort, licence) {
+function FlickrReader(search, tags, sort, commercial, derivative) {
 
     var self = this;
     self.search = search;
     self.tags = tags;
     self.sort = sort;
-    self.licence = licence;
+    self.commercial = commercial;
+    self.derivative = derivative;
     self.page = 1;
     self.perPage = 15;
     self.totalPages = 0;
@@ -66,10 +67,13 @@ function FlickrReader(search, tags, sort, licence) {
         switch (search) {
             case "flickr":
                 self.buildFlickrQuery();
-                break;  
+                break;
+            case "google":
+                self.buildGoogleQuery();
+                break;
             case "clipart":
                 self.buildClipartQuery();
-                break;
+                break;            
         }
     };
     
@@ -89,29 +93,23 @@ function FlickrReader(search, tags, sort, licence) {
 
         //add the licence
         //some sort of case statement
-        var licenceID;
-        switch (self.licence) {
-            case "Attribution (CC BY)":
-                licenceID = 4;
-                break;
-            case "NoDerivs (CC BY-ND)":
-                licenceID = 6;
-                break;
-            case "NonCommercial, NoDerivs (CC BY-NC-ND)":
-                licenceID = 3;
-                break;
-            case "NonCommercial (CC BY-NC)":
-                licenceID = 2;
-                break;
-            case "NonCommercial, ShareAlike (CC BY-NC-SA)":
-                licenceID = 1;
-                break;
-            case "ShareAlike (CC BY-SA)":
-                licenceID = 5;
-                break;
+        var licence;
+        if ((commercial === true) && (derivative === true)){
+            licence = "4,5";
+        }else{
+            if (commercial === true){
+                licence = "4,5,6";
+            }else{
+                if (derivative === true){
+                    licence="1,2,4,5";
+                }else{
+                    licence="1,2,3,4,5,6";
+                }
+            }
         }
-        url = url + "&license=" + licenceID;
-
+        
+        url = url + "&license=" + licence;
+        
         //add the sort parameter        
         //some sort of case statement
         var sortFormat;
@@ -136,7 +134,7 @@ function FlickrReader(search, tags, sort, licence) {
 
         //set the format
         url = url + "&format=json&nojsoncallback=1";
-
+        console.log(url);
         $.getJSON(url, self.getFlickrPhotos);
         $('#flickr-results').hide();
         $('#flickr-loading').show();        
@@ -192,13 +190,12 @@ function FlickrReader(search, tags, sort, licence) {
         photoSizesUrl = photoSizesUrl + API_KEY;
         photoSizesUrl = photoSizesUrl + "&photo_id=" + flickrImage.imageID;
         photoSizesUrl = photoSizesUrl + "&format=json&nojsoncallback=1";
-       //photoSizesUrl = photoSizesUrl + "&jsoncallback=myCallbackFunction";
-       //console.log(photoSizesUrl);
-       // $.ajax({url: photoSizesUrl,
-       //     dataType: 'jsonp'
-       // });
-        
-
+        //photoSizesUrl = photoSizesUrl + "&jsoncallback=myCallbackFunction";
+        //console.log(photoSizesUrl);
+        // $.ajax({url: photoSizesUrl,
+        //     dataType: 'jsonp'
+        // });
+      
         $.getJSON(photoSizesUrl, function(data) {
             flickrImage.setSizes(data.sizes.size);
             self.results.push(flickrImage);
@@ -229,10 +226,12 @@ function FlickrReader(search, tags, sort, licence) {
 
         //add the per page
         url = url + "&amount=" + self.perPage;        
-
+        url = url + "&callback=?";
+        console.log(url);
         //set the format
-        //url = url + "&format=json&nojsoncallback=1";
-        $.getJSON(url, self.getClipartPhotos);
+        $.getJSON(url, null, function(data){            
+            //self.getClipartPhotos(data);
+        });
         $('#flickr-results').hide();
         $('#flickr-loading').show();        
     };
@@ -266,12 +265,12 @@ function FlickrReader(search, tags, sort, licence) {
             clipartImage.setAuthor(photos[i].uploader);
             clipartImage.setLicence("CC0");
             
-            var sizes = new array();
-            sizes["thumbnail"] = photos[i].svg.png_thumb;
-            sizes["Medium"] = photos[i].svg.png_full_lossy;
+            var thumbnail = new Size("Thumbnail", photos[i].tbUrl);
+            var medium = new Size("Medium", photos[i].url);
+            var sizes = [thumbnail, medium];
+            
             clipartImage.setSizes(sizes);
-                    
-                    
+                                        
             self.results.push(clipartImage);
             if (self.results.length === self.noResults) {
                 //all results have been generated, send array to a results viewer
@@ -295,47 +294,118 @@ function FlickrReader(search, tags, sort, licence) {
         url = url + tagArray[tagArray.length - 1];
 
         //add the licence
-        //some sort of case statement
-        var licenceID;
-        switch (self.licence) {
-            case "Attribution (CC BY)":
-                licenceID = "cc_attribute";
-                break;
-            case "NoDerivs (CC BY-ND)":
-                licenceID = "cc_nonderived";
-                break;
-            case "NonCommercial, NoDerivs (CC BY-NC-ND)":
-                licenceID = "(cc_noncommercial|cc_nonderived)";
-                break;
-            case "NonCommercial (CC BY-NC)":
-                licenceID = "cc_noncommercial";
-                break;
-            case "NonCommercial, ShareAlike (CC BY-NC-SA)":
-                licenceID = "(cc_noncommercial|cc_sharealike)";
-                break;
-            case "ShareAlike (CC BY-SA)":
-                licenceID = "cc_sharealike";
-                break;
+        var licence;
+        if ((commercial === true) && (derivative === true)){
+            licence = "(cc_publicdomain|cc_attribute|cc_sharealike).-(cc_noncommercial|cc_nonderived)";
+        }else{
+            if (commercial === true){
+                licence = "(cc_publicdomain|cc_attribute|cc_sharealike|cc_nonderived).-(cc_noncommercial)";
+            }else{
+                if (derivative === true){
+                    licence="(cc_publicdomain|cc_attribute|cc_sharealike|cc_noncommercial).-(cc_nonderived)";
+                }else{
+                    licence="";
+                }
+            }
         }
-        url = url + "&as_rights=" + licenceID;
+        
+        url = url + "&as_rights=" + licence;
 
         //add the per page
         url = url + "&rsz=8";
 
         //add the page no
         url = url + "&start=" + ((self.page-1) * 8);
+        
+        url = url + "&callback=?";
+ 
 
         //set the format
-        url = url + "&format=json&nojsoncallback=1";
-
-        $.getJSON(url, self.getFlickrPhotos);
+        //url = url + "&format=json&nojsoncallback=1";
+        console.log(url);
+        
+        $.getJSON(url, null, function(data){
+           self.getGooglePhotos(data);
+        });
         $('#flickr-results').hide();
         $('#flickr-loading').show();        
     };
     
+    //from the list of photos return by the search, get the photos
+    //may want to read and store max page count from this too!
+    self.getGooglePhotos = function(data){
+        self.totalPages = data.responseData.cursor.pages.length;
+        self.results = new Array();
+        if (self.page < self.totalPages) {
+            $("#flickrNext").removeClass("disabled");
+        }
+        if (self.page === self.totalPages) {
+            $("#flickrNext").addClass("disabled");
+        }
+        if (self.page > 1) {
+            $("#flickrPrev").removeClass("disabled");
+        }
+        if (self.page === 1) {
+            $("#flickrPrev").addClass("disabled");
+        }
+        var photos = data.responseData.results;
+        self.noResults = photos.length;
+        var imageID, googleImage;
+        for (var i = 0; i < photos.length; i++) {
+            imageID = photos[i].imageId;
+            googleImage = new FlickrImage(imageID);      
+            
+            //strip html tags from title of image
+            var div = document.createElement("div");
+            div.innerHTML = photos[i].title;
+            googleImage.setTitle(div.innerText);
+            
+            googleImage.setAuthor(photos[i].originalContextUrl);
+            googleImage.setLicence(self.getLicence(commercial, derivative));
+            
+            var thumbnail = new Size("Thumbnail", photos[i].tbUrl);
+            var medium = new Size("Medium", photos[i].url);
+            var sizes = [thumbnail, medium];
+            
+            googleImage.setSizes(sizes);
+            //console.log(googleImage);                            
+            self.results.push(googleImage);
+            if (self.results.length === self.noResults) {
+                //all results have been generated, send array to a results viewer
+                var flickrResultsViewer = new FlickrResultsViewer();                
+                flickrResultsViewer.displayResults(self.results);
+            }
+            
+            
+            
+        }
+    };
     
+    //a function for returning a licence when licence is not intrinsically associated with the picture
+    //provies an estimate licence based on the search criteria
+    self.getLicence = function(commercial, derivative){
+        var licence;
+        if ((commercial === true) && (derivative === true)){
+            licence = "Attribute";
+        }else{
+            if (commercial === true){
+                licence = "Attribute, Non-derivatives";
+            }else{
+                if (derivative === true){
+                    licence="Attribute, Non-commercial";
+                }else{
+                    licence="Attribute, Non-commercial, Non-derivatives";
+                }
+            }
+        } 
+        return licence;
+    };
     
 }
-        
 
+function Size(label, source){
+    var self = this;
+    self.label = label;
+    self.source = source;        
+}
 

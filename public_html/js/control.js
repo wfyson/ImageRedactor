@@ -13,11 +13,11 @@ function redactorInit() {
             $('#searchControl').removeClass("error");
             //do a search
             var search = $('#replaceBtn').data("search");
-            console.log(search);
             var tags = $('#tags').val();
             var sort = $('#sort').val();
-            var licence = $('#flickrLicence').val();
-            var flickrReader = new FlickrReader(search, tags, sort, licence);
+            var commercial = $('#commercialCheck').prop('checked');
+            var derivative = $('#derivativeCheck').prop('checked');
+            var flickrReader = new FlickrReader(search, tags, sort, commercial, derivative);
             flickrReader.buildQuery(search);
         }
         return false;

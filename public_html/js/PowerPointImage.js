@@ -1,5 +1,4 @@
 function PowerPointImage(name, format, data, callback) {
-    console.log(name);
     var self = this;
     self.name = name;
     self.format = format;

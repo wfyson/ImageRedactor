@@ -10,7 +10,7 @@ function FlickrResultsViewer(){
         for (var i = 0; i < flickrImages.length; i++){
             var img = document.createElement("img");
             var flickrImage = flickrImages[i]; 
-            $(img).attr("src", flickrImage.getResultsUrl);
+            $(img).attr("src", flickrImage.getResultsUrl());
             
             //remve the old img and place the new one
             $("#flickr" + i).empty();

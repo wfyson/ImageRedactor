@@ -145,8 +145,10 @@ function PowerPointWriter(ppt) {
                                                 }
 
                                                 if (change.getType() === "flickr") {
+                                                    console.log(change.newImageSrc);
                                                     var newSrc = change.newImageSrc;
                                                     var licence = change.licence;
+                                                    console.log(change.licence);
                                                     var phpUrl = "php/imagegrabber.php?callback=?";
                                                     $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "flickr"},
                                                     function(res) {

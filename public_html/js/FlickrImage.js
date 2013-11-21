@@ -32,8 +32,10 @@ function FlickrImage(imageID) {
     };
     
     self.getResultsUrl = function(){
+        console.log(self.sizes);
         for (var i = 0; i < self.sizes.length; i++){
             var size = self.sizes[i];
+            
             if (size.label === "Thumbnail")
                 return size.source;
         }
@@ -54,7 +56,10 @@ function FlickrImage(imageID) {
     
     self.setTextLicence = function(licence){
       var intLicence = parseInt(licence);
-      switch (intLicence) {
+      if (isNaN(intLicence)){
+          self.textLicence = licence;
+      }else{
+        switch (intLicence) {
             case 4:
                 self.textLicence = "Attribution (CC BY)";
                 break;
@@ -74,5 +79,6 @@ function FlickrImage(imageID) {
                 self.textLicence = "ShareAlike (CC BY-SA)";
                 break;
         }
+      }
     };
 }

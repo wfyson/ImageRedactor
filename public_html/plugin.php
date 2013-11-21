@@ -158,15 +158,20 @@
                                 <option>Recent</option>
                                 <option>Interesting</option>
                             </select>
-                            <label class="multiple flickrForm" for="licence">Licence:</label>
-                            <select id="flickrLicence" name="licence" class="input-medium">
+                            <label class="checkbox">
+                                <input id="commercialCheck" type="checkbox"> Commercial?
+                            </label>
+                            <label class="checkbox">
+                                <input id="derivativeCheck" type="checkbox"> Derivatives?
+                            </label>                   
+                            <!--<select id="flickrLicence" name="licence" class="input-medium">
                                 <option>Attribution (CC BY)</option>
                                 <option>ShareAlike (CC BY-SA)</option>
                                 <option>NoDerivs (CC BY-ND)</option>
                                 <option>NonCommercial (CC BY-NC)</option>
                                 <option>NonCommercial, ShareAlike (CC BY-NC-SA)</option>
                                 <option>NonCommercial, NoDerivs (CC BY-NC-ND)</option>
-                            </select>
+                            </select>-->
                             <button type="submit" class="btn flickrForm">Search</button>
                         </form>
                         
@@ -322,7 +327,23 @@
                     </div>
                     <div id="buttons">
                         <button id="overviewBtn" class="btn btn-primary btn-block imageButtons disabled">Overview</button>                        
-                        <button id="flickrBtn" class="btn btn-success btn-block imageButtons disabled">Flickr</button>
+                        <div class="btn-block btn-group">
+                            <button id="replaceBtn" class="btn btn-success imageButtons btn-block disabled dropdown-toggle" data-toggle="dropdown">
+                                Replace
+                                <span class="caret" style="float:right; margin-right: 10px"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href='#' id="flickrBtn">Flickr</a>
+                                </li>
+                                <li>
+                                    <a href='#' id="googleBtn">Google Images</a>
+                                </li>
+                                <!--<li>
+                                    <a href='#' id="clipartBtn">Openclipart</a>
+                                </li>-->
+                            </ul>                        
+                        </div>
                         <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
                         <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Obfuscate</button>
                         <button id="redactBtn" class="btn btn-inverse btn-block disabled">Redact <i class="icon-download icon-white"></i></button>
