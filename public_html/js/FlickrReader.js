@@ -95,15 +95,15 @@ function FlickrReader(search, tags, sort, commercial, derivative) {
         //some sort of case statement
         var licence;
         if ((commercial === true) && (derivative === true)){
-            licence = "4,5";
+            licence = "4,5,7";
         }else{
             if (commercial === true){
-                licence = "4,5,6";
+                licence = "4,5,6,7";
             }else{
                 if (derivative === true){
-                    licence="1,2,4,5";
+                    licence="1,2,4,5,7";
                 }else{
-                    licence="1,2,3,4,5,6";
+                    licence="1,2,3,4,5,6,7";
                 }
             }
         }
