@@ -1,5 +1,7 @@
 ---TODO---
 
+Should probably consider redactor for websites too - just read html and look for img tags (should be quite simple...)
+
 1) Detect PNG images and change file format if appropriate when downloading from Flickr/using placeholder.
 
 2) Includes links in the attribution.
