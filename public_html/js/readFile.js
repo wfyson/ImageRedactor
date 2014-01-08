@@ -13,7 +13,7 @@ function handleFileSelect(evt) {
             $('#redactBtn').data("redactor", powerpointRedactor);
         } else {
             if ((f.name.substr(f.name.lastIndexOf("."))) === ".docx") {
-                var wordReader = new WordReader(f);
+                var wordReader = new WordReader(f.name, f);
                 word = wordReader.readWord();
                 //create a redactor
                 var wordRedactor = new WordRedactor();
