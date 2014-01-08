@@ -1,3 +1,9 @@
+/*
+ * A WordReader reads a Word document and extracts all the headers
+ * and the contents between any two headers, such that whole sections
+ * of a document can be redacted.
+ */
+
 function WordReader(name, wordFile) {
 
     var self = this;
