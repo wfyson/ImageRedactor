@@ -252,7 +252,7 @@ function PowerPointWriter(ppt) {
                         spPr = "spPr";
                         offTag = "off";
                         extTag = "ext";
-                        background = "bg"
+                        background = "bg";
                     }
                 
                     var entries = self.entries;

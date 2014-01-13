@@ -2,9 +2,16 @@ function Word(name, wordFile){
 
     var self = this;
     self.name = name;
+    self.rootWordSection = null;
     self.wordImageArray = new Array();
     self.slideImageRelArray = new Array();  
     self.wordFile = wordFile;
+
+
+    self.setRootWordSection = function(wordSection){
+        self.rootWordSection = wordSection;
+        console.log(wordSection);
+    };
 
     self.setImageRelArray = function(slideImageRelArray){
         self.slideImageRelArray = slideImageRelArray;
