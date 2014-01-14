@@ -149,6 +149,11 @@ body .modal {
     max-width: 200px;
 }
 
+#headings{
+    display: none;
+    width: 100%;
+}
+
 #placeholderOverview{
     display: none;
     width: 100%;

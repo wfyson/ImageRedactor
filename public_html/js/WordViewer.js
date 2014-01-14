@@ -63,9 +63,107 @@ function WordViewer(word){
             $('#progressOther').attr("style", "width:" + progressOther + "%");
             $('#progressNull').attr("style", "width:" + progressNull + "%");
         
-            $('#overview').addClass('hasFocus');
-            $('#overview').fadeIn('slow');
+            //$('#overview').addClass('hasFocus');
+            //$('#overview').fadeIn('slow');
+            
+            $('#headings').addClass('hasFocus');
+            $('#headings').fadeIn('slow');
+            self.displayHeadingSections(word);
         });
+    };
+    
+    //displays the contents of all headings and their paragraphs so that they 
+    //can be redacted
+    self.displayHeadingSections = function(word){
+        var rootSection = word.getRootWordSection();
+        var inner = $('#innerRoot');
+        var count = 1;
+        if (rootSection !== null){            
+            //get sections
+            var entries = rootSection.getEntries();
+            for (var i = 0; i < entries.length; i++){
+                var entry = entries[i];
+                if(entry instanceof WordSection){
+                    //add a new collapisible section
+                    self.newCollapsible(entry, inner, count);  
+                    count++;
+                }else{ //instance of WordParagraph
+                    self.newParagraph(entry, inner);
+                }
+            }
+            
+        }
+    };
+    
+    //add a collapsible section within another
+    self.newCollapsible = function(entry, parent, count){
+        var subCount = 1;
+        
+        var accordion = document.createElement("div");
+        var $accordion =  $(accordion);
+        $accordion.addClass("accordion")
+        $accordion.attr("id", "#accordion" + count + subCount);
+     
+        var accordionGroup = document.createElement("div");
+        var $accordionGroup = $(accordionGroup);
+        $accordionGroup.addClass("accordion-group");
+        
+        var accordionHeading = document.createElement("div");
+        var $accordionHeading = $(accordionHeading);
+        $accordionHeading.addClass("accordion-heading");        
+        
+        var toggle = document.createElement("a");
+        var $toggle = $(toggle);
+        $toggle.addClass("accordion-toggle");
+        $toggle.attr("data-toggle", "collapse");
+        $toggle.attr("data-parent", ("#accordion" + count + subCount));
+        $toggle.attr("href", ("#collapse" + count + subCount));
+        
+        $toggle.append(entry.getTitle());
+        
+        $accordionHeading.append($toggle);
+        $accordionGroup.append($accordionHeading);
+        
+        var accordionBody = document.createElement("div");
+        var $accordionBody = $(accordionBody);
+        $accordionBody.attr("id", ("collapse" + count + subCount));
+        $accordionBody.addClass("accordion-body collapse in");
+        
+        var accordionInner = document.createElement("div");
+        var $accordionInner = $(accordionInner);
+        $accordionInner.attr("id", ("inner" + count + subCount));
+        $accordionInner.addClass("accordion-inner");
+        
+        $accordionBody.append($accordionInner);
+        $accordionGroup.append($accordionBody);
+        
+        $accordion.append($accordionGroup);
+        $(parent).append($accordion);
+        
+        var entries = entry.getEntries();
+        for (var i = 0; i < entries.length; i++){
+            var entry = entries[i];
+            if(entry instanceof WordSection){
+                //add a new collapisible section
+                var countStr = "";
+                countStr = countStr + count + subCount;
+                self.newCollapsible(entry, $accordionInner, countStr);  
+                subCount++;
+            }else{ //instance of WordParagraph
+                self.newParagraph(entry, $accordionInner);
+            }
+        }
+        
+        
+        
+    };
+    
+    //add a paragraph within a collapsible section
+    self.newParagraph = function(entry, parent){
+        var panel = document.createElement("div");
+        $(panel).addClass("panel panel-default");
+        $(panel).append(entry.getParaText());
+        $(parent).append($(panel));        
     };
     
     self.displayImages = function(word){
@@ -155,7 +253,6 @@ function WordViewer(word){
                     //display the image  
                     var redactor = $('#redactBtn').data("redactor");
                     var imageChange = redactor.getImageChange(wordImage);
-                    console.log()
                     if (imageChange !== false) {
                         //display the change appropriately.
                         switch (imageChange.type) {
@@ -259,131 +356,9 @@ function WordViewer(word){
                 });
             }
         }
-        carousel.size(carouselCount);
-        
-        
-        /*
-        //first remove everything
-        $('#imageList').empty();
-        
-        var rels = self.powerpoint.slideImageRelArray;
-
-        //populate page with collapsible components to represent each slide
-        for (var i = 0; i < rels.length; i++){
-            var rel = rels[i];
-            var slide = rel.slide;
-            var imageName = rel.image;
-
-            if ($('#' + slide + "-accordion").length > 0){
-                //a collapsible component exists for this slide
-                $('#' + slide + "-accordion-inner").append(self.pptImageViewer(self.powerpoint.getPptImage(imageName)));  
-                $('#' + slide + "-accordion-inner").append(self.changeImageViewer(rel.getChange()));                      
-            }else{
-                //a collapsible component does not yet exist
-                var accordion = document.createElement("div");
-                $(accordion).addClass("accordion");
-                $(accordion).attr("id", slide + "-accordion");
-                
-                var accordionGroup = document.createElement("div");
-                $(accordionGroup).attr("class", "accordion-group");
-                
-                var accordionHeading = document.createElement("div");
-                $(accordionHeading).attr("class", "accordion-heading");
-                
-                var accordionToggle = document.createElement("a");
-                $(accordionToggle).attr("class", "accordion-toggle");
-                $(accordionToggle).attr("data-toggle", "collapse");
-                $(accordionToggle).attr("data-parent", "#" + slide + "-accordion");
-                $(accordionToggle).attr("href", "#" + slide + "-collapse");
-                                
-                var collapse = document.createElement("div");
-                $(collapse).attr("id", slide + "-collapse");
-                $(collapse).addClass("accordion-body collapse in");
-                
-                var accordionInner = document.createElement("div");
-                $(accordionInner).addClass("accordion-inner");
-                $(accordionInner).attr("id", slide + "-accordion-inner");
-
-                //add them all together                
-                $(accordionToggle).append(slide);
-                $(accordionInner).append(self.pptImageViewer(self.powerpoint.getPptImage(imageName)));
-                $(accordionInner).append(self.changeImageViewer(rel.getChange()));                    
-                
-                $(accordionHeading).append($(accordionToggle));
-                
-                $(collapse).append($(accordionInner));
-                
-                $(accordionGroup).append($(accordionHeading));
-                $(accordionGroup).append($(collapse));
-                
-                $(accordion).append(accordionGroup);     
-                
-                $("#imageList").append($(accordion));
-            }
-        }*/
+        carousel.size(carouselCount);                       
     };
-    
-    //creates a box for showing images
-    self.wordImageViewer = function(pptImage){
-        var container = document.createElement("div");
-        $(container).addClass("image-viewer");
-        
-        //image side
-        var imageContainer = document.createElement("div");
-        $(imageContainer).addClass("image-container");
-        
-        var img = document.createElement('img');
-        $(img).addClass("ppt-image");
-        $(img).attr("src", pptImage.url);
-        
-        var helper = document.createElement('span');
-        $(helper).addClass("helper");
-        
-        $(imageContainer).append($(helper));
-        $(imageContainer).append($(img));
-        $(container).append($(imageContainer));
-        
-        //button side
-        var buttonContainer = document.createElement("div");
-        
-        //button for flickr
-        var replaceBtn = document.createElement("button");
-        $(replaceBtn).addClass("replace-button btn btn-primary");
-        $(replaceBtn).append("Flickr Image");
-        $(replaceBtn).click({param1: wordImage}, function(event){           
-            flickr(event.data.param1);
-        });        
-        $(buttonContainer).append($(replaceBtn));
-        
-        //button for placeholder images
-        var placeholderBtn = document.createElement("button");
-        $(placeholderBtn).addClass("placeholder-button btn btn-primary");
-        $(placeholderBtn).append("Placeholder");
-        $(placeholderBtn).click({param1: wordImage}, function(event){           
-            placeholder(event.data.param1);
-        });
-        $(buttonContainer).append($(placeholderBtn));
-        
-        
-        $(container).append($(buttonContainer));
-        
-        return $(container);
-    };
-    
-    //creates a box for showing images
-    self.changeImageViewer = function(changeImage){
-        if (changeImage !== null){
-            var container = document.createElement("div");
 
-            var img = document.createElement('img');
-            $(img).attr("src", changeImage.newImageSrc);
-
-            $(container).append($(img));
-
-            return $(container);
-        }
-    };
-    
     self.getNoLicencedImages = function(){
         var wordImageArray = self.word.wordImageArray;
         var totalCC = 0;

@@ -7,10 +7,12 @@ function Word(name, wordFile){
     self.slideImageRelArray = new Array();  
     self.wordFile = wordFile;
 
+    self.getRootWordSection = function(){
+        return self.rootWordSection;
+    };
 
     self.setRootWordSection = function(wordSection){
         self.rootWordSection = wordSection;
-        console.log(wordSection);
     };
 
     self.setImageRelArray = function(slideImageRelArray){

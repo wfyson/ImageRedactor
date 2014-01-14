@@ -34,12 +34,11 @@ function WordReader(name, wordFile) {
         }, function(error) {
             console.log(error);
         });
-
+        
         function processEntries(entries, i) {
             var entry = entries[i];
             var entries = entries;
             var i = i;
-
 
             if ((entry.filename).indexOf("word/document.xml") !== -1) {
 
@@ -123,12 +122,17 @@ function WordReader(name, wordFile) {
 
                     self.word.setRootWordSection(currentSection);
                     
+                    i++;
+                    if (i === self.totalEntries) {
+                        self.displayWord();
+                    } else {
+                        processEntries(entries, i);
+                    }
                     
                 }, function(current, total) {
                     // onprogress callback
                 });
             } else {
-
                 //if media file then create a PowerPointImage
                 if ((entry.filename).indexOf("word/media/") !== -1) {
                     //get the data for that media
@@ -167,7 +171,6 @@ function WordReader(name, wordFile) {
                                     }
                                 }
                             }
-
                             i++;
                             if (i === self.totalEntries) {
                                 self.displayWord();
@@ -179,7 +182,7 @@ function WordReader(name, wordFile) {
                         }, function(current, total) {
                             //onprogress callback
                         });
-                    } else {
+                    } else {                     
                         i++;
                         if (i === self.totalEntries) {
                             self.displayWord();
@@ -204,9 +207,6 @@ function WordReader(name, wordFile) {
         $('#download a').attr('href', '')
                 .attr('download', '')
                 .empty();
-
-        console.log()
-
         var wordViewer = new WordViewer(self.word);
         wordViewer.displayOverview(self.word);
         wordViewer.displayImages(self.word);

@@ -9,7 +9,7 @@ function WordSection(level, parentSection) {
     
     self.getLevel = function(){
         return self.level;
-    }
+    };
     
     self.addTitle = function(wordParagraph){
         self.title = wordParagraph;
@@ -30,9 +30,7 @@ function WordSection(level, parentSection) {
     };
     
     self.getEntries = function(){
-        for (var i = 0; i < self.entries.length; i++) {
-            
-        }
+        return self.entries;
     };
     
     self.getParentSection = function(){

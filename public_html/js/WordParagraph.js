@@ -10,7 +10,7 @@ function WordParagraph(){
     
     //puts the various text entries together to display the paragraph
     self.getParaText = function(){
-        var result = null;
+        var result = "";
         for (var i = 0; i < self.entries.length; i++) {
             result = result + self.entries[i];
         }
