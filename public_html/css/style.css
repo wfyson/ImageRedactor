@@ -100,7 +100,15 @@ body .modal {
     height: 150px;
 }
 
+.carouselDiv{
+    width: 150px;
+    height: 110px;
+}
+
 .carouselImage{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;    
 }
 
 .changeIcon{
@@ -396,4 +404,45 @@ body .modal {
 
 #downloadLink{
     margin-left: 5px;
+}
+
+/*
+ * Document headings and content
+ */
+
+#headings{
+    height: 100%;
+    overflow: auto;
+}
+
+.accordion-heading{
+    text-align: justify;
+}
+
+.accordion-heading .accordion-toggle{
+    display: inline-block;
+}
+
+.heading1{
+    font-size: 150%;
+    font-weight: bold;    
+}
+
+.heading2{
+    font-size: 125%;
+    font-weight: bold;
+}
+
+.heading3{
+    font-weight: bold;
+}
+
+.accordion-inner{
+    text-align: justify;
+}
+
+.heading-redact{
+    float:right;
+    margin-right: 6px;
+    margin-top: 3px;
 }

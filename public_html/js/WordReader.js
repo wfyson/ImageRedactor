@@ -74,7 +74,7 @@ function WordReader(name, wordFile) {
                                 var style = styles[key];
                                 var styleVal = $(style).attr(self.val);
                                 //check if style is a heading and if so get heading level
-                                if (styleVal.indexOf("Heading") !== -1) {
+                                if ((styleVal.indexOf("Heading") !== -1) && (styleVal.indexOf("TOC") == -1)) {
                                     newLevel = parseInt(styleVal.substr(7)); //strip off the word heading
                                     section = true;
                                 }
@@ -210,6 +210,7 @@ function WordReader(name, wordFile) {
         var wordViewer = new WordViewer(self.word);
         wordViewer.displayOverview(self.word);
         wordViewer.displayImages(self.word);
+        wordViewer.displayHeadingSections(self.word);
     };
 
 }

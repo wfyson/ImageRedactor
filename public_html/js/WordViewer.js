@@ -65,10 +65,10 @@ function WordViewer(word){
         
             //$('#overview').addClass('hasFocus');
             //$('#overview').fadeIn('slow');
-            
+     
             $('#headings').addClass('hasFocus');
             $('#headings').fadeIn('slow');
-            self.displayHeadingSections(word);
+            
         });
     };
     
@@ -115,13 +115,50 @@ function WordViewer(word){
         var toggle = document.createElement("a");
         var $toggle = $(toggle);
         $toggle.addClass("accordion-toggle");
+        $toggle.addClass("heading" + entry.getLevel());
         $toggle.attr("data-toggle", "collapse");
         $toggle.attr("data-parent", ("#accordion" + count + subCount));
-        $toggle.attr("href", ("#collapse" + count + subCount));
-        
+        $toggle.attr("href", ("#collapse" + count + subCount));        
         $toggle.append(entry.getTitle());
         
+        var redactBtn = document.createElement("button");
+        var $redactBtn = $(redactBtn);
+        $redactBtn.addClass("heading-redact btn btn-danger");
+        $redactBtn.data("redact", true);
+        $redactBtn.append("Redact");
+        
+        var redact = true;        
+        $redactBtn.click({param1: redact}, function(event) {
+            var redact = event.data.param1;
+            var $this = $(this);
+            if ($this.data("redact") && redact){                
+                $this.removeClass("btn-danger");
+                $this.addClass("btn-success");
+                $this.addClass("btn-success");
+                $this.empty();
+                $this.append("Redacted");
+                $this.data("redact", false);                
+            }else{
+                if (!($this.data("redact")) && !redact){
+                    $this.removeClass("btn-success");
+                    $this.addClass("btn-danger");
+                    $this.empty();
+                    $this.append("Redact");
+                    $this.data("redact", true);   
+                }
+            }
+            //"click" all redact buttons in subsequent sections
+            var $body = $($this.parent().parent().children(".accordion-body"));
+            var $inner = $body.children(".accordion-inner")
+                    .children(".accordion")
+                    .children(".accordion-group")
+                    .children(".accordion-heading")
+                    .children(".heading-redact")
+                    .click(redact);
+        });
+        
         $accordionHeading.append($toggle);
+        $accordionHeading.append($redactBtn);
         $accordionGroup.append($accordionHeading);
         
         var accordionBody = document.createElement("div");
@@ -152,18 +189,15 @@ function WordViewer(word){
             }else{ //instance of WordParagraph
                 self.newParagraph(entry, $accordionInner);
             }
-        }
-        
-        
-        
-    };
+        }   };
     
     //add a paragraph within a collapsible section
     self.newParagraph = function(entry, parent){
-        var panel = document.createElement("div");
-        $(panel).addClass("panel panel-default");
-        $(panel).append(entry.getParaText());
-        $(parent).append($(panel));        
+        var panel = document.createElement("p");
+        var $panel = $(panel);
+        //$panel.addClass("panel panel-default");
+        $panel.append(entry.getParaText());
+        $(parent).append($panel);        
     };
     
     self.displayImages = function(word){
@@ -174,6 +208,21 @@ function WordViewer(word){
         var wordImages = word.getWordImageArray();
         var carousel = $('#mycarousel').data('jcarousel');  
         var carouselCount = 0;
+        
+        //add an icon for getting to the headings display
+        var headingsIcon = '<div class="carouselDiv" id="headingsIcon"><img class="carouselImage" src="img/headingsIcon.png" alt="Redact Headings" /><span class="changeIcon"/></div>';
+        carouselCount++;
+        carousel.add(carouselCount, headingsIcon);
+        
+        $('#headingsIcon').click(function(){
+            $('.hasFocus').fadeOut(400, function() {
+                //remove whatever did have focus
+                $('.hasFocus').removeClass('hasFocus');
+                $('#headings').addClass('hasFocus');
+                $('#headings').fadeIn(400);
+            });            
+        });
+        
         for (var i = 0; i < wordImages.length; i++){
             
             //generate html for the image
@@ -182,7 +231,7 @@ function WordViewer(word){
             //only add an image to the carousel if it appears in the word doc (that is to say it has rels)  
             if (self.word.getImageRels(wordImage.name).length > 0){
                 
-                var html = '<span id="' + wordImage.name + '"><img id="img' + i + '" src="' + wordImage.url + '" width="110" height="110" alt="' + wordImage.url + '" /><span class="changeIcon"/></span>';
+                var html = '<div class="carouselDiv" id="' + wordImage.name + '"><img class="carouselImage" id="img' + i + '" src="' + wordImage.url + '" width="110" height="110" alt="' + wordImage.url + '" /><span class="changeIcon"/></div>';
                 carouselCount++;
                 carousel.add(carouselCount, html);
 
