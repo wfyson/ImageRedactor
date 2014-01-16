@@ -54,9 +54,10 @@ function WordReader(name, wordFile) {
                         self.pStyle = "pStyle";
                     }
                     
+                    var id = 0;
                     var level = 0;
-                    var newLevel = 0;
-                    var wordRootSection = new WordSection(0, null);
+                    var newLevel = 0;                  
+                    var wordRootSection = new WordSection(id++, 0, null);
                     var currentSection = wordRootSection;
                     var parentSection = null;
                     
@@ -85,7 +86,7 @@ function WordReader(name, wordFile) {
                             //is the new section on a new level
                             if (newLevel > level){ //a level deeper in the hierarachy
                                 parentSection = currentSection;
-                                currentSection = new WordSection(newLevel, parentSection);
+                                currentSection = new WordSection(id++, newLevel, parentSection);
                                 level = newLevel;
                             }else{                                                      
                                 if (newLevel < level){ //up one level in the hierarachy                                
@@ -95,12 +96,12 @@ function WordReader(name, wordFile) {
                                         currentSection = parentSection;
                                         level = currentSection.getLevel();
                                     }                      
-                                    currentSection = new WordSection(newLevel, parentSection);
+                                    currentSection = new WordSection(id++, newLevel, parentSection);
                                     level = newLevel;
                                 }else{
                                     if (newLevel === level){
                                         currentSection.closeSection();                               
-                                        currentSection = new WordSection(newLevel, currentSection.getParentSection());
+                                        currentSection = new WordSection(id++, newLevel, currentSection.getParentSection());
                                     }
                                 }
                             }

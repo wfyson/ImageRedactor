@@ -125,12 +125,16 @@ function WordViewer(word){
         var $redactBtn = $(redactBtn);
         $redactBtn.addClass("heading-redact btn btn-danger");
         $redactBtn.data("redact", true);
+        $redactBtn.data("id", entry.getID()); //the id so its redaction can be recorded by WordRedactor
         $redactBtn.append("Redact");
         
-        var redact = true;        
-        $redactBtn.click({param1: redact}, function(event) {
-            var redact = event.data.param1;
-            var $this = $(this);
+        $redactBtn.click(function(event) {            
+            var $this = $(this);            
+            var redact = event.redact;            
+            if (redact === undefined){
+                redact = $this.data("redact");
+            }
+            
             if ($this.data("redact") && redact){                
                 $this.removeClass("btn-danger");
                 $this.addClass("btn-success");
@@ -139,7 +143,7 @@ function WordViewer(word){
                 $this.append("Redacted");
                 $this.data("redact", false);                
             }else{
-                if (!($this.data("redact")) && !redact){
+                if (!($this.data("redact")) && !(redact)){
                     $this.removeClass("btn-success");
                     $this.addClass("btn-danger");
                     $this.empty();
@@ -147,14 +151,16 @@ function WordViewer(word){
                     $this.data("redact", true);   
                 }
             }
-            //"click" all redact buttons in subsequent sections
+            
+            var newEvent = $.Event( "click" );
+            newEvent.redact = redact;
             var $body = $($this.parent().parent().children(".accordion-body"));
             var $inner = $body.children(".accordion-inner")
                     .children(".accordion")
                     .children(".accordion-group")
                     .children(".accordion-heading")
                     .children(".heading-redact")
-                    .click(redact);
+                    .trigger(newEvent);
         });
         
         $accordionHeading.append($toggle);

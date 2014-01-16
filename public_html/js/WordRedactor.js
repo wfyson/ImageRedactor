@@ -8,6 +8,7 @@ function WordRedactor() {
     var self = this;
     self.word;
     self.changeArray = new Array();
+    self.sectionChangeArray = new Array();
 
     //saves a change to the redactor that it can later carry out
     self.addChange = function(change){    
@@ -29,6 +30,18 @@ function WordRedactor() {
         //reload the viewer - not sure why this used to happen, seems unnecessary
         //var pptViewer = new PowerPointViewer(self.ppt);
         //pptViewer.displayImages(self.ppt);
+    };
+    
+    //record the id of a section that needs to be redacted
+    self.addSectionChange = function(sectionID){
+        if (!(self.sectionChangeArray.contains(sectionID)))
+            self.sectionChangeArray.push(sectionID);
+    };
+    
+    self.removeSectionChange = function(sectionID){
+        var index = self.sectionChangeArray.indexOf(sectionID);
+        if (index > -1)
+            self.sectionChangeArray.splice(index, 1);        
     };
     
     self.setWord = function(word){

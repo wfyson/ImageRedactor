@@ -1,11 +1,16 @@
-function WordSection(level, parentSection) {
+function WordSection(id, level, parentSection) {
 
     var self = this;
+    self.id = id;
     self.level = level;
     self.title = null;
     self.parentSection = parentSection;
     self.entries = new Array();
     self.page = null;
+    
+    self.getID = function(){
+        return self.id;
+    };
     
     self.getLevel = function(){
         return self.level;
