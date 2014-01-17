@@ -130,7 +130,7 @@ function WordViewer(word){
         
         $redactBtn.click(function(event) {            
             var $this = $(this);            
-            var redact = event.redact;            
+            var redact = event.redact; //redact indicates if the click is a redact or "unredact" command            
             if (redact === undefined){
                 redact = $this.data("redact");
             }
@@ -141,7 +141,12 @@ function WordViewer(word){
                 $this.addClass("btn-success");
                 $this.empty();
                 $this.append("Redacted");
-                $this.data("redact", false);                
+                $this.data("redact", false); 
+                
+                //mark section for redaction
+                var redactor = $('#redactBtn').data("redactor");
+                redactor.addSectionChange($this.data("id"));
+                
             }else{
                 if (!($this.data("redact")) && !(redact)){
                     $this.removeClass("btn-success");
@@ -149,6 +154,10 @@ function WordViewer(word){
                     $this.empty();
                     $this.append("Redact");
                     $this.data("redact", true);   
+                    
+                    //unmark section for redaction
+                    var redactor = $('#redactBtn').data("redactor");
+                    redactor.addSectionChange($this.data("id"));
                 }
             }
             
@@ -233,7 +242,7 @@ function WordViewer(word){
             
             //generate html for the image
             var wordImage = wordImages[i];
-            console.log(self.word.getImageRels(word.name).length);
+            
             //only add an image to the carousel if it appears in the word doc (that is to say it has rels)  
             if (self.word.getImageRels(wordImage.name).length > 0){
                 

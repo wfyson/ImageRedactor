@@ -34,14 +34,21 @@ function WordRedactor() {
     
     //record the id of a section that needs to be redacted
     self.addSectionChange = function(sectionID){
-        if (!(self.sectionChangeArray.contains(sectionID)))
+        if ($.inArray(sectionID, self.sectionChangeArray) === -1){        
             self.sectionChangeArray.push(sectionID);
+        
+            //ensure redact button is clickable now a change is available
+            $('#redactBtn').removeClass("disabled");
+        }
     };
     
     self.removeSectionChange = function(sectionID){
         var index = self.sectionChangeArray.indexOf(sectionID);
-        if (index > -1)
+        if (index > -1){
             self.sectionChangeArray.splice(index, 1);        
+            //check number of changes
+            self.checkChanges();
+        }
     };
     
     self.setWord = function(word){
@@ -86,12 +93,27 @@ function WordRedactor() {
             }
         }
         
-        //if all changes have been removed disable redact button
-        if (self.changeArray.length === 0)
-            $('#redactBtn').addClass("disabled");
+        //check number of changes
+        self.checkChanges();
+            
         
         //update powerpoint
         self.word.setImageRelArray(rels);
+    };
+    
+    //check if there are any changes
+    self.checkChanges = function(){
+        if ((self.changeArray.length === 0) && (self.sectionChangeArray.length === 0)){
+            //there are no changes at all so disable redact button
+            $('#redactBtn').addClass("disabled");
+        }
+    };
+    
+    self.isSectionChange = function(sectionID){
+        if ($.inArray(sectionID, self.sectionChangeArray) === -1)
+            return false;
+        else
+            return true;
     };
     
 }

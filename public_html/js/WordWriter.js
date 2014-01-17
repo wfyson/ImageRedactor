@@ -1,13 +1,28 @@
+/*
+ * Writes a list of changes to the word document, replacing images with new ones
+ * chosen by the user and removing text from redacted sections of the document.
+ */
+
 function WordWriter(word) {
+
+    var REDACTED_HEADING = '<w:r><w:t>This section has been redacted</w:t></w:r>';
+    var REDACTED_TEXT = '<w:r><w:t>Content redacted</w:t></w:r>';
 
     var self = this;
     self.word = word;
+    self.redactor = $('#redactBtn').data("redactor");
     self.entries = new Array();
     self.entriesCount = 0;
     self.rels = word.getImageRelArray();
-
-    console.log(self.rels);
-
+    
+    //variables to represent tags in word xml
+    self.p = "w\\:p";
+    self.r = "w\\:r";
+    self.t = "w\\:t";
+    self.page = "w\\:lastRenderedPageBreak";
+    self.pStyle = "w:\\pStyle";
+    self.val = "w:val";
+    
     self.readWord = function() {
         console.log("reading...");
          
@@ -78,6 +93,84 @@ function WordWriter(word) {
                             
                             $('#download').data("filename", fileName);
                             $('#download').data("fileindex", fileIndex);
+                            if (fileName.indexOf("word/document.xml") !== -1){
+                                if (window.webkitURL) {
+                                    self.p = "p";
+                                    self.r = "r";
+                                    self.t = "t";
+                                    self.page = "lastRenderedPageBreak";
+                                    self.pStyle = "pStyle";
+                                }
+                                
+                                var xmlDoc = $.parseXML(files[fileIndex].data);
+                                var id = 0;
+                                var redact = false;
+                                
+                                
+                                var paras = $(xmlDoc).find(self.p);
+                                paras.each(function(key) {
+                                    var $para = $(paras[key]);
+                                    var section = false;
+                                    //is this para a new heading or text?
+                                    //look for a pStyle tag to find if this para is a heading
+                                    var styles = $para.find(self.pStyle);
+                                    if (styles.length > 0) {
+                                        //style tag has been found, check if one matches a heading
+                                        styles.each(function(key) {
+                                            var style = styles[key];
+                                            var styleVal = $(style).attr(self.val);
+                                            //check if style is a heading and if so get heading level
+                                            if ((styleVal.indexOf("Heading") !== -1) && (styleVal.indexOf("TOC") === -1)) {                                                
+                                                section = true;
+                                            }
+                                        });
+                                    }
+                                    //a new section?                        
+                                    if (section) {
+                                        
+                                        id++;
+                                        if (self.redactor.isSectionChange(id)){
+                                            redact = true; //this section and its paragraphs need redacting                                                                                        
+                                            
+                                            //this section needs redacting, remove all <w:t> tags
+                                            var texts = $para.find(self.r);
+                                            texts.each(function(key) {
+                                                texts[key].remove();
+                                            });
+                                            
+                                            //add a comment to indicate section has been redacted
+                                            $para.append(REDACTED_HEADING);
+
+                                            
+                                        }else{
+                                            redact = false; //this section and its paragraphs do not need redacting
+                                        }
+                                    }else{
+                                        //normal paragraph, redact if necessary
+                                        if (redact){
+                                            //this section needs redacting, remove all <w:t> tags
+                                            var texts = $para.find(self.r);
+                                            texts.each(function(key) {
+                                                texts[key].remove();
+                                            });
+                                            
+                                            //add a comment to indicate section has been redacted
+                                            $para.append(REDACTED_TEXT);
+                                        }
+                                    }
+                                });             
+                                
+                                var xmlString = (new XMLSerializer()).serializeToString(xmlDoc);   
+                                //all changes made, write the file
+                                zipWriter.add(fileName, new zip.TextReader(xmlString), function() {
+                                        //update the global writer
+                                        $('#download').data("writer", zipWriter);
+                                        add(fileIndex + 1); /* [1] add the next file */
+                                    }, onProgress);
+                                
+                                
+                            }else{
+                            
                             if (fileName.indexOf("word/media") !== -1) {                              
                                 //in the media directory
                                 //record image as having yet to be changed
@@ -86,7 +179,6 @@ function WordWriter(word) {
                                 //now get all the rels relating to this file
                                 var imageName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
                                 var imageRels = self.word.getImageRels(imageName);
-                                console.log(imageRels);
                                 for (var i = 0; i < imageRels.length; i++) {                                    
                                     var imageRel = imageRels[i];
                                     if (imageRel.hasChange()) {
@@ -103,7 +195,6 @@ function WordWriter(word) {
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
                                                 $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "placeholder"},
                                                 function(res) {
-                                                    console.log(res);
                                                     zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
                                                         //update the global writer
                                                         $('#download').data("writer", zipWriter);
@@ -119,7 +210,6 @@ function WordWriter(word) {
                                                 var phpUrl = "php/imagegrabber.php?callback=?";
                                                 $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "cc"},
                                                 function(res) {
-                                                    console.log(res);
                                                     zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
                                                         //update the global writer
                                                         $('#download').data("writer", zipWriter);
@@ -177,6 +267,7 @@ function WordWriter(word) {
                                     }, onProgress);
                                 }
                             }
+                            }
                         } else {
                             callback() /* [2] no more files to add: callback is called */;
                         }
@@ -197,6 +288,7 @@ function WordWriter(word) {
             };
         })();
 
+        //all changes have been made to the document.. now write it
         zipper.addTexts(contents, function() {
             zipper.getBlob(function(blob) {
                 var blobURL;

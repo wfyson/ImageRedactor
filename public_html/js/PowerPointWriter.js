@@ -93,7 +93,7 @@ function PowerPointWriter(ppt) {
                                 var imageName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
                                 var imageRels = self.ppt.getImageRels(imageName);
                                 
-                                if (imageRels.length == 0){
+                                if (imageRels.length === 0){
                                     //this image isn't used so just write it back to the zip
                                     zipWriter.add(fileName, new zip.BlobReader(self.entries[fileIndex].data), function() {
                                         //update the global writer
@@ -262,7 +262,7 @@ function PowerPointWriter(ppt) {
                         var slideFile = imageRel.slide + ".xml";
                         if (entry.name.indexOf("ppt/slides/" + slideFile) !== -1) {
 
-                            //get greatest id for document elements in the xml and the greatest textnox number
+                            //get greatest id for document elements in the xml and the greatest textbox number
                             var xmlDoc = $.parseXML(entry.data);
                             var tags = $(xmlDoc).find(cNvPr); 
                             var id = 1;
@@ -309,7 +309,7 @@ function PowerPointWriter(ppt) {
                                         var newLocation = xmlString.indexOf("</p:pic>", indices[x]) + 8;
                                         var newXml = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + (parseInt(id) + 1) + ATTRIBUTION_2 + (textNo + 1) +
                                                 ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX +
-                                                ATTRIBUTION_6 + extY + ATTRIBUTION_7 + citation + ATTRIBUTION_8));
+                                                ATTRIBUTION_6 + extY + ATTRIBUTION_7 + citation + ATTRIBUTION_8));   
                                         self.entries[j].data = newXml;
                                     }
                                 }
@@ -339,8 +339,7 @@ function PowerPointWriter(ppt) {
                                     var newXml = xmlString.splice(newLocation, 0, (ATTRIBUTION_1 + id + ATTRIBUTION_2 + textNo +
                                                 ATTRIBUTION_3 + offX + ATTRIBUTION_4 + offY + ATTRIBUTION_5 + extX +
                                                 ATTRIBUTION_6 + extY + ATTRIBUTION_7 + citation + ATTRIBUTION_8));
-                                        
-                                        
+                                       
                                     self.entries[j].data = newXml;
                                 }
                             }

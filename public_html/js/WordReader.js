@@ -43,10 +43,6 @@ function WordReader(name, wordFile) {
             if ((entry.filename).indexOf("word/document.xml") !== -1) {
 
                 entry.getData(new zip.TextWriter('utf-8'), function(text, entry) {
-                    var xmlDoc;
-                    var level = 0; //the level of headings - useful to create a hierarchy
-                    xmlDoc = $.parseXML(text);
-
                     if (window.webkitURL) {
                         self.p = "p";
                         self.t = "t";
@@ -54,8 +50,10 @@ function WordReader(name, wordFile) {
                         self.pStyle = "pStyle";
                     }
                     
+                    var xmlDoc = $.parseXML(text);
+
                     var id = 0;
-                    var level = 0;
+                    var level = 0; //the level of headings - useful to create a hierarchy
                     var newLevel = 0;                  
                     var wordRootSection = new WordSection(id++, 0, null);
                     var currentSection = wordRootSection;
@@ -75,7 +73,7 @@ function WordReader(name, wordFile) {
                                 var style = styles[key];
                                 var styleVal = $(style).attr(self.val);
                                 //check if style is a heading and if so get heading level
-                                if ((styleVal.indexOf("Heading") !== -1) && (styleVal.indexOf("TOC") == -1)) {
+                                if ((styleVal.indexOf("Heading") !== -1) && (styleVal.indexOf("TOC") === -1)) {
                                     newLevel = parseInt(styleVal.substr(7)); //strip off the word heading
                                     section = true;
                                 }
