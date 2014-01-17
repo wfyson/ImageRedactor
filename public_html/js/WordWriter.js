@@ -109,6 +109,7 @@ function WordWriter(word) {
                                 
                                 var paras = $(xmlDoc).find(self.p);
                                 paras.each(function(key) {
+                                    console.log(redact);
                                     var $para = $(paras[key]);
                                     var section = false;
                                     //is this para a new heading or text?
@@ -126,9 +127,8 @@ function WordWriter(word) {
                                         });
                                     }
                                     //a new section?                        
-                                    if (section) {
-                                        
-                                        id++;
+                                    if (section) {                                        
+                                        id++;                                        
                                         if (self.redactor.isSectionChange(id)){
                                             redact = true; //this section and its paragraphs need redacting                                                                                        
                                             
@@ -141,7 +141,6 @@ function WordWriter(word) {
                                             //add a comment to indicate section has been redacted
                                             $para.append(REDACTED_HEADING);
 
-                                            
                                         }else{
                                             redact = false; //this section and its paragraphs do not need redacting
                                         }

@@ -147,6 +147,26 @@
                         <button id="placeholderSave" class="btn btn-primary">Save</button>
                         <button id="placeholderUndo" class="btn btn-danger">Undo</button>
                     </span>
+                    
+                    <!-- headings redaction -->
+                    <div id="headings">
+                        <div id="headingContent">
+                            <!-- root collapsible for the whole document and text that does not initially appear under a heading -->
+                            <div class="accordion" id="accordionRoot">
+                                <div class="accordion-group">
+                                    <div class="accordion-heading">
+                                        <a class="accordion-toggle heading1" data-toggle="collapse" data-parent="#accordionRoot" href="#collapseRoot">
+                                            Word Root 
+                                        </a>
+                                    </div>                                    
+                                    <div id="collapseRoot" class="accordion-body collapse in">
+                                        <div id="innerRoot" class="accordion-inner">                                                                                                                                                                                                       
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Flickr Search -->
                     <div id="flickrSearch"> 

@@ -63,11 +63,11 @@ function WordViewer(word){
             $('#progressOther').attr("style", "width:" + progressOther + "%");
             $('#progressNull').attr("style", "width:" + progressNull + "%");
         
-            //$('#overview').addClass('hasFocus');
-            //$('#overview').fadeIn('slow');
+            $('#overview').addClass('hasFocus');
+            $('#overview').fadeIn('slow');
      
-            $('#headings').addClass('hasFocus');
-            $('#headings').fadeIn('slow');
+            //$('#headings').addClass('hasFocus');
+            //$('#headings').fadeIn('slow');
             
         });
     };
@@ -157,11 +157,11 @@ function WordViewer(word){
                     
                     //unmark section for redaction
                     var redactor = $('#redactBtn').data("redactor");
-                    redactor.addSectionChange($this.data("id"));
+                    redactor.removeSectionChange($this.data("id"));
                 }
             }
             
-            var newEvent = $.Event( "click" );
+            var newEvent = $.Event("click");
             newEvent.redact = redact;
             var $body = $($this.parent().parent().children(".accordion-body"));
             var $inner = $body.children(".accordion-inner")
