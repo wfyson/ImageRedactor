@@ -70,12 +70,16 @@ body .modal {
     height: 380px;
 }
 
-#imagePanel{
+#sidePanel{
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
     background: #F0F6F9;
     padding: 10px;
+    height: 100%;    
+}
+
+#imagePanel{
     height: 100%;    
 }
 
@@ -417,10 +421,11 @@ body .modal {
 
 .accordion-heading{
     text-align: justify;
+    background: whitesmoke;
 }
 
 .accordion-heading .accordion-toggle{
-    display: inline-block;
+    display: inline-block;    
 }
 
 .heading1{
@@ -438,6 +443,7 @@ body .modal {
 }
 
 .accordion-inner{
+    background: white;
     text-align: justify;
 }
 
@@ -446,3 +452,33 @@ body .modal {
     margin-right: 6px;
     margin-top: 3px;
 }
+
+#headingHierarchy{
+    height: 100%;
+    display: none;
+    overflow: auto;
+}
+
+.hierarchyEntry{
+    color: #000;
+    display:block;
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+
+.hierarchyEntry.indent2{
+    text-indent: 20px;
+}
+
+.hierarchyEntry.indent3{
+    text-indent: 40px;
+}
+
+.hierarchyEntry.indent4{
+    text-indent: 60px;
+}
+
+
+
+
+

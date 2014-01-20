@@ -85,7 +85,8 @@ function WordViewer(word){
                 var entry = entries[i];
                 if(entry instanceof WordSection){
                     //add a new collapisible section
-                    self.newCollapsible(entry, inner, count);  
+                    //add a new entry to the navigation hierarchy
+                    self.newCollapsible(entry, inner, count);            
                     count++;
                 }else{ //instance of WordParagraph
                     self.newParagraph(entry, inner);
@@ -95,6 +96,45 @@ function WordViewer(word){
         }
     };
     
+    //ann an entry to the navigation hierarchy
+    self.newNavigation = function(entry, $accordion){                
+        var link = document.createElement("a");
+        var $link = $(link);
+        var level = entry.getLevel();
+        $link.addClass("hierarchyEntry indent" + level);
+        $link.attr('href', '#' + $accordion.attr('id'));
+        $link.append(entry.getTitle());
+        $('#headingHierarchy').append($link);   
+        
+        //ensure selected accordion is open
+        $link.click({param1: $accordion}, function(event){
+            var $accordion = event.data.param1;
+            var $toggle= $accordion.children(".accordion-group")
+                    .children(".accordion-heading")
+                    .children(".accordion-toggle");            
+            if ($toggle.hasClass("collapsed")){
+                $toggle.trigger("click");                        
+            }
+            //check parents
+            openParent($accordion); 
+        });
+        
+        function openParent($accordion){
+            if ($accordion.parent().hasClass("accordion-inner")){
+                //inside another accordion element
+                var $toggle = $accordion.parent().parent().prev().children(".accordion-toggle");
+                if ($toggle.hasClass("collapsed")){
+                    $toggle.trigger("click");
+                }
+                //check next entry
+                openParent($toggle.parent().parent().parent());
+            }
+        }
+        
+    };
+    
+    
+    
     //add a collapsible section within another
     self.newCollapsible = function(entry, parent, count){
         var subCount = 1;
@@ -102,7 +142,7 @@ function WordViewer(word){
         var accordion = document.createElement("div");
         var $accordion =  $(accordion);
         $accordion.addClass("accordion")
-        $accordion.attr("id", "#accordion" + count + subCount);
+        $accordion.attr("id", "accordion" + count + subCount);
      
         var accordionGroup = document.createElement("div");
         var $accordionGroup = $(accordionGroup);
@@ -192,14 +232,16 @@ function WordViewer(word){
         $accordion.append($accordionGroup);
         $(parent).append($accordion);
         
+        self.newNavigation(entry, $accordion);
+        
         var entries = entry.getEntries();
         for (var i = 0; i < entries.length; i++){
             var entry = entries[i];
             if(entry instanceof WordSection){
                 //add a new collapisible section
                 var countStr = "";
-                countStr = countStr + count + subCount;
-                self.newCollapsible(entry, $accordionInner, countStr);  
+                countStr = countStr + count + subCount;                
+                self.newCollapsible(entry, $accordionInner, countStr);                  
                 subCount++;
             }else{ //instance of WordParagraph
                 self.newParagraph(entry, $accordionInner);
@@ -230,11 +272,13 @@ function WordViewer(word){
         carousel.add(carouselCount, headingsIcon);
         
         $('#headingsIcon').click(function(){
+            $('#imagePanel').fadeOut(400);
             $('.hasFocus').fadeOut(400, function() {
                 //remove whatever did have focus
                 $('.hasFocus').removeClass('hasFocus');
                 $('#headings').addClass('hasFocus');
                 $('#headings').fadeIn(400);
+                $('#headingHierarchy').fadeIn(400);
             });            
         });
         
@@ -252,7 +296,14 @@ function WordViewer(word){
 
                 $('#img' + i).click({param1: i, param2: wordImage}, function(event) {
                     var wordImage = event.data.param2;
-
+                    
+                    //display appropriate panel
+                    if($('#headingHierarchy').css('display') === "block"){
+                        $('#headingHierarchy').fadeOut(400, function(){
+                            $('#imagePanel').fadeIn(400);
+                        });
+                    }
+                                        
                     //clear previous info
                     $('#pptImage').empty();
                     $('#imageLicence').empty();
