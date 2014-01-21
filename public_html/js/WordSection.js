@@ -4,6 +4,7 @@ function WordSection(id, level, parentSection) {
     self.id = id;
     self.level = level;
     self.title = null;
+    self.anchor = null;
     self.parentSection = parentSection;
     self.entries = new Array();
     self.page = null;
@@ -18,6 +19,14 @@ function WordSection(id, level, parentSection) {
     
     self.addTitle = function(wordParagraph){
         self.title = wordParagraph;
+    };
+    
+    self.getAnchor = function(){
+        return self.anchor;
+    };
+    
+    self.setAnchor = function(anchor){
+        self.anchor = anchor;
     };
     
     self.getTitle = function(){

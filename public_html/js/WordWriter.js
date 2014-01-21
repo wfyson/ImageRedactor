@@ -22,6 +22,9 @@ function WordWriter(word) {
     self.page = "w\\:lastRenderedPageBreak";
     self.pStyle = "w:\\pStyle";
     self.val = "w:val";
+    self.hyper = "w\\:hyperlink";
+    self.anchor = "w:anchor";
+    self.bookmark = "w:\\bookmarkStart";
     
     self.readWord = function() {
         console.log("reading...");
@@ -42,7 +45,6 @@ function WordWriter(word) {
             var entries = entries;            
             
             if (entry.filename.substr(entry.filename.lastIndexOf(".")) === ".xml") {
-                console.log("XML");
                 entry.getData(new zip.TextWriter('utf-8'), function(text, entry){
                     self.entries.push(new EntryData(text, entry.filename));
                     i++;
@@ -53,7 +55,6 @@ function WordWriter(word) {
                     }
                 });
             } else {
-                console.log("OTHER");
                 entry.getData(new zip.BlobWriter(), function(data, entry) {
                     self.entries.push(new EntryData(data, entry.filename));
                     i++;
@@ -100,6 +101,7 @@ function WordWriter(word) {
                                     self.t = "t";
                                     self.page = "lastRenderedPageBreak";
                                     self.pStyle = "pStyle";
+                                    self.hyper = "hyperlink";
                                 }
                                 
                                 var xmlDoc = $.parseXML(files[fileIndex].data);
@@ -108,8 +110,8 @@ function WordWriter(word) {
                                 
                                 
                                 var paras = $(xmlDoc).find(self.p);
+                                var contents = false;
                                 paras.each(function(key) {
-                                    console.log(redact);
                                     var $para = $(paras[key]);
                                     var section = false;
                                     //is this para a new heading or text?
@@ -121,8 +123,16 @@ function WordWriter(word) {
                                             var style = styles[key];
                                             var styleVal = $(style).attr(self.val);
                                             //check if style is a heading and if so get heading level
-                                            if ((styleVal.indexOf("Heading") !== -1) && (styleVal.indexOf("TOC") === -1)) {                                                
-                                                section = true;
+                                            if (styleVal.indexOf("Heading") !== -1){
+                                                if(styleVal.indexOf("TOC") !== -1){
+                                                    //contents section
+                                                    contents = true;
+                                                }else{                                           
+                                                    section = true;
+                                                    contents = false;
+                                                }
+                                            }else{
+                                                section = false;
                                             }
                                         });
                                     }
@@ -133,31 +143,39 @@ function WordWriter(word) {
                                             redact = true; //this section and its paragraphs need redacting                                                                                        
                                             
                                             //this section needs redacting, remove all <w:t> tags
-                                            var texts = $para.find(self.r);
-                                            texts.each(function(key) {
-                                                texts[key].remove();
-                                            });
-                                            
-                                            //add a comment to indicate section has been redacted
-                                            $para.append(REDACTED_HEADING);
+                                            $para.find(self.t + ":first").text("Heading redacted");
+                                            $para.find(self.t + ":gt(0)").remove(); 
 
                                         }else{
                                             redact = false; //this section and its paragraphs do not need redacting
                                         }
-                                    }else{
+                                    } else {
                                         //normal paragraph, redact if necessary
-                                        if (redact){
+                                        if (redact) {
                                             //this section needs redacting, remove all <w:t> tags
-                                            var texts = $para.find(self.r);
-                                            texts.each(function(key) {
-                                                texts[key].remove();
+                                            $para.find(self.t + ":first").text("Content redacted");
+                                            $para.find(self.t + ":gt(0)").remove();                                            
+                                        }
+                                    }
+                                    //a contents section?
+                                    if (contents){
+                                        //get the anchor 
+                                        var hyperlinks = $para.find(self.hyper);
+                                        var anchor = null;
+                                        if (hyperlinks.length > 0) {
+                                            //hyperlink found                                 
+                                            hyperlinks.each(function(key) {
+                                                var hyper = hyperlinks[key];
+                                                anchor = $(hyper).attr(self.anchor);
                                             });
-                                            
-                                            //add a comment to indicate section has been redacted
-                                            $para.append(REDACTED_TEXT);
+                                        }
+                                        if (self.redactor.isAnchorChange(anchor)) {
+                                            $para.find(self.t + ":first").text("Content redacted");
+                                            $para.find(self.t + ":gt(0)").remove();
                                         }
                                     }
                                 });             
+                                
                                 
                                 var xmlString = (new XMLSerializer()).serializeToString(xmlDoc);   
                                 //all changes made, write the file

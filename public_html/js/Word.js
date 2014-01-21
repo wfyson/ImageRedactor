@@ -3,6 +3,7 @@ function Word(name, wordFile){
     var self = this;
     self.name = name;
     self.rootWordSection = null;
+    self.contentsSection = null;
     self.wordImageArray = new Array();
     self.slideImageRelArray = new Array();  
     self.wordFile = wordFile;
@@ -13,6 +14,14 @@ function Word(name, wordFile){
 
     self.setRootWordSection = function(wordSection){
         self.rootWordSection = wordSection;
+    };
+    
+    self.getContentsSection = function(){
+        return self.contentsSection;
+    };
+
+    self.setContentsSection = function(contentsSection){
+        self.contentsSection = contentsSection;
     };
 
     self.setImageRelArray = function(slideImageRelArray){

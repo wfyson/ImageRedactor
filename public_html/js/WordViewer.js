@@ -132,8 +132,7 @@ function WordViewer(word){
         }
         
     };
-    
-    
+       
     
     //add a collapsible section within another
     self.newCollapsible = function(entry, parent, count){
@@ -166,6 +165,7 @@ function WordViewer(word){
         $redactBtn.addClass("heading-redact btn btn-danger");
         $redactBtn.data("redact", true);
         $redactBtn.data("id", entry.getID()); //the id so its redaction can be recorded by WordRedactor
+        $redactBtn.data("anchor", entry.getAnchor());
         $redactBtn.append("Redact");
         
         $redactBtn.click(function(event) {            
@@ -185,7 +185,7 @@ function WordViewer(word){
                 
                 //mark section for redaction
                 var redactor = $('#redactBtn').data("redactor");
-                redactor.addSectionChange($this.data("id"));
+                redactor.addSectionChange($this.data("id"), $this.data("anchor"));
                 
             }else{
                 if (!($this.data("redact")) && !(redact)){
@@ -197,7 +197,7 @@ function WordViewer(word){
                     
                     //unmark section for redaction
                     var redactor = $('#redactBtn').data("redactor");
-                    redactor.removeSectionChange($this.data("id"));
+                    redactor.removeSectionChange($this.data("id"), $this.data("anchor"));
                 }
             }
             
@@ -335,7 +335,7 @@ function WordViewer(word){
                     //slides = slides + rels[rels.length-1].slide.substring(5);
                     $('#imageSlides').append(slides);
 
-                    //display image licence
+                    //display image size
                     var width = wordImage.width;
                     var height = wordImage.height;
                     $('#imageSize').append(width + " x " + height);

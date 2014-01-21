@@ -18,6 +18,10 @@ function WordReader(name, wordFile) {
     self.page = "w\\:lastRenderedPageBreak";
     self.pStyle = "w:\\pStyle";
     self.val = "w:val";
+    self.hyper = "w\\:hyperlink";
+    self.anchor = "w:anchor";
+    self.bookmark = "w:\\bookmarkStart";
+    self.name = "w:name";
 
     var IMAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image";
 
@@ -48,6 +52,8 @@ function WordReader(name, wordFile) {
                         self.t = "t";
                         self.page = "lastRenderedPageBreak";
                         self.pStyle = "pStyle";
+                        self.hyper = "hyperlink";
+                        self.bookmark = "bookmarkStart";
                     }
                     
                     var xmlDoc = $.parseXML(text);
@@ -57,9 +63,10 @@ function WordReader(name, wordFile) {
                     var newLevel = 0;                  
                     var wordRootSection = new WordSection(id++, 0, null);
                     var currentSection = wordRootSection;
-                    var parentSection = null;
+                    var parentSection = null;                    
                     
-                    var paras = $(xmlDoc).find(self.p);
+                    var paras = $(xmlDoc).find(self.p);                    
+                    var contents = false;
                     paras.each(function(key) {
                         var para = paras[key];
                         var wordParagraph = new WordParagraph();
@@ -73,9 +80,19 @@ function WordReader(name, wordFile) {
                                 var style = styles[key];
                                 var styleVal = $(style).attr(self.val);
                                 //check if style is a heading and if so get heading level
-                                if ((styleVal.indexOf("Heading") !== -1) && (styleVal.indexOf("TOC") === -1)) {
-                                    newLevel = parseInt(styleVal.substr(7)); //strip off the word heading
-                                    section = true;
+                                if (styleVal.indexOf("Heading") !== -1) {
+                                    if (styleVal.indexOf("TOC") !== -1){
+                                        //table of contents
+                                        contents = true;                               
+                                        section = false;
+                                    }else{
+                                        //normal heading
+                                        newLevel = parseInt(styleVal.substr(7)); //strip off the word heading
+                                        section = true;
+                                        contents = false;
+                                    }                            
+                                }else{
+                                    section = false;
                                 }
                             });
                         }
@@ -108,9 +125,38 @@ function WordReader(name, wordFile) {
                         wordParagraph.addText(texts.text());                  
                         //add the paragraph to the current section
                         if (section){
+                            //add title for section                           
                             currentSection.addTitle(wordParagraph);
+                            
+                            //add anchor for section
+                            var bookmarks = $(para).find(self.bookmark);
+                            if (bookmarks.length > 0){
+                                //bookmark found
+                                bookmarks.each(function(key){
+                                    var anchor = $(bookmarks[key]).attr(self.name);
+                                    currentSection.setAnchor(anchor);
+                                });
+                            }
                         }else{
-                            currentSection.addPara(wordParagraph);
+                            /*
+                            if (contents){
+                                //find the hypertext anchor that uniquely identifies this contents entry with a heading elsewhere in the document
+                                var hyperlinks = $(para).find(self.hyper);
+                                if (hyperlinks.length > 0) {
+                                    //hyperlink found
+                                    var anchor = null;
+                                    hyperlinks.each(function(key) {
+                                        var hyper = hyperlinks[key];
+                                        anchor = $(hyper).attr(self.anchor);
+                                    });
+                                }
+                                if (anchor !== undefined)
+                                    contentsSection.addPara(anchor, wordParagraph);
+                            }else{
+                                currentSection.addPara(wordParagraph);
+                            }     */
+                            if (!contents)
+                                currentSection.addPara(wordParagraph);
                         }                                            
                     });
                     
