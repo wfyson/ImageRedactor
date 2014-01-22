@@ -453,9 +453,14 @@ body .modal {
     margin-top: 3px;
 }
 
-#headingHierarchy{
+#headingPanel{
     height: 100%;
     display: none;
+}
+
+#headingHierarchy{
+    height: 90%;
+    margin-bottom: 20px;
     overflow: auto;
 }
 

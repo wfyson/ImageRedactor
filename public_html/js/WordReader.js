@@ -16,11 +16,11 @@ function WordReader(name, wordFile) {
     self.p = "w\\:p";
     self.t = "w\\:t";
     self.page = "w\\:lastRenderedPageBreak";
-    self.pStyle = "w:\\pStyle";
+    self.pStyle = "w\\:pStyle";
     self.val = "w:val";
     self.hyper = "w\\:hyperlink";
     self.anchor = "w:anchor";
-    self.bookmark = "w:\\bookmarkStart";
+    self.bookmark = "w\\:bookmarkStart";
     self.name = "w:name";
 
     var IMAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image";
@@ -74,6 +74,7 @@ function WordReader(name, wordFile) {
                         //is this para a new heading or text?
                         //look for a pStyle tag to find if this para is a heading
                         var styles = $(para).find(self.pStyle);
+                        
                         if (styles.length > 0) {
                             //style tag has been found, check if one matches a heading
                             styles.each(function(key) {

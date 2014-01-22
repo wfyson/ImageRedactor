@@ -20,11 +20,11 @@ function WordWriter(word) {
     self.r = "w\\:r";
     self.t = "w\\:t";
     self.page = "w\\:lastRenderedPageBreak";
-    self.pStyle = "w:\\pStyle";
+    self.pStyle = "w\\:pStyle";
     self.val = "w:val";
     self.hyper = "w\\:hyperlink";
     self.anchor = "w:anchor";
-    self.bookmark = "w:\\bookmarkStart";
+    self.bookmark = "w\\:bookmarkStart";
     
     self.readWord = function() {
         console.log("reading...");

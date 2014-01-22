@@ -308,68 +308,75 @@
                 </div>
 
                 <!-- Image Info/Buttons Panel -->
-                <div id="imagePanel" class="span3">
-                    <div id="imageInfo">
-                        <span class="imageField">
-                            <span>
-                                Slides:
-                            </span>  
-                            <span id="imageSlides">
+                <div id="sidePanel" class="span3">
+                    <div id="imagePanel">
+                        <div id="imageInfo">
+                            <span class="imageField">
+                                <span>
+                                    Slides:
+                                </span>  
+                                <span id="imageSlides">
 
+                                </span>
                             </span>
-                        </span>
-                        <span class="imageField">
-                            <span>
-                                Author:
+                            <span class="imageField">
+                                <span>
+                                    Author:
+                                </span>
+                                <span id="imageAuthor">
+                                </span>
                             </span>
-                            <span id="imageAuthor">
+                            <span class="imageField">
+                                <span>
+                                    Licence:
+                                </span>
+                                <span id="imageLicence">
+                                </span>
                             </span>
-                        </span>
-                        <span class="imageField">
-                            <span>
-                                Licence:
+                            <span class="imageField">
+                                <span>
+                                    Size:
+                                </span>
+                                <span id="imageSize">
+                                </span>
                             </span>
-                            <span id="imageLicence">
+                            <span class="imageField">
+                                <span>
+                                    Format:
+                                </span>
+                                <span id="imageFormat">
+                                </span>
                             </span>
-                        </span>
-                        <span class="imageField">
-                            <span>
-                                Size:
-                            </span>
-                            <span id="imageSize">
-                            </span>
-                        </span>
-                        <span class="imageField">
-                            <span>
-                                Format:
-                            </span>
-                            <span id="imageFormat">
-                            </span>
-                        </span>
-                    </div>
-                    <div id="buttons">
-                        <button id="overviewBtn" class="btn btn-primary btn-block imageButtons disabled">Overview</button>                        
-                        <div class="btn-block btn-group">
-                            <button id="replaceBtn" class="btn btn-success imageButtons btn-block disabled dropdown-toggle" data-toggle="dropdown">
-                                Replace
-                                <span class="caret" style="float:right; margin-right: 10px"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href='#' id="flickrBtn">Flickr</a>
-                                </li>
-                                <li>
-                                    <a href='#' id="googleBtn">Google Images</a>
-                                </li>
-                                <!--<li>
-                                    <a href='#' id="clipartBtn">Openclipart</a>
-                                </li>-->
-                            </ul>                        
                         </div>
-                        <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
-                        <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Obfuscate</button>
-                        <button id="redactBtn" class="btn btn-inverse btn-block disabled">Redact <i class="icon-download icon-white"></i></button>
-                        <span id="download" class='btn-block'><img id="downloadLoading" src="img/ajax-loader-small.gif"/><span id='downloadLabel' class="label label-inverse">Download Link</span></span>
+                        <div id="buttons">
+                            <button id="overviewBtn" class="btn btn-primary btn-block imageButtons disabled">Overview</button>                        
+                            <div class="btn-block btn-group">
+                                <button id="replaceBtn" class="btn btn-success imageButtons btn-block disabled dropdown-toggle" data-toggle="dropdown">
+                                    Replace
+                                    <span class="caret" style="float:right; margin-right: 10px"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href='#' id="flickrBtn">Flickr</a>
+                                    </li>
+                                    <li>
+                                        <a href='#' id="googleBtn">Google Images</a>
+                                    </li>
+                                    <!--<li>
+                                        <a href='#' id="clipartBtn">Openclipart</a>
+                                    </li>-->
+                                </ul>                        
+                            </div>
+                            <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
+                            <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Obfuscate</button>
+                            <button id="redactBtn" class="btn btn-inverse btn-block disabled">Redact <i class="icon-download icon-white"></i></button>
+                            <span id="download" class='btn-block'><img id="downloadLoading" src="img/ajax-loader-small.gif"/><span id='downloadLabel' class="label label-inverse">Download Link</span></span>
+                        </div>
+                    </div>
+                    <!--Hierarchy for headings navigation-->
+                    <div id="headingPanel"> 
+                        <div id="headingHierarchy"></div>
+                        <button id="headingOverviewBtn" class="btn btn-primary btn-block">Overview</button>                        
                     </div>
                 </div>                
             </div>

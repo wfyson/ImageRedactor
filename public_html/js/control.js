@@ -29,7 +29,7 @@ function redactorInit() {
             var redactor = $('#redactBtn').data("redactor");
             redactor.commitChanges();
         }
-    });
+    });    
 
 //overview button
     $('#overviewBtn').click(function() {
@@ -39,6 +39,13 @@ function redactorInit() {
             //disable buttons
             $('.imageButtons').addClass("disabled");
 
+            //display appropriate panel
+            if ($('#headingPanel').css('display') === "block") {
+                $('#headingPanel').fadeOut(400, function() {
+                    $('#imagePanel').fadeIn(400);
+                });
+            }
+
             $('.hasFocus').fadeOut(400, function() {
                 //remove whatever did have focus
                 $('.hasFocus').removeClass('hasFocus');
@@ -46,6 +53,11 @@ function redactorInit() {
                 $('#overview').fadeIn(400);
             });
         }
+    });
+    
+    //overview button when looking at headings
+    $('#headingOverviewBtn').click(function(){
+        $('#overviewBtn').click(); 
     });
 
 //placeholder button
@@ -379,7 +391,7 @@ function redactorInit() {
             $('#overview').addClass('hasFocus');
             $('#overview').fadeIn(400);
         });
-    });
+    });   
 
     function updateOverview(redactor) {
         //get initial numbers

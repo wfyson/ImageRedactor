@@ -2,7 +2,7 @@ function WordParagraph(){
     
     var self = this;
     self.entries = new Array();
-    
+
     //adds the contents of a <w:t> tag
     self.addText = function(text){
         self.entries.push(text);

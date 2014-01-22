@@ -8,7 +8,7 @@ function WordSection(id, level, parentSection) {
     self.parentSection = parentSection;
     self.entries = new Array();
     self.page = null;
-    
+  
     self.getID = function(){
         return self.id;
     };
