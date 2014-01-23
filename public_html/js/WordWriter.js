@@ -25,6 +25,8 @@ function WordWriter(word) {
     self.hyper = "w\\:hyperlink";
     self.anchor = "w:anchor";
     self.bookmark = "w\\:bookmarkStart";
+    self.drawing = "w\\:drawing";
+    self.pict = "w\\:pict";
     
     self.readWord = function() {
         console.log("reading...");
@@ -102,6 +104,8 @@ function WordWriter(word) {
                                     self.page = "lastRenderedPageBreak";
                                     self.pStyle = "pStyle";
                                     self.hyper = "hyperlink";
+                                    self.drawing = "drawing";
+                                    self.pict = "pict";
                                 }
                                 
                                 var xmlDoc = $.parseXML(files[fileIndex].data);
@@ -154,7 +158,11 @@ function WordWriter(word) {
                                         if (redact) {
                                             //this section needs redacting, remove all <w:t> tags
                                             $para.find(self.t + ":first").text("Content redacted");
-                                            $para.find(self.t + ":gt(0)").remove();                                            
+                                            $para.find(self.t + ":gt(0)").remove();             
+                                            
+                                            //remove any smart art or images
+                                            $para.find(self.drawing).remove();
+                                            $para.find(self.pict).remove();
                                         }
                                     }
                                     //a contents section?

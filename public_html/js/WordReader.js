@@ -6,6 +6,9 @@
 
 function WordReader(name, wordFile) {
 
+    var PICTURE_FORMAT = 'http://schemas.openxmlformats.org/drawingml/2006/picture';
+    var IMAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image";
+
     var self = this;
     self.wordFile = wordFile;
     self.noEntries = 0;
@@ -13,17 +16,20 @@ function WordReader(name, wordFile) {
     self.word = new Word(name, wordFile);
 
     //variables to represent tags in word xml
+    self.r = "w\\:r";
     self.p = "w\\:p";
     self.t = "w\\:t";
     self.page = "w\\:lastRenderedPageBreak";
     self.pStyle = "w\\:pStyle";
-    self.val = "w:val";
+    self.val = "w:val"; //attribute for self.pStyle
     self.hyper = "w\\:hyperlink";
     self.anchor = "w:anchor";
     self.bookmark = "w\\:bookmarkStart";
-    self.name = "w:name";
-
-    var IMAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image";
+    self.name = "w\\:name";
+    self.pic = "pic\\:pic";
+    self.blip = "a\\:blip";
+    self.xmlnsPic = "xmlns:pic"; //attribute for self.pic
+    self.embed = "r:embed"; //atrribute for self.blip
 
     self.readWord = function() {
         // use a BlobReader to read the zip from a Blob object
@@ -48,12 +54,16 @@ function WordReader(name, wordFile) {
 
                 entry.getData(new zip.TextWriter('utf-8'), function(text, entry) {
                     if (window.webkitURL) {
+                        self.r = "r";
                         self.p = "p";
                         self.t = "t";
                         self.page = "lastRenderedPageBreak";
                         self.pStyle = "pStyle";
                         self.hyper = "hyperlink";
                         self.bookmark = "bookmarkStart";
+                        self.name = "name";
+                        self.pic = "pic";
+                        self.blip = "blip";
                     }
                     
                     var xmlDoc = $.parseXML(text);
@@ -71,10 +81,12 @@ function WordReader(name, wordFile) {
                         var para = paras[key];
                         var wordParagraph = new WordParagraph();
                         var section = false;
+                        var caption = false;
                         //is this para a new heading or text?
                         //look for a pStyle tag to find if this para is a heading
                         var styles = $(para).find(self.pStyle);
                         
+                        //check the paragraphs style for indication to its purpose
                         if (styles.length > 0) {
                             //style tag has been found, check if one matches a heading
                             styles.each(function(key) {
@@ -95,8 +107,12 @@ function WordReader(name, wordFile) {
                                 }else{
                                     section = false;
                                 }
+                                if (styleVal.indexOf("Caption") !== -1){
+                                    wordParagraph.setCaption(true);
+                                }
                             });
                         }
+                        
                         //a new section?                        
                         if (section) {
                             //is the new section on a new level
@@ -122,8 +138,27 @@ function WordReader(name, wordFile) {
                                 }
                             }
                         }
-                        var texts = $(para).find(self.t);
-                        wordParagraph.addText(texts.text());                  
+                        var rs = $(para).find(self.r);                        
+                        rs.each(function(key) {                        
+                            var r = rs[key];
+                            var pics = $(r).find(self.pic); //check if this r block contains a pictur                            
+                            if (pics.length > 0) {       
+                                var pic = pics[0];
+                                var picVal = $(pic).attr(self.xmlnsPic);
+                                //check if style is a heading and if so get heading level
+                                if (picVal.indexOf(PICTURE_FORMAT) !== -1) {
+                                    //get rel id
+                                    var blips = $(pic).find(self.blip);                                    
+                                    var blip = blips[0];    
+                                    wordParagraph.addPicture($(blip).attr(self.embed));
+                                }                                
+                            }else{
+                                //not a picture so add text
+                                var texts = $(r).find(self.t);
+                                wordParagraph.addText(texts.text());  
+                            }
+                        });                        
+                                        
                         //add the paragraph to the current section
                         if (section){
                             //add title for section                           
@@ -139,23 +174,6 @@ function WordReader(name, wordFile) {
                                 });
                             }
                         }else{
-                            /*
-                            if (contents){
-                                //find the hypertext anchor that uniquely identifies this contents entry with a heading elsewhere in the document
-                                var hyperlinks = $(para).find(self.hyper);
-                                if (hyperlinks.length > 0) {
-                                    //hyperlink found
-                                    var anchor = null;
-                                    hyperlinks.each(function(key) {
-                                        var hyper = hyperlinks[key];
-                                        anchor = $(hyper).attr(self.anchor);
-                                    });
-                                }
-                                if (anchor !== undefined)
-                                    contentsSection.addPara(anchor, wordParagraph);
-                            }else{
-                                currentSection.addPara(wordParagraph);
-                            }     */
                             if (!contents)
                                 currentSection.addPara(wordParagraph);
                         }                                            
@@ -203,7 +221,7 @@ function WordReader(name, wordFile) {
                     //if a slides rel file
                     if ((entry.filename).indexOf("word/_rels") !== -1) {
                         entry.getData(new zip.TextWriter('utf-8'), function(text, entry) {
-                            var filename, xmlDoc, rels, target, imageName;
+                            var filename, xmlDoc, rels, target, relID, imageName;
                             filename = entry.filename;
                             xmlDoc = $.parseXML(text);
                             rels = $(xmlDoc).find("Relationship");
@@ -211,8 +229,9 @@ function WordReader(name, wordFile) {
                                 for (var j = 0; j < rels.length; j++) {
                                     if ($(rels[j]).attr("Type") === IMAGE_REL_TYPE) {
                                         target = $(rels[j]).attr("Target");
+                                        relID = $(rels[j]).attr("Id");
                                         imageName = target.substring(target.lastIndexOf("/") + 1, target.lastIndexOf("."));
-                                        slideImageRel = new SlideImageRel(-1, -1, imageName, false);
+                                        slideImageRel = new SlideImageRel(relID, -1, imageName, false);
                                         self.word.addSlideImageRel(slideImageRel);
                                     }
                                 }

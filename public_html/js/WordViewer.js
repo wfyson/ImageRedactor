@@ -243,9 +243,26 @@ function WordViewer(word){
     
     //add a paragraph within a collapsible section
     self.newParagraph = function(entry, parent){
-        var $panel = $('<p></p>');
-        //$panel.addClass("panel panel-default");
-        $panel.append(entry.getParaText());
+        var $panel = $('<p></p>');       
+        
+        if (entry.getCaption()){
+            $panel.attr("style", "font-weight:bold");
+        }
+        
+        var paraText = "";
+        var paraEntries = entry.getEntries();
+        for (var i = 0; i < paraEntries.length; i++){
+            var paraEntry = paraEntries[i];
+            if (paraEntry instanceof RelID){
+                //get image url and create image tag
+                var image = self.word.getRelImage(paraEntry.getRelID());                
+                var imgHtml = '<img src="' + image.url + '" alt="' + image.url + '" />';
+                paraText = paraText + imgHtml;
+            }else{
+                paraText = paraText + paraEntry;
+            }            
+        }
+        $panel.append(paraText);
         $(parent).append($panel);        
     };
     
