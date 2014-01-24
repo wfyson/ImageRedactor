@@ -272,15 +272,15 @@ function WordViewer(word){
         self.word = word;
         
         var wordImages = word.getWordImageArray();
-        var carousel = $('#mycarousel').data('jcarousel');  
+        var carousel = $('#wordCarousel').data('jcarousel');  
         var carouselCount = 0;
         
         //add an icon for getting to the headings display
-        var headingsIcon = '<div class="carouselDiv" id="headingsIcon"><img class="carouselImage" src="img/headingsIcon.png" alt="Redact Headings" /><span class="changeIcon"/></div>';
-        carouselCount++;
-        carousel.add(carouselCount, headingsIcon);
+        //var headingsIcon = '<div class="carouselDiv" id="headingsIcon"><img class="carouselImage" src="img/headingsIcon.png" alt="Redact Headings" /><span class="changeIcon"/></div>';
+        //carouselCount++;
+        //carousel.add(carouselCount, headingsIcon);
         
-        $('#headingsIcon').click(function(){
+        $('#headingsBtn').click(function(){
             
             //enable overview button
             $('#overviewBtn').removeClass("disabled");
@@ -303,7 +303,7 @@ function WordViewer(word){
             //only add an image to the carousel if it appears in the word doc (that is to say it has rels)  
             if (self.word.getImageRels(wordImage.name).length > 0){
                 
-                var html = '<div class="carouselDiv" id="' + wordImage.name + '"><img class="carouselImage" id="img' + i + '" src="' + wordImage.url + '" width="110" height="110" alt="' + wordImage.url + '" /><span class="changeIcon"/></div>';
+                var html = '<span id="' + wordImage.name + '"><img id="img' + i + '" class="carouselImg" src="' + wordImage.url + '" width="110" height="110" alt="' + wordImage.url + '" /><span class="changeIcon"/></span>';
                 carouselCount++;
                 carousel.add(carouselCount, html);
 

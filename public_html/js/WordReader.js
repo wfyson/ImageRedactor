@@ -68,123 +68,25 @@ function WordReader(name, wordFile) {
                     
                     var xmlDoc = $.parseXML(text);
 
-                    var id = 0;
-                    var level = 0; //the level of headings - useful to create a hierarchy
-                    var newLevel = 0;                  
-                    var wordRootSection = new WordSection(id++, 0, null);
-                    var currentSection = wordRootSection;
-                    var parentSection = null;                    
+                    self.id = 0;
+                    self.level = 0; //the level of headings - useful to create a hierarchy
+                    self.newLevel = 0;                  
+                    self.wordRootSection = new WordSection(self.id++, 0, null);
+                    self.currentSection = self.wordRootSection;
+                    self.parentSection = null;                    
                     
-                    var paras = $(xmlDoc).find(self.p);                    
-                    var contents = false;
-                    paras.each(function(key) {
-                        var para = paras[key];
-                        var wordParagraph = new WordParagraph();
-                        var section = false;
-                        var caption = false;
-                        //is this para a new heading or text?
-                        //look for a pStyle tag to find if this para is a heading
-                        var styles = $(para).find(self.pStyle);
-                        
-                        //check the paragraphs style for indication to its purpose
-                        if (styles.length > 0) {
-                            //style tag has been found, check if one matches a heading
-                            styles.each(function(key) {
-                                var style = styles[key];
-                                var styleVal = $(style).attr(self.val);
-                                //check if style is a heading and if so get heading level
-                                if (styleVal.indexOf("Heading") !== -1) {
-                                    if (styleVal.indexOf("TOC") !== -1){
-                                        //table of contents
-                                        contents = true;                               
-                                        section = false;
-                                    }else{
-                                        //normal heading
-                                        newLevel = parseInt(styleVal.substr(7)); //strip off the word heading
-                                        section = true;
-                                        contents = false;
-                                    }                            
-                                }else{
-                                    section = false;
-                                }
-                                if (styleVal.indexOf("Caption") !== -1){
-                                    wordParagraph.setCaption(true);
-                                }
-                            });
-                        }
-                        
-                        //a new section?                        
-                        if (section) {
-                            //is the new section on a new level
-                            if (newLevel > level){ //a level deeper in the hierarachy
-                                parentSection = currentSection;
-                                currentSection = new WordSection(id++, newLevel, parentSection);
-                                level = newLevel;
-                            }else{                                                      
-                                if (newLevel < level){ //up one level in the hierarachy                                
-                                    while (newLevel <= level){     
-                                        currentSection.closeSection();
-                                        parentSection = currentSection.getParentSection();
-                                        currentSection = parentSection;
-                                        level = currentSection.getLevel();
-                                    }                      
-                                    currentSection = new WordSection(id++, newLevel, parentSection);
-                                    level = newLevel;
-                                }else{
-                                    if (newLevel === level){
-                                        currentSection.closeSection();                               
-                                        currentSection = new WordSection(id++, newLevel, currentSection.getParentSection());
-                                    }
-                                }
-                            }
-                        }
-                        var rs = $(para).find(self.r);                        
-                        rs.each(function(key) {                        
-                            var r = rs[key];
-                            var pics = $(r).find(self.pic); //check if this r block contains a pictur                            
-                            if (pics.length > 0) {       
-                                var pic = pics[0];
-                                var picVal = $(pic).attr(self.xmlnsPic);
-                                //check if style is a heading and if so get heading level
-                                if (picVal.indexOf(PICTURE_FORMAT) !== -1) {
-                                    //get rel id
-                                    var blips = $(pic).find(self.blip);                                    
-                                    var blip = blips[0];    
-                                    wordParagraph.addPicture($(blip).attr(self.embed));
-                                }                                
-                            }else{
-                                //not a picture so add text
-                                var texts = $(r).find(self.t);
-                                wordParagraph.addText(texts.text());  
-                            }
-                        });                        
-                                        
-                        //add the paragraph to the current section
-                        if (section){
-                            //add title for section                           
-                            currentSection.addTitle(wordParagraph);
-                            
-                            //add anchor for section
-                            var bookmarks = $(para).find(self.bookmark);
-                            if (bookmarks.length > 0){
-                                //bookmark found
-                                bookmarks.each(function(key){
-                                    var anchor = $(bookmarks[key]).attr(self.name);
-                                    currentSection.setAnchor(anchor);
-                                });
-                            }
-                        }else{
-                            if (!contents)
-                                currentSection.addPara(wordParagraph);
-                        }                                            
+                    self.paras = $(xmlDoc).find(self.p);                    
+                    self.contents = false;
+                    self.paras.each(function(key) {
+                        var para = self.paras[key];
+                        self.readPara(para);                                                              
                     });
                     
                     //close the last working section and everything depending on it
-                    while(currentSection.closeSection()){
-                        currentSection = currentSection.getParentSection();
+                    while(self.currentSection.closeSection()){
+                        self.currentSection = self.currentSection.getParentSection();
                     }
-
-                    self.word.setRootWordSection(currentSection);
+                    self.word.setRootWordSection(self.currentSection);
                     
                     i++;
                     if (i === self.totalEntries) {
@@ -258,6 +160,106 @@ function WordReader(name, wordFile) {
                 }
             }
         }
+    };
+    
+    self.readPara = function(para){
+        var wordParagraph = new WordParagraph();
+        var section = false;
+        //is this para a new heading or text?
+        //look for a pStyle tag to find if this para is a heading
+        var styles = $(para).children("w\\:pPr").find(self.pStyle);
+
+        //check the paragraphs style for indication to its purpose
+        if (styles.length > 0) {
+            //style tag has been found, check if one matches a heading
+            styles.each(function(key) {
+                var style = styles[key];
+                var styleVal = $(style).attr(self.val);
+                //check if style is a heading and if so get heading level
+                if (styleVal.indexOf("Heading") !== -1) {
+                    if (styleVal.indexOf("TOC") !== -1) {
+                        //table of contents
+                        self.contents = true;
+                        section = false;
+                    } else {
+                        //normal heading
+                        self.newLevel = parseInt(styleVal.substr(7)); //strip off the word heading
+                        section = true;
+                        self.contents = false;
+                    }
+                } else {
+                    section = false;
+                }
+                if (styleVal.indexOf("Caption") !== -1) {
+                    wordParagraph.setCaption(true);
+                }
+            });
+        }
+
+        //a new section?                        
+        if (section) {
+            //is the new section on a new level
+            if (self.newLevel > self.level) { //a level deeper in the hierarachy
+                self.parentSection = self.currentSection;
+                self.currentSection = new WordSection(self.id++, self.newLevel, self.parentSection);
+                self.level = self.newLevel;
+            } else {
+                if (self.newLevel < self.level) { //up one level in the hierarachy                                
+                    while (self.newLevel <= self.level) {
+                        self.currentSection.closeSection();
+                        self.parentSection = self.currentSection.getParentSection();
+                        self.currentSection = self.parentSection;
+                        self.level = self.currentSection.getLevel();
+                    }
+                    self.currentSection = new WordSection(self.id++, self.newLevel, self.parentSection);
+                    self.level = self.newLevel;
+                } else {
+                    if (self.newLevel === self.level) {
+                        self.currentSection.closeSection();
+                        self.currentSection = new WordSection(self.id++, self.newLevel, self.currentSection.getParentSection());
+                    }
+                }
+            }
+        }
+        //console.log($(para).children());
+        var rs = $(para).children("w\\:r");
+        rs.each(function(key) {
+            var r = rs[key];
+            var pics = $(r).find(self.pic); //check if this r block contains a picture                            
+            if (pics.length > 0) {
+                var pic = pics[0];
+                var picVal = $(pic).attr(self.xmlnsPic);                              
+                if (picVal.indexOf(PICTURE_FORMAT) !== -1) {
+                    //get rel id
+                    var blips = $(pic).find(self.blip);
+                    var blip = blips[0];
+                    wordParagraph.addPicture($(blip).attr(self.embed));
+                }
+            }
+            
+            //add the text
+            var texts = $(r).children("w\\:t");
+            wordParagraph.addText(texts.text());           
+        });
+
+        //add the paragraph to the current section
+        if (section) {
+            //add title for section                           
+            self.currentSection.addTitle(wordParagraph);
+
+            //add anchor for section
+            var bookmarks = $(para).find(self.bookmark);
+            if (bookmarks.length > 0) {
+                //bookmark found
+                bookmarks.each(function(key) {
+                    var anchor = $(bookmarks[key]).attr(self.name);
+                    self.currentSection.setAnchor(anchor);
+                });
+            }
+        } else {
+            if (!self.contents)
+                self.currentSection.addPara(wordParagraph);
+        }              
     };
 
     self.callbackTest = function() {

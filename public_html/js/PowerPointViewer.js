@@ -69,7 +69,7 @@ function PowerPointViewer(powerpoint){
         self.powerpoint = powerpoint;
         
         var pptImages = powerpoint.getPptImageArray();
-        var carousel = $('#mycarousel').data('jcarousel');    
+        var carousel = $('#pptCarousel').data('jcarousel');    
         var carouselCount = 0;
         for (var i = 0; i < pptImages.length; i++){
             //generate html for the image
@@ -77,7 +77,7 @@ function PowerPointViewer(powerpoint){
             //only add an image to the carousel if it appears in the presentation (that is to say it has rels)            
             if (self.powerpoint.getImageRels(pptImage.name).length > 0){                
                 
-                var html = '<span id="' + pptImage.name + '"><img id="img' + i + '" src="' + pptImage.url + '" width="110" height="110" alt="' + pptImage.url + '" /><span class="changeIcon"/></span>';
+                var html = '<span id="' + pptImage.name + '"><img id="img' + i + '" class="carouselImg" src="' + pptImage.url + '" width="110" height="110" alt="' + pptImage.url + '" /><span class="changeIcon"/></span>';
 
                 carouselCount++;
                 carousel.add(carouselCount, html);

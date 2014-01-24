@@ -462,7 +462,10 @@ function redactorInit() {
 
 
     $(document).ready(function() {
-        $('#mycarousel').jcarousel({
+        $('#pptCarousel').jcarousel({
+            size: 0
+        });
+        $('#wordCarousel').jcarousel({
             size: 0
         });
     });

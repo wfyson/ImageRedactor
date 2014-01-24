@@ -1,7 +1,7 @@
 /* 
     Document   : style
     Created on : 20-May-2013, 14:51:31
-    Author     : William
+    Author     : William Fyson
     Description:
         Purpose of the stylesheet follows.
 */
@@ -100,8 +100,8 @@ body .modal {
     width: 100%;
 }
 
-#imageCarousel{
-    height: 150px;
+.carousel{
+    height: 110px;
 }
 
 .carouselDiv{
@@ -109,10 +109,8 @@ body .modal {
     height: 110px;
 }
 
-.carouselImage{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;    
+.carouselImg{
+    cursor: pointer;
 }
 
 .changeIcon{
@@ -483,7 +481,23 @@ body .modal {
     text-indent: 60px;
 }
 
+#pptBar{
+    margin-top: 20px;
+    width: 100%;
+}
 
+#wordBar{
+    margin-top: 20px;
+    display: none;
+    width: 100%;
+    float: left;
+}
 
+#headingsBtn{    
+    width: 10%; 
+    height: 140px;        
+    float: left;
+    cursor: pointer;
+}
 
 
