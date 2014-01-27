@@ -18,6 +18,11 @@ function handleFileSelect(name, blob) {
                     var powerpointRedactor = new PowerPointRedactor();
                     $('#redactBtn').data("redactor", powerpointRedactor);                   
                     
+                    //show the approriate bottom bar
+                    $('#wordBar').fadeOut(400, function() {
+                        $('#pptBar').fadeIn(400);
+                     });  
+                    
                     //created a reader so now kill for loop
                     break;
                 }
@@ -29,6 +34,11 @@ function handleFileSelect(name, blob) {
                     //create a redactor
                     var wordRedactor = new WordRedactor();
                     $('#redactBtn').data("redactor", wordRedactor);
+                    
+                    //show the approriate bottom bar
+                    $('#pptBar').fadeOut(400, function() {
+                        $('#wordBar').fadeIn(400);
+                    }); 
                     
                     //created a reader so now kill for loop
                     break;

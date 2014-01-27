@@ -7,12 +7,12 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-fileupload.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-arrows.css">        
+        <link rel="stylesheet" type="text/css" href="css/jquery.Jcrop.css">         
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/skin.css"> 
         
@@ -26,42 +26,42 @@
         <script type="text/javascript" src="js/libs/jqueryui-1.10.0/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/libs/jquery.exif.js"></script>
 
-        <script type="text/javascript" src="js/libs/bootstrap.js"></script>
+        <script type="text/javascript" src="js/libs/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/libs/bootstrap-fileupload.min.js"></script>
         <script type="text/javascript" src="js/libs/bootstrap-arrows.js"></script>
 
         <script type="text/javascript" src="js/libs/jquery.jcarousel.js"></script>
         <script type="text/javascript" src="js/libs/jquery.jcarousel.min.js"></script>
+
+        <script type="text/javascript" src="js/libs/jquery.Jcrop.min.js"></script>     
         
         <script type="text/javascript" src="js/libs/pixastic.custom.js"></script>     
-                
+        
         <script type="text/javascript" src="js/control.js"></script>
+        <!--<script type="text/javascript" src="js/readFile.js"></script>-->
         <script type="text/javascript" src="js/readURL.js"></script>
-        
-        <script type="text/javascript" src="js/PowerPointReader.js"></script>
-        <script type="text/javascript" src="js/PowerPointImage.js"></script>
-        <script type="text/javascript" src="js/PowerPoint.js"></script>
         <script type="text/javascript" src="js/SlideImageRel.js"></script>
+        <script type="text/javascript" src="js/Change.js"></script>        
 
-        <script type="text/javascript" src="js/PowerPointViewer.js"></script>
-
-        <script type="text/javascript" src="js/Change.js"></script>
-        <script type="text/javascript" src="js/PowerPointWriter.js"></script>
-
-        <script type="text/javascript" src="js/PowerPointRedactor.js"></script>
-
-        <script type="text/javascript" src="js/FlickrReader.js"></script>
-        <script type="text/javascript" src="js/FlickrImage.js"></script>
-        <script type="text/javascript" src="js/FlickrResultsViewer.js"></script>
+        <script type="text/javascript" src="js/powerpoint/PowerPointReader.js"></script>
+        <script type="text/javascript" src="js/powerpoint/PowerPointImage.js"></script>
+        <script type="text/javascript" src="js/powerpoint/PowerPoint.js"></script>
+        <script type="text/javascript" src="js/powerpoint/PowerPointWriter.js"></script>
+        <script type="text/javascript" src="js/powerpoint/PowerPointRedactor.js"></script>
+        <script type="text/javascript" src="js/powerpoint/PowerPointViewer.js"></script>        
         
-        <script type="text/javascript" src="js/Word.js"></script>
-        <script type="text/javascript" src="js/WordSection.js"></script>
-        <script type="text/javascript" src="js/WordParagraph.js"></script>
-        <script type="text/javascript" src="js/WordImage.js"></script>
-        <script type="text/javascript" src="js/WordReader.js"></script>
-        <script type="text/javascript" src="js/WordRedactor.js"></script>
-        <script type="text/javascript" src="js/WordViewer.js"></script>
-        <script type="text/javascript" src="js/WordWriter.js"></script>
+        <script type="text/javascript" src="js/flickr/FlickrReader.js"></script>
+        <script type="text/javascript" src="js/flickr/FlickrImage.js"></script>
+        <script type="text/javascript" src="js/flickr/FlickrResultsViewer.js"></script>
+        
+        <script type="text/javascript" src="js/word/Word.js"></script>
+        <script type="text/javascript" src="js/word/WordSection.js"></script>
+        <script type="text/javascript" src="js/word/WordParagraph.js"></script>
+        <script type="text/javascript" src="js/word/WordImage.js"></script>
+        <script type="text/javascript" src="js/word/WordReader.js"></script>
+        <script type="text/javascript" src="js/word/WordRedactor.js"></script>
+        <script type="text/javascript" src="js/word/WordViewer.js"></script>
+        <script type="text/javascript" src="js/word/WordWriter.js"></script>
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -380,11 +380,18 @@
                     </div>
                 </div>                
             </div>
-            <div class="row-fluid">
-                <div id="imageCarousel" class="span12">
-                    <ul id="mycarousel" class="jcarousel-skin-tango">
+            <div id="pptBar">                
+                <div class="carousel">
+                    <ul id="pptCarousel" class="jcarousel-skin-tango">
                     </ul>
                 </div>
+            </div>
+            <div id="wordBar">
+                <div id="headingsBtn"><img src="img/headingsIcon.png" alt="Redact Headings" /></div>
+                <div class="carousel" style="width:90%; float:left">
+                    <ul id="wordCarousel" class="jcarousel-skin-tango">
+                    </ul>
+                </div>                
             </div>
         </div>
         

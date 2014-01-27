@@ -1,6 +1,6 @@
 //file loading functionality            
 function handleFileSelect(evt) {
-
+    
     var files = evt.target.files; // FileList object
 
     for (var i = 0, f; f = files[i]; i++) {

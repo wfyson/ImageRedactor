@@ -25,6 +25,7 @@ body .modal {
 }
 
 #copyright{
+    margin-top:20px;
     margin-right: 20px;
     float: right;
     clear: both;   
