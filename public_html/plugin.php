@@ -67,10 +67,22 @@
 
     </head>
     <body>
-
+        <!--
         <div id="title">
             <img src="img/title.png"/>
+        </div>-->
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a class="brand" href="#">Redact-O-Matic</a>
+                <ul class="nav">
+                    <li><a id="titleOverview" href="#">Overview</a></li>
+                    <li><a id="titleText" href="#">Text</a></li>
+                    <li><a href="#">Redact</a></li>
+                </ul>
+            </div>
         </div>
+
         
         <div class="container-fluid">
 

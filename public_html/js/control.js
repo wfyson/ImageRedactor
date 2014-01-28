@@ -1,5 +1,14 @@
 function redactorInit() { 
     
+    $('#titleOverview').click(function(){
+       $('#overviewBtn').click();
+    });
+    
+    $('#titleText').click(function(){
+       console.log("hello world!");
+       $('#headingsBtn').click();
+    });    
+    
     //perform flickr search
     $('#flickr').submit(function() {
         //unbind any previous functions associated with the next and previous buttons for flickr
