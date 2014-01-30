@@ -76,9 +76,13 @@
             <div class="navbar-inner">
                 <a class="brand" href="#">Redact-O-Matic</a>
                 <ul class="nav">
+                    <li class="divider-vertical"></li>
                     <li><a id="titleOverview" href="#">Overview</a></li>
-                    <li><a id="titleText" href="#">Text</a></li>
-                    <li><a href="#">Redact</a></li>
+                    <li class="divider-vertical"></li>
+                    <li><a id="titleText" class="disabled" href="#">Text</a></li>
+                    <li class="divider-vertical"></li>
+                    <li><button id="redactBtn" class="btn btn-info disabled">Redact</button></li>
+                    <li><span id="download"><img id="downloadLoading" src="img/ajax-loader-small.gif"/><span id='downloadLabel' class="label label-info">Download Link</span></span></li>
                 </ul>
             </div>
         </div>
@@ -381,9 +385,11 @@
                             </div>
                             <button id="ccBtn" class="btn btn-warning btn-block imageButtons disabled">Creative Commons</button>
                             <button id="placeholderBtn" class="btn btn-danger btn-block imageButtons disabled">Obfuscate</button>
+                            <!--
                             <button id="redactBtn" class="btn btn-inverse btn-block disabled">Redact <i class="icon-download icon-white"></i></button>
                             <span id="download" class='btn-block'><img id="downloadLoading" src="img/ajax-loader-small.gif"/><span id='downloadLabel' class="label label-inverse">Download Link</span></span>
-                        </div>
+                            -->
+                         </div>
                     </div>
                     <!--Hierarchy for headings navigation-->
                     <div id="headingPanel"> 

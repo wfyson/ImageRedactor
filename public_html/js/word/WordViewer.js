@@ -278,22 +278,7 @@ function WordViewer(word){
         //add an icon for getting to the headings display
         //var headingsIcon = '<div class="carouselDiv" id="headingsIcon"><img class="carouselImage" src="img/headingsIcon.png" alt="Redact Headings" /><span class="changeIcon"/></div>';
         //carouselCount++;
-        //carousel.add(carouselCount, headingsIcon);
-        
-        $('#headingsBtn').click(function(){
-            
-            //enable overview button
-            $('#overviewBtn').removeClass("disabled");
-            
-            $('#imagePanel').fadeOut(400);
-            $('.hasFocus').fadeOut(400, function() {
-                //remove whatever did have focus
-                $('.hasFocus').removeClass('hasFocus');
-                $('#headings').addClass('hasFocus');
-                $('#headings').fadeIn(400);
-                $('#headingPanel').fadeIn(400);
-            });            
-        });
+        //carousel.add(carouselCount, headingsIcon);                
         
         for (var i = 0; i < wordImages.length; i++){
             

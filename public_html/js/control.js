@@ -5,7 +5,6 @@ function redactorInit() {
     });
     
     $('#titleText').click(function(){
-       console.log("hello world!");
        $('#headingsBtn').click();
     });    
     
@@ -401,6 +400,23 @@ function redactorInit() {
             $('#overview').fadeIn(400);
         });
     });   
+
+    //redact headings
+    $('#headingsBtn').click(function(){
+        if(!($('#headings').hasClass('hasFocus'))){
+            //enable overview button
+            $('#overviewBtn').removeClass("disabled");
+            
+            $('#imagePanel').fadeOut(400);
+            $('.hasFocus').fadeOut(400, function() {
+                //remove whatever did have focus
+                $('.hasFocus').removeClass('hasFocus');
+                $('#headings').addClass('hasFocus');
+                $('#headings').fadeIn(400);
+                $('#headingPanel').fadeIn(400);
+            });            
+        }
+    });
 
     function updateOverview(redactor) {
         //get initial numbers
