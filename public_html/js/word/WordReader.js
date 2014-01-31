@@ -162,9 +162,13 @@ function WordReader(name, wordFile) {
         }
     };
     
-    self.readPara = function(para){
+    self.readPara = function(para){               
+        
         var wordParagraph = new WordParagraph();
         var section = false;
+        var caption = false;
+        var captionText = "";
+        var relID = null;
         //is this para a new heading or text?
         //look for a pStyle tag to find if this para is a heading
         var styles = $(para).children("w\\:pPr").find(self.pStyle);
@@ -191,6 +195,7 @@ function WordReader(name, wordFile) {
                     section = false;
                 }
                 if (styleVal.indexOf("Caption") !== -1) {
+                    caption = true;
                     wordParagraph.setCaption(true);
                 }
             });
@@ -233,14 +238,24 @@ function WordReader(name, wordFile) {
                     //get rel id
                     var blips = $(pic).find(self.blip);
                     var blip = blips[0];
-                    wordParagraph.addPicture($(blip).attr(self.embed));
+                    relID = $(blip).attr(self.embed);
+                    wordParagraph.addPicture(relID);
                 }
             }
             
             //add the text
             var texts = $(r).children("w\\:t");
-            wordParagraph.addText(texts.text());           
+            wordParagraph.addText(texts.text());    
+            captionText = captionText + texts.text();
         });
+        
+        //add caption if paragraph is one
+        console.log(relID);
+        console.log(caption);
+        if ((caption) && (relID !== null)){
+            self.word.addCaption(relID, captionText);
+        }
+        
 
         //add the paragraph to the current section
         if (section) {

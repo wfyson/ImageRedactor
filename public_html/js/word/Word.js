@@ -7,6 +7,7 @@ function Word(name, wordFile){
     self.wordImageArray = new Array();
     self.slideImageRelArray = new Array();  
     self.wordFile = wordFile;
+    self.captionArray = new Array();
 
     self.getRootWordSection = function(){
         return self.rootWordSection;
@@ -82,6 +83,28 @@ function Word(name, wordFile){
     
     self.getImageArray = function(){
         return self.wordImageArray;
+    };
+    
+    self.addCaption = function(relID, text){
+        
+        console.log("geronimo");
+        console.log(relID);
+        console.log(text);
+        var rels = self.captionArray;
+        var relIDs = new Array();
+        var captionUnset = true;
+        for (var i = 0; i < rels.length; i++){
+            if (rels[i].relID === relID){
+                rels[i].setCaption(text);
+                captionUnset = false;
+                break;
+            } 
+        }
+        if (captionUnset){
+            var captionRel = new CaptionRel(relID);
+            captionRel.addCaption(text);
+            self.captionArray.push(captionRel);s
+        }
     };
 
 }

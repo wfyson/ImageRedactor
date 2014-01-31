@@ -28,6 +28,9 @@ function WordViewer(word){
                 }
             }
             $('#totalImages').append(totalImages);
+            
+            console.log("allons-y");
+            console.log(self.word.captionArray);
         
             //licenced images
             var licenceNumbers = self.getNoLicencedImages();    
