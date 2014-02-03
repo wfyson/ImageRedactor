@@ -27,10 +27,7 @@ function WordViewer(word){
                     totalImages++;
                 }
             }
-            $('#totalImages').append(totalImages);
-            
-            console.log("allons-y");
-            console.log(self.word.captionArray);
+            $('#totalImages').append(totalImages);           
         
             //licenced images
             var licenceNumbers = self.getNoLicencedImages();    
@@ -289,7 +286,7 @@ function WordViewer(word){
             var wordImage = wordImages[i];
             
             //only add an image to the carousel if it appears in the word doc (that is to say it has rels)  
-            if (self.word.getImageRels(wordImage.name).length > 0){
+            if ((self.word.getImageRels(wordImage.name)).length > 0){
                 
                 var html = '<span id="' + wordImage.name + '"><img id="img' + i + '" class="carouselImg" src="' + wordImage.url + '" width="110" height="110" alt="' + wordImage.url + '" /><span class="changeIcon"/></span>';
                 carouselCount++;
@@ -312,6 +309,7 @@ function WordViewer(word){
                     $('#imageSlides').empty();
                     $('#imageSize').empty();
                     $('#imageFormat').empty();
+                    $('#imageCaption').empty();
 
                     //attach image to the div to get later
                     $('#imageOverview').data("image", wordImage);
@@ -358,6 +356,14 @@ function WordViewer(word){
                     if (typeof format === "undefined")
                         format = "Unknown";
                     $('#imageFormat').append(format);
+
+                    //display image caption
+                    var caption= "";
+                    var imageRels = self.word.getImageRels(wordImage.name);
+                    for (var i = 0; i < imageRels.length; i++){                        
+                        caption = caption + self.word.getCaption(imageRels[i].relID);                        
+                    }
+                    $('#imageCaption').append(caption);
 
                     //enable/disable buttons where appropriate
                     if (wordImage.format === ".png") {

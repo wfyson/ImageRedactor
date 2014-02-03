@@ -14,6 +14,7 @@ function WordReader(name, wordFile) {
     self.noEntries = 0;
     self.totalEntries;
     self.word = new Word(name, wordFile);
+    self.relID = null;
 
     //variables to represent tags in word xml
     self.r = "w\\:r";
@@ -168,7 +169,7 @@ function WordReader(name, wordFile) {
         var section = false;
         var caption = false;
         var captionText = "";
-        var relID = null;
+        var relID;
         //is this para a new heading or text?
         //look for a pStyle tag to find if this para is a heading
         var styles = $(para).children("w\\:pPr").find(self.pStyle);
@@ -238,8 +239,8 @@ function WordReader(name, wordFile) {
                     //get rel id
                     var blips = $(pic).find(self.blip);
                     var blip = blips[0];
-                    relID = $(blip).attr(self.embed);
-                    wordParagraph.addPicture(relID);
+                    self.relID = $(blip).attr(self.embed);
+                    wordParagraph.addPicture(self.relID);
                 }
             }
             
@@ -250,10 +251,9 @@ function WordReader(name, wordFile) {
         });
         
         //add caption if paragraph is one
-        console.log(relID);
-        console.log(caption);
-        if ((caption) && (relID !== null)){
-            self.word.addCaption(relID, captionText);
+        if ((caption) && (self.relID !== null)){            
+            self.word.addCaption(self.relID, captionText);
+            self.relID = null;
         }
         
 

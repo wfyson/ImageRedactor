@@ -85,7 +85,9 @@ body .modal {
 }
 
 #imageInfo{
-    height: 40%;
+    height: 60%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #buttons{
@@ -97,7 +99,7 @@ body .modal {
     margin-bottom: 2px;
     float: left;
     font-family: Arial,Helvetica,sans-serif;
-    font-size: 18px;
+    font-size: 14px;
     width: 100%;
 }
 

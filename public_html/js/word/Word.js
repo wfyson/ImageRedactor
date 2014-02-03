@@ -86,16 +86,12 @@ function Word(name, wordFile){
     };
     
     self.addCaption = function(relID, text){
-        
-        console.log("geronimo");
-        console.log(relID);
-        console.log(text);
-        var rels = self.captionArray;
+        var captionRels = self.captionArray;
         var relIDs = new Array();
         var captionUnset = true;
-        for (var i = 0; i < rels.length; i++){
-            if (rels[i].relID === relID){
-                rels[i].setCaption(text);
+        for (var i = 0; i < captionRels.length; i++){
+            if (captionRels[i].relID === relID){
+                captionRels[i].setCaption(text);
                 captionUnset = false;
                 break;
             } 
@@ -103,8 +99,18 @@ function Word(name, wordFile){
         if (captionUnset){
             var captionRel = new CaptionRel(relID);
             captionRel.addCaption(text);
-            self.captionArray.push(captionRel);s
+            self.captionArray.push(captionRel);
         }
+    };
+    
+    self.getCaption = function(relID){
+        var captionRels = self.captionArray;
+        for (var i = 0; i < captionRels.length; i++){
+            if (captionRels[i].relID === relID){
+                return captionRels[i].getText();
+            }
+        }
+        return "";
     };
 
 }
