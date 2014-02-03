@@ -101,7 +101,7 @@ function Word(name, wordFile){
         var captionUnset = true;
         for (var i = 0; i < captionRels.length; i++){
             if (captionRels[i].relID === relID){
-                captionRels[i].setCaption(text);
+                captionRels[i].addCaption(text);
                 captionUnset = false;
                 break;
             } 
