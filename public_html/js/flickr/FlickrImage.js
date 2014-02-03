@@ -32,7 +32,6 @@ function FlickrImage(imageID) {
     };
     
     self.getResultsUrl = function(){
-        console.log(self.sizes);
         for (var i = 0; i < self.sizes.length; i++){
             var size = self.sizes[i];
             

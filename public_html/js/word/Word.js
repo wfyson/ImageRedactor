@@ -66,6 +66,16 @@ function Word(name, wordFile){
         return returnArray;        
     };
     
+    self.getSlideImageRel = function(relID){
+        var rels = self.slideImageRelArray;
+        for (var i = 0; i < rels.length; i++){
+            if (rels[i].relID === relID){
+                return rels[i];
+            }
+        }
+        return false;        
+    };
+    
     //gets an image from a given rel
     self.getRelImage = function(relID){
         var rels = self.slideImageRelArray;

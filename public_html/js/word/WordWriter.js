@@ -7,6 +7,12 @@ function WordWriter(word) {
 
     var REDACTED_HEADING = '<w:r><w:t>This section has been redacted</w:t></w:r>';
     var REDACTED_TEXT = '<w:r><w:t>Content redacted</w:t></w:r>';
+    var PICTURE_FORMAT = 'http://schemas.openxmlformats.org/drawingml/2006/picture';
+    var ATTRIBUTION_1 = '<w:r><w:rPr><w:color w:val="auto"/><w:lang w:val="en-GB"/></w:rPr><w:t xml:space="preserve">';
+    var ATTRIBUTION_2 = '</w:t></w:r>';
+    
+    //var ATTRIBUTION_1 = '<w:r></w:r>';
+
 
     var self = this;
     self.word = word;
@@ -14,7 +20,8 @@ function WordWriter(word) {
     self.entries = new Array();
     self.entriesCount = 0;
     self.rels = word.getImageRelArray();
-    
+    self.relID = null;
+
     //variables to represent tags in word xml
     self.p = "w\\:p";
     self.r = "w\\:r";
@@ -27,11 +34,15 @@ function WordWriter(word) {
     self.bookmark = "w\\:bookmarkStart";
     self.drawing = "w\\:drawing";
     self.pict = "w\\:pict";
-    
+    self.pic = "pic\\:pic";
+    self.blip = "a\\:blip";
+    self.xmlnsPic = "xmlns:pic"; //attribute for self.pic
+    self.embed = "r:embed"; //atrribute for self.blip
+
     self.readWord = function() {
         console.log("reading...");
-         
-         //read all word entries
+
+        //read all word entries
         zip.createReader(new zip.BlobReader(self.word.wordFile), function(reader) {
             // get all entries from the zip
             reader.getEntries(function(entries) {
@@ -41,13 +52,13 @@ function WordWriter(word) {
         }, function(error) {
             console.log(error);
         });
-        
-        function processEntries(entries, i){
+
+        function processEntries(entries, i) {
             var entry = entries[i];
-            var entries = entries;            
-            
+            var entries = entries;
+
             if (entry.filename.substr(entry.filename.lastIndexOf(".")) === ".xml") {
-                entry.getData(new zip.TextWriter('utf-8'), function(text, entry){
+                entry.getData(new zip.TextWriter('utf-8'), function(text, entry) {
                     self.entries.push(new EntryData(text, entry.filename));
                     i++;
                     if (i === self.totalEntries) {
@@ -66,7 +77,7 @@ function WordWriter(word) {
                         processEntries(entries, i);
                     }
                 });
-            }            
+            }
         }
     };
 
@@ -92,11 +103,11 @@ function WordWriter(word) {
                             //console.log(files[fileIndex].name.indexOf("image1.jpeg"));
 
                             var fileName = files[fileIndex].name;
-                          
-                            
+
+
                             $('#download').data("filename", fileName);
                             $('#download').data("fileindex", fileIndex);
-                            if (fileName.indexOf("word/document.xml") !== -1){
+                            if (fileName.indexOf("word/document.xml") !== -1) {
                                 if (window.webkitURL) {
                                     self.p = "p";
                                     self.r = "r";
@@ -106,18 +117,21 @@ function WordWriter(word) {
                                     self.hyper = "hyperlink";
                                     self.drawing = "drawing";
                                     self.pict = "pict";
+                                    self.pic = "pic";
+                                    self.blip = "blip";
                                 }
-                                
+
                                 var xmlDoc = $.parseXML(files[fileIndex].data);
                                 var id = 0;
                                 var redact = false;
-                                
-                                
+
+
                                 var paras = $(xmlDoc).find(self.p);
                                 var contents = false;
                                 paras.each(function(key) {
                                     var $para = $(paras[key]);
                                     var section = false;
+                                    var caption = false;
                                     //is this para a new heading or text?
                                     //look for a pStyle tag to find if this para is a heading
                                     var styles = $para.find(self.pStyle);
@@ -127,30 +141,33 @@ function WordWriter(word) {
                                             var style = styles[key];
                                             var styleVal = $(style).attr(self.val);
                                             //check if style is a heading and if so get heading level
-                                            if (styleVal.indexOf("Heading") !== -1){
-                                                if(styleVal.indexOf("TOC") !== -1){
+                                            if (styleVal.indexOf("Heading") !== -1) {
+                                                if (styleVal.indexOf("TOC") !== -1) {
                                                     //contents section
                                                     contents = true;
-                                                }else{                                           
+                                                } else {
                                                     section = true;
                                                     contents = false;
                                                 }
-                                            }else{
+                                            } else {
                                                 section = false;
+                                            }
+                                            if (styleVal.indexOf("Caption") !== -1) {
+                                                caption = true;
                                             }
                                         });
                                     }
                                     //a new section?                        
-                                    if (section) {                                        
-                                        id++;                                        
-                                        if (self.redactor.isSectionChange(id)){
+                                    if (section) {
+                                        id++;
+                                        if (self.redactor.isSectionChange(id)) {
                                             redact = true; //this section and its paragraphs need redacting                                                                                        
-                                            
+
                                             //this section needs redacting, remove all <w:t> tags
                                             $para.find(self.t + ":first").text("Heading redacted");
-                                            $para.find(self.t + ":gt(0)").remove(); 
+                                            $para.find(self.t + ":gt(0)").remove();
 
-                                        }else{
+                                        } else {
                                             redact = false; //this section and its paragraphs do not need redacting
                                         }
                                     } else {
@@ -158,15 +175,56 @@ function WordWriter(word) {
                                         if (redact) {
                                             //this section needs redacting, remove all <w:t> tags
                                             $para.find(self.t + ":first").text("Content redacted");
-                                            $para.find(self.t + ":gt(0)").remove();             
-                                            
+                                            $para.find(self.t + ":gt(0)").remove();
+
                                             //remove any smart art or images
                                             $para.find(self.drawing).remove();
                                             $para.find(self.pict).remove();
+                                        } else {
+                                            var rs = $para.children("w\\:r");
+                                            rs.each(function(key) {
+                                                var r = rs[key];
+                                                var $r = $(r);
+                                                var pics = $r.find(self.pic); //check if this r block contains a picture                            
+                                                if (pics.length > 0) {
+                                                    var pic = pics[0];
+                                                    var picVal = $(pic).attr(self.xmlnsPic);
+                                                    if (picVal.indexOf(PICTURE_FORMAT) !== -1) {
+                                                        //get rel id
+                                                        var blips = $(pic).find(self.blip);
+                                                        var blip = blips[0];
+                                                        self.relID = $(blip).attr(self.embed);
+
+                                                        //does the picture have an associated caption
+                                                        if (self.word.getCaption(self.relID) === "") { //no caption for this rel, so add new tags for the citation                                                            
+                                                            var slideImageRel = self.word.getSlideImageRel(self.relID);
+                                                            if (slideImageRel.hasChange()) {
+                                                                //create the citation text
+                                                                var change = slideImageRel.getChange();
+                                                                var citation = self.writeCitation(change);
+                                                                
+                                                                //create and append necessary xml structure for simple citation addition
+                                                                var rTag = xmlDoc.createElement('w:r');
+                                                                var rPrTag = xmlDoc.createElement('w:rPr');
+                                                                var colorTag = xmlDoc.createElement('w:color');
+                                                                $(colorTag).attr('w:val', 'auto');
+                                                                var langTag = xmlDoc.createElement('w:lang');
+                                                                $(langTag).attr('w:val', 'en-GB');
+                                                                $(rPrTag).append($(colorTag)).append($(langTag));
+                                                                var tTag = xmlDoc.createElement('w:t');
+                                                                $(tTag).attr('xml:space', 'preserve');
+                                                                $(tTag).append(citation);                                                                
+                                                                $(rTag).append($(rPrTag)).append($(tTag));                                                     
+                                                                $r.after($(rTag));                                                                
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            });
                                         }
                                     }
                                     //a contents section?
-                                    if (contents){
+                                    if (contents) {
                                         //get the anchor 
                                         var hyperlinks = $para.find(self.hyper);
                                         var anchor = null;
@@ -182,116 +240,130 @@ function WordWriter(word) {
                                             $para.find(self.t + ":gt(0)").remove();
                                         }
                                     }
-                                });             
-                                
-                                
-                                var xmlString = (new XMLSerializer()).serializeToString(xmlDoc);   
+
+                                    //if a caption section then alter caption accordingly
+                                    //console.log(caption);
+                                    if ((caption) && (self.relID !== null)) {
+                                        //find if this rel had a change
+                                        var slideImageRel = self.word.getSlideImageRel(self.relID);
+                                        if (slideImageRel.hasChange()) {
+                                            //create the citation text
+                                            var change = slideImageRel.getChange();
+                                            var citation = self.writeCitation(change);
+                                            var captionText = $para.find(self.t + ":last").text();
+                                            $para.find(self.t + ':last').text(captionText + citation);
+                                        }
+                                        self.relID = null;
+                                    }
+                                });
+
+
+                                var xmlString = (new XMLSerializer()).serializeToString(xmlDoc);
                                 //all changes made, write the file
                                 zipWriter.add(fileName, new zip.TextReader(xmlString), function() {
-                                        //update the global writer
-                                        $('#download').data("writer", zipWriter);
-                                        add(fileIndex + 1); /* [1] add the next file */
-                                    }, onProgress);
-                                
-                                
-                            }else{
-                            
-                            if (fileName.indexOf("word/media") !== -1) {                              
-                                //in the media directory
-                                //record image as having yet to be changed
-                                var imageChanged = false;
+                                    //update the global writer
+                                    $('#download').data("writer", zipWriter);
+                                    add(fileIndex + 1); /* [1] add the next file */
+                                }, onProgress);
 
-                                //now get all the rels relating to this file
-                                var imageName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
-                                var imageRels = self.word.getImageRels(imageName);
-                                for (var i = 0; i < imageRels.length; i++) {                                    
-                                    var imageRel = imageRels[i];
-                                    if (imageRel.hasChange()) {
+                            } else {
 
-                                        //write the change to the powerpoint
-                                        var change = imageRel.getChange();
+                                if (fileName.indexOf("word/media") !== -1) {
+                                    //in the media directory
+                                    //record image as having yet to be changed
+                                    var imageChanged = false;
 
-                                        //image has yet to be changed, so write the change...
-                                        if (!imageChanged) {
-                                            imageChanged = true;
-                                            if (change.getType() === "placeholder") {
-                                                var newSrc = change.newImageSrc;
-                                                var licence = change.licence;
-                                                var phpUrl = "php/imagegrabber.php?callback=?";
-                                                $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "placeholder"},
-                                                function(res) {
-                                                    zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
-                                                        //update the global writer
-                                                        $('#download').data("writer", zipWriter);
-                                                        add(fileIndex + 1);
-                                                    }, function() {
+                                    //now get all the rels relating to this file
+                                    var imageName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
+                                    var imageRels = self.word.getImageRels(imageName);
+                                    for (var i = 0; i < imageRels.length; i++) {
+                                        var imageRel = imageRels[i];
+                                        if (imageRel.hasChange()) {
+
+                                            //write the change to the powerpoint
+                                            var change = imageRel.getChange();
+
+                                            //image has yet to be changed, so write the change...
+                                            if (!imageChanged) {
+                                                imageChanged = true;
+                                                if (change.getType() === "placeholder") {
+                                                    var newSrc = change.newImageSrc;
+                                                    var licence = change.licence;
+                                                    var phpUrl = "php/imagegrabber.php?callback=?";
+                                                    $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "placeholder"},
+                                                    function(res) {
+                                                        zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
+                                                            //update the global writer
+                                                            $('#download').data("writer", zipWriter);
+                                                            add(fileIndex + 1);
+                                                        }, function() {
+                                                        });
                                                     });
-                                                });       
+                                                }
+
+                                                if (change.getType() === "cc") {
+                                                    var newSrc = change.newImageSrc;
+                                                    var licence = change.licence;
+                                                    var phpUrl = "php/imagegrabber.php?callback=?";
+                                                    $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "cc"},
+                                                    function(res) {
+                                                        zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
+                                                            //update the global writer
+                                                            $('#download').data("writer", zipWriter);
+                                                            add(fileIndex + 1);
+                                                        }, function() {
+                                                        });
+                                                    });
+                                                }
+
+                                                if (change.getType() === "flickr") {
+                                                    var newSrc = change.newImageSrc;
+                                                    var licence = change.licence;
+                                                    var phpUrl = "php/imagegrabber.php?callback=?";
+                                                    $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "flickr"},
+                                                    function(res) {
+                                                        zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
+                                                            //update the global writer
+                                                            $('#download').data("writer", zipWriter);
+                                                            add(fileIndex + 1);
+                                                        }, function() {
+                                                        });
+                                                    });
+                                                }
                                             }
 
-                                            if (change.getType() === "cc") {
-                                                var newSrc = change.newImageSrc;
-                                                var licence = change.licence;
-                                                var phpUrl = "php/imagegrabber.php?callback=?";
-                                                $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "cc"},
-                                                function(res) {
-                                                    zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
-                                                        //update the global writer
-                                                        $('#download').data("writer", zipWriter);
-                                                        add(fileIndex + 1);
-                                                    }, function() {
-                                                    });
-                                                });
+                                            //if the image format has changed then the powerpoint slide rels need to be updated
+                                            //TODO!!!! (possibly)    
+
+                                        } else {
+                                            //there is no change to commit for this rel
+                                            //just write the original image
+                                            if (!imageChanged) {
+                                                imageChanged = true;
+                                                zipWriter.add(fileName, new zip.BlobReader(files[fileIndex].data), function() {
+                                                    //update the global writer
+                                                    $('#download').data("writer", zipWriter);
+                                                    add(fileIndex + 1); /* [1] add the next file */
+                                                }, onProgress);
                                             }
-
-                                            if (change.getType() === "flickr") {
-                                                var newSrc = change.newImageSrc;
-                                                var licence = change.licence;
-                                                var phpUrl = "php/imagegrabber.php?callback=?";
-                                                $.getJSON(phpUrl, {src: newSrc, licence: licence, changeType: "flickr"},
-                                                function(res) {
-                                                    zipWriter.add(fileName, new zip.Data64URIReader(res.result), function() {
-                                                        //update the global writer
-                                                        $('#download').data("writer", zipWriter);
-                                                        add(fileIndex + 1);
-                                                    }, function() {
-                                                    });
-                                                });
-                                            }
-                                        }
-
-                                        //if the image format has changed then the powerpoint slide rels need to be updated
-                                        //TODO!!!! (possibly)    
-
-                                    } else {
-                                        //there is no change to commit for this rel
-                                        //just write the original image
-                                        if (!imageChanged) {
-                                            imageChanged = true;
-                                            zipWriter.add(fileName, new zip.BlobReader(files[fileIndex].data), function() {
-                                                //update the global writer
-                                                $('#download').data("writer", zipWriter);
-                                                add(fileIndex + 1); /* [1] add the next file */
-                                            }, onProgress);
                                         }
                                     }
+                                } else {
+                                    //not a media file, just write like normal
+                                    if (fileName.substr(fileName.lastIndexOf(".")) === ".xml") {
+                                        zipWriter.add(fileName, new zip.TextReader(self.entries[fileIndex].data), function() {
+                                            //update the global writer
+                                            $('#download').data("writer", zipWriter);
+                                            add(fileIndex + 1); /* [1] add the next file */
+                                        }, onProgress);
+                                    } else {
+                                        zipWriter.add(fileName, new zip.BlobReader(self.entries[fileIndex].data), function() {
+                                            //update the global writer
+                                            $('#download').data("writer", zipWriter);
+                                            add(fileIndex + 1); /* [1] add the next file */
+                                        }, onProgress);
+                                    }
                                 }
-                            } else {
-                                //not a media file, just write like normal
-                                if (fileName.substr(fileName.lastIndexOf(".")) === ".xml"){
-                                    zipWriter.add(fileName, new zip.TextReader(self.entries[fileIndex].data), function() {
-                                        //update the global writer
-                                        $('#download').data("writer", zipWriter);
-                                        add(fileIndex + 1); /* [1] add the next file */
-                                    }, onProgress);
-                                }else{
-                                    zipWriter.add(fileName, new zip.BlobReader(self.entries[fileIndex].data), function() {
-                                        //update the global writer
-                                        $('#download').data("writer", zipWriter);
-                                        add(fileIndex + 1); /* [1] add the next file */
-                                    }, onProgress);
-                                }
-                            }
                             }
                         } else {
                             callback() /* [2] no more files to add: callback is called */;
@@ -327,14 +399,14 @@ function WordWriter(word) {
                 $('#downloadLoading').hide();
                 $('#downloadLabel').show();
                 var a = document.createElement('a');
-                
+
                 var filename = word.name.substring(0, word.name.lastIndexOf(".docx")) + "_redacted.docx";
                 $(a).attr('id', 'downloadLink');
                 $(a).attr('href', blobURL);
                 $(a).attr('download', filename);
                 $(a).append(filename);
-                $('#download').append($(a));            
-                
+                $('#download').append($(a));
+
                 console.log("done");
             });
         });
@@ -347,6 +419,18 @@ function WordWriter(word) {
             console.log("writing");
             self.writeWord(self.entries);
         }
+    };
+
+    self.writeCitation = function(change) {
+        var citation = null;
+        if (change.getType() === "flickr") {
+            citation = '"' + change.getTitle() + '" by ' + change.getAuthor() + ", " + change.licence;
+        } else {
+            if (change.getType() === "cc") {
+                citation = change.licence;
+            }
+        }
+        return citation;
     };
 }
 

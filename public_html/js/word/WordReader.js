@@ -250,7 +250,7 @@ function WordReader(name, wordFile) {
             captionText = captionText + texts.text();
         });
         
-        //add caption if paragraph is one
+        //save caption if appropriate
         if ((caption) && (self.relID !== null)){            
             self.word.addCaption(self.relID, captionText);
             self.relID = null;

@@ -134,7 +134,6 @@ function FlickrReader(search, tags, sort, commercial, derivative) {
 
         //set the format
         url = url + "&format=json&nojsoncallback=1";
-        console.log(url);
         $.getJSON(url, self.getFlickrPhotos);
         $('#flickr-results').hide();
         $('#flickr-loading').show();        
