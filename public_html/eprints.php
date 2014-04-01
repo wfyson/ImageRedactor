@@ -63,6 +63,8 @@
         <script type="text/javascript" src="js/word/WordViewer.js"></script>
         <script type="text/javascript" src="js/word/WordWriter.js"></script>
         <script type="text/javascript" src="js/word/CaptionRel.js"></script>
+        
+        <script type="text/javascript" src="js/eprints.js"></script>
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -447,14 +449,17 @@
                 //};
                 //xhr.send();
                 //handleFileSelect(doc, blob);
-                
                 var doc = '<?php echo $_GET['doc'] ?>';
-                var data  = '<?php $data = file_get_contents($_GET['doc']); $encode = base64_encode($data); echo $encode; ?>';  
-                var byteCharacters = atob(data);                
+                var data  = '<?php $data = file_get_contents($_GET['doc']); $encode = base64_encode($data); echo $encode; ?>';                
+                var byteCharacters = atob(data);                                                
+                
+                //also get the eprints domain so we know where to send it back to
+                var eprints = '<?php echo $_GET['eprints'] ?>'; 
+                $('#download').data('eprints', eprints);
                 
                 function charCodeFromCharacter(c) {
                     return c.charCodeAt(0);     
-                }
+                }                                
 
                 var byteNumbers = Array.prototype.map.call(byteCharacters, charCodeFromCharacter);
                 var uint8Data = new Uint8Array(byteNumbers);

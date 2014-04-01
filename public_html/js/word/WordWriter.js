@@ -5,14 +5,7 @@
 
 function WordWriter(word) {
 
-    var REDACTED_HEADING = '<w:r><w:t>This section has been redacted</w:t></w:r>';
-    var REDACTED_TEXT = '<w:r><w:t>Content redacted</w:t></w:r>';
     var PICTURE_FORMAT = 'http://schemas.openxmlformats.org/drawingml/2006/picture';
-    var ATTRIBUTION_1 = '<w:r><w:rPr><w:color w:val="auto"/><w:lang w:val="en-GB"/></w:rPr><w:t xml:space="preserve">';
-    var ATTRIBUTION_2 = '</w:t></w:r>';
-    
-    //var ATTRIBUTION_1 = '<w:r></w:r>';
-
 
     var self = this;
     self.word = word;
@@ -387,28 +380,35 @@ function WordWriter(word) {
 
         //all changes have been made to the document.. now write it
         zipper.addTexts(contents, function() {
+            
+                       
             zipper.getBlob(function(blob) {
-                var blobURL;
-                if (window.webkitURL) {
-                    blobURL = window.webkitURL.createObjectURL(blob);
-                } else if (window.URL && window.URL.createObjectURL) {
-                    blobURL = window.URL.createObjectURL(blob);
-                } else {
-                    blobURL = null;
+                if ($('#download').data('eprints') === null){ 
+                    var blobURL;
+                    if (window.webkitURL) {
+                        blobURL = window.webkitURL.createObjectURL(blob);
+                    } else if (window.URL && window.URL.createObjectURL) {
+                        blobURL = window.URL.createObjectURL(blob);
+                    } else {
+                        blobURL = null;
+                    }
+                    $('#downloadLoading').hide();
+                    $('#downloadLabel').show();
+                    var a = document.createElement('a');
+
+                    var filename = word.name.substring(0, word.name.lastIndexOf(".docx")) + "_redacted.docx";
+                    $(a).attr('id', 'downloadLink');
+                    $(a).attr('href', blobURL);
+                    $(a).attr('download', filename);
+                    $(a).append(filename);
+                    $('#download').append($(a));
+
+                    console.log("done");                    
+                }else{
+                    //eprints download so write the file locally and produce button to take user to eprints
+                    writeEprintsDocument(blob);
                 }
-                $('#downloadLoading').hide();
-                $('#downloadLabel').show();
-                var a = document.createElement('a');
-
-                var filename = word.name.substring(0, word.name.lastIndexOf(".docx")) + "_redacted.docx";
-                $(a).attr('id', 'downloadLink');
-                $(a).attr('href', blobURL);
-                $(a).attr('download', filename);
-                $(a).append(filename);
-                $('#download').append($(a));
-
-                console.log("done");
-            });
+            });            
         });
     };
 

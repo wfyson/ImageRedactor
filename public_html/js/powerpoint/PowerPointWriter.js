@@ -351,7 +351,11 @@ function PowerPointWriter(ppt) {
         
         //captions have been added to slides... now write the powerpoint
         zipper.addTexts(contents, function() {
-            zipper.getBlob(function(blob) {
+            zipper.getBlob(function(blob) {   
+                
+                //generate file name
+                var filename = ppt.name.substring(0, ppt.name.lastIndexOf(".pptx")) + "_redacted.pptx";
+                
                 var blobURL;
                 if (window.webkitURL) {
                     blobURL = window.webkitURL.createObjectURL(blob);
@@ -360,19 +364,23 @@ function PowerPointWriter(ppt) {
                 } else {
                     blobURL = null;
                 }
-                $('#downloadLoading').hide();
-                $('#downloadLabel').show();
                 
-                var a = document.createElement('a');
-                
-                var filename = ppt.name.substring(0, ppt.name.lastIndexOf(".pptx")) + "_redacted.pptx";
-                
-                $(a).attr('id', 'downloadLink');
-                $(a).attr('href', blobURL);
-                $(a).attr('download', filename);
-                $(a).append(filename);
-                $('#download').append($(a));   
-                console.log("done");
+                if($('#download').data('eprints') === null){                                    
+                    
+                    $('#downloadLoading').hide();
+                    $('#downloadLabel').show();
+
+                    var a = document.createElement('a');
+
+                    $(a).attr('id', 'downloadLink');
+                    $(a).attr('href', blobURL);
+                    $(a).attr('download', filename);
+                    $(a).append(filename);
+                    $('#download').append($(a));
+                    console.log("done");
+                } else {
+                    writeEprintsDocument(filename, blob, $('#download').data('eprints'));
+                }
             });
         });
     };

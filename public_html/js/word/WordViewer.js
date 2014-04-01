@@ -291,8 +291,8 @@ function WordViewer(word){
                 var html = '<span id="' + wordImage.name + '"><img id="img' + i + '" class="carouselImg" src="' + wordImage.url + '" width="110" height="110" alt="' + wordImage.url + '" /><span class="changeIcon"/></span>';
                 carouselCount++;
                 carousel.add(carouselCount, html);
-
                 $('#img' + i).click({param1: i, param2: wordImage}, function(event) {
+                   
                     var wordImage = event.data.param2;
                     
                     //display appropriate panel
