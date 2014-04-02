@@ -49,6 +49,11 @@ body .modal {
     display: none;
 }
 
+#eprintsUpload{
+    display: none;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
 
 #imageOverview{
     height: 400px;
@@ -403,7 +408,7 @@ body .modal {
     vertical-align: middle;
 }
 
-#download{
+#download, #eprints{
     margin-left: 10px;
     margin-top: 10px;
     display: block;
@@ -505,4 +510,18 @@ body .modal {
     cursor: pointer;
 }
 
+#modalURL{
+    cursor: text;
+    width: 90%;
+    display: block;        
+}
 
+#eprintsModal{
+    width: 50%;
+    left: 25%;
+}
+
+#eprintsModal img{
+    border: solid;
+    border-width: thin;
+}

@@ -355,17 +355,17 @@ function PowerPointWriter(ppt) {
                 
                 //generate file name
                 var filename = ppt.name.substring(0, ppt.name.lastIndexOf(".pptx")) + "_redacted.pptx";
-                
-                var blobURL;
-                if (window.webkitURL) {
-                    blobURL = window.webkitURL.createObjectURL(blob);
-                } else if (window.URL && window.URL.createObjectURL) {
-                    blobURL = window.URL.createObjectURL(blob);
-                } else {
-                    blobURL = null;
-                }
-                
+
                 if($('#download').data('eprints') === null){                                    
+                    
+                    var blobURL;
+                    if (window.webkitURL) {
+                        blobURL = window.webkitURL.createObjectURL(blob);
+                    } else if (window.URL && window.URL.createObjectURL) {
+                        blobURL = window.URL.createObjectURL(blob);
+                    } else {
+                        blobURL = null;
+                    }
                     
                     $('#downloadLoading').hide();
                     $('#downloadLabel').show();
@@ -379,7 +379,7 @@ function PowerPointWriter(ppt) {
                     $('#download').append($(a));
                     console.log("done");
                 } else {
-                    writeEprintsDocument(filename, blob, $('#download').data('eprints'));
+                    writeEprintsDocument(filename, blob);
                 }
             });
         });

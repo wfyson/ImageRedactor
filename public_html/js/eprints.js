@@ -80,6 +80,8 @@ function writeEprintsDocument(name, blob, eprints) {
 
         xhr = new XMLHttpRequest();
 
+        xhr.addEventListener("load", showLink, false);
+
         fd = new FormData();
         fd.append("name", name);
         fd.append("index", slices2);
@@ -87,7 +89,31 @@ function writeEprintsDocument(name, blob, eprints) {
         xhr.open("POST", "php/eprintsmerge.php", true);
         xhr.send(fd);
     }
-
-
+    
+    //when the files have been merged, create and display link to eprints
+    function showLink(evt){
+        
+        //hide loading gif
+        $('#downloadLoading').hide();
+        
+        //generate a link to the redacted file     
+        var EPRINT_LOCATION = "/php/eprints/";                
+        var linkURL = window.location.hostname + window.location.pathname;       
+        linkURL = linkURL.substring(0, linkURL.lastIndexOf("/"));         
+        linkURL = linkURL + EPRINT_LOCATION + $('#download').data('sessionID') + "/" + name;
+   
+        
+        var EDIT_URL = "/cgi/users/home?screen=EPrint%3A%3AEdit";
+        var EPRINT_ID = "&eprintid=";
+        var EXTRA_PARAMETERS = "&stage=files&c5_current=1";
+        
+        var eprintLink = $('#download').data('eprints') + EDIT_URL + EPRINT_ID + $('#download').data('eprintID') + EXTRA_PARAMETERS;
+        //$('#eprintsUpload').attr('href', link);
+        //$('#eprintsUpload').show();
+        
+        $('#modalURL').val(linkURL);
+        $('#eprintBtn').attr('href', eprintLink);
+        $('#eprintsModal').modal();        
+    }
 }
 

@@ -1,7 +1,5 @@
 <?php
 
-include 'ChromePhp.php';
-
 session_start();
 
 $id = session_id();
@@ -26,4 +24,6 @@ for($i = 0; $i < $_REQUEST['index']; $i++) {
 }
 
 fclose($dst);
+
+echo $id;
 ?>

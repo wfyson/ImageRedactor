@@ -383,6 +383,10 @@ function WordWriter(word) {
             
                        
             zipper.getBlob(function(blob) {
+                
+                //generate filename
+                var filename = word.name.substring(0, word.name.lastIndexOf(".docx")) + "_redacted.docx";
+                
                 if ($('#download').data('eprints') === null){ 
                     var blobURL;
                     if (window.webkitURL) {
@@ -396,7 +400,7 @@ function WordWriter(word) {
                     $('#downloadLabel').show();
                     var a = document.createElement('a');
 
-                    var filename = word.name.substring(0, word.name.lastIndexOf(".docx")) + "_redacted.docx";
+                   
                     $(a).attr('id', 'downloadLink');
                     $(a).attr('href', blobURL);
                     $(a).attr('download', filename);

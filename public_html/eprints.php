@@ -70,10 +70,6 @@
 
     </head>
     <body>
-        <!--
-        <div id="title">
-            <img src="img/title.png"/>
-        </div>-->
 
         <div class="navbar">
             <div class="navbar-inner">
@@ -85,8 +81,9 @@
                     <li><a id="titleText" class="disabled" href="#">Text</a></li>
                     <li class="divider-vertical"></li>
                     <li><button id="redactBtn" class="btn btn-info disabled">Redact</button></li>
-                    <li><span id="download"><img id="downloadLoading" src="img/ajax-loader-small.gif"/><span id='downloadLabel' class="label label-info">Download Link</span></span></li>
-                </ul>
+                    <li><span id="download"><img id="downloadLoading" src="img/ajax-loader-small.gif"/><span id='downloadLabel' class="label label-info">Download Link</span></span></li>       
+                    <li><span id="eprints"><a id="eprintsUpload" class="btn" target="_blank">Upload to EPrints <i class="icon-upload"></i></a></span></li>
+                </ul>         
             </div>
         </div>
 
@@ -423,6 +420,23 @@
             </div>
         </div>
         
+        <div id="eprintsModal" class="modal hide fade">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>Import into ePrints</h3>                
+            </div>
+            <div class="modal-body">
+                <p>Copy and paste the following URL into the eprint's "Upload From URL" form:</p>
+                <input class="span2" id="modalURL" type="text" readonly onClick="this.select();">
+                
+                <img src="img/url_screenshot.png"/>       
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <a id="eprintBtn" href="#" class="btn btn-primary" target="_blank">Go to Eprint</a>
+            </div>
+        </div>
+        
         <div id="copyright">
             © University of Southampton
         </div>
@@ -453,9 +467,15 @@
                 var data  = '<?php $data = file_get_contents($_GET['doc']); $encode = base64_encode($data); echo $encode; ?>';                
                 var byteCharacters = atob(data);                                                
                 
-                //also get the eprints domain so we know where to send it back to
+                //also get the eprints info so we know where to send it back to
                 var eprints = '<?php echo $_GET['eprints'] ?>'; 
+                var eprintID = '<?php echo $_GET['eprintid'] ?>'; 
                 $('#download').data('eprints', eprints);
+                $('#download').data('eprintID', eprintID);
+                
+                //get session id
+                var id = '<?php session_start(); $id = session_id(); echo $id; ?>';
+                $('#download').data('sessionID', id);
                 
                 function charCodeFromCharacter(c) {
                     return c.charCodeAt(0);     
